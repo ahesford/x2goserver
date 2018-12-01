@@ -42,7 +42,7 @@ if [ -n "${1}" ]; then
 else
 	cd "${X2GO_VERSIONS_BASEPATH}"
 	for compfile in "${X2GO_VERSIONS_BASEPATH}"/*; do
-		X2GO_COMPONENT="$(echo "${compfile}" | cut -d '.' -f '2')"
+		X2GO_COMPONENT="$(echo "$(basename ${compfile})" | cut -d '.' -f '2')"
 		X2GO_COMPONENT_VERSION="$(get_version "${compfile}")"
 		echo "${X2GO_COMPONENT}: ${X2GO_COMPONENT_VERSION}"
 	done
