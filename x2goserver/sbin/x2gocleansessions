@@ -366,6 +366,7 @@ elsif ($pid == 0 )
 }
 
 __END__
+
 =head1 NAME
 
 x2gocleansessions - X2Go Server Cleanup Daemon

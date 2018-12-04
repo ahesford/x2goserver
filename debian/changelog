@@ -9,6 +9,10 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
   * debian/x2goserver.postinst:
     + Drop duplicate sourcing of debconf includes.
 
+  [ Mihai Moldovan ]
+  * New upstream version (4.1.0.4):
+    - x2goserver/sbin/x2gocleansessions: add newline before POD block.
+
  -- X2Go Release Manager <git-admin@x2go.org>  Thu, 29 Nov 2018 07:57:20 +0100
 
 x2goserver (4.1.0.3-0x2go1) unstable; urgency=medium
