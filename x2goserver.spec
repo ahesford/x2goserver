@@ -886,6 +886,7 @@ fi
 %{_libdir}/x2go/x2goinsertport
 %{_libdir}/x2go/x2goinsertsession
 %{_libdir}/x2go/x2goinsertshadowsession
+%{_libdir}/x2go/x2goisint
 %{_libdir}/x2go/x2goistrue
 %{_libdir}/x2go/x2golistsessions_sql
 %{_libdir}/x2go/x2gologlevel

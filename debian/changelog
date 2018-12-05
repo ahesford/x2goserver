@@ -22,6 +22,8 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
     + Install x2gocleansessions man page.
+  * x2goserver.spec:
+    + Install new x2goisint wrapper.
 
  -- X2Go Release Manager <git-admin@x2go.org>  Thu, 29 Nov 2018 07:57:20 +0100
 
