@@ -56,9 +56,9 @@ sub load_module {
 sub is_true {
 	my $value = shift;
 	if ( $value =~ m/(1|yes|Yes|YES|on|On|ON|True|true|TRUE)/ ) {
-		return 1
+		return 1;
 	}
-	return 0
+	return 0;
 }
 
 
