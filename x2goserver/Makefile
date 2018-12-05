@@ -23,6 +23,7 @@ BIN_SCRIPTS=$(shell cd bin && echo *)
 SBIN_SCRIPTS=$(shell cd sbin && echo *)
 LIB_FILES=$(shell cd lib && echo *)
 FEATURE_SCRIPTS=$(shell cd share/x2gofeature.d && echo *.features)
+POD_SCRIPTS="sbin/x2gocleansessions.8"
 
 man_pages = `cd man && find * -type f`
 
@@ -36,7 +37,30 @@ build: build-arch build-indep
 
 build-arch:
 
-build-indep: build_man2html
+build-indep: build_pod2man build_man2html
+
+build_pod2man:
+	for sectioned_script in $(POD_SCRIPTS); do \
+		man_page="$$(basename "$${sectioned_script}")"; \
+		section="$${man_page##*.}"; \
+		script="$${sectioned_script%.*}"; \
+		$(INSTALL_DIR) "man/man$${section}"; \
+		case "$${suite}" in \
+			('1') \
+				suite='General Commands Manual'; \
+				;; \
+			('5') \
+				suite='X2Go Server Configuration'; \
+				;; \
+			('8') \
+				suite='X2Go Server Tool'; \
+				;; \
+			(*) \
+				suite='Unknown - X2Go Server Bug!'; \
+				;; \
+		esac; \
+		pod2man -s "$${section}" -c "$${suite}" -r "Version $$(cat 'VERSION.x2goserver')" "$${script}" > "man/man$${section}/$${man_page}"; \
+	done
 
 build_man2html:
 	if [ -n "$(MAN2HTML_BIN)" ]; then \
