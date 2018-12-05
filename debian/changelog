@@ -12,6 +12,7 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
   [ Mihai Moldovan ]
   * New upstream version (4.1.0.4):
     - x2goserver/sbin/x2gocleansessions: add newline before POD block.
+    - x2goserver-x2goagent/man/man1/x2goagent.1: add version and date.
 
  -- X2Go Release Manager <git-admin@x2go.org>  Thu, 29 Nov 2018 07:57:20 +0100
 
