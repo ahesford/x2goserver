@@ -37,7 +37,7 @@ use strict;
 
 use base 'Exporter';
 
-our @EXPORT = ( 'load_module', 'is_true',
+our @EXPORT = ( 'load_module', 'is_true', 'is_int',
                 'source_environment', 'clups', 'sanitizer',
                 'system_capture_merged_output', 'system_capture_stdout_output',
                 'check_x2go_sessionid');
@@ -61,6 +61,23 @@ sub is_true {
 	return 0;
 }
 
+sub is_int {
+	my $value = shift;
+	my $allow_negative = shift;
+
+	if (!(defined ($allow_negative))) {
+		$allow_negative = 0;
+	}
+
+	if ($allow_negative) {
+		return 1 if $value =~ m/-?\d+/;
+	}
+	else {
+		return 1 if $value =~ m/\d+/;
+	}
+
+	return 0;
+}
 
 sub source_environment {
 	my $name = shift;

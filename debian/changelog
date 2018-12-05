@@ -15,6 +15,8 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver-x2goagent/man/man1/x2goagent.1: add version and date.
     - x2goserver/Makefile: generate man pages from Perl POD.
     - X2Go/Utils.pm: fix missing semicolons.
+    - X2Go/Utils.pm: add new is_int subroutine, checking if the provided value
+      is an integer.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
