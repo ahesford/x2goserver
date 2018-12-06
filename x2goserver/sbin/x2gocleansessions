@@ -373,18 +373,28 @@ x2gocleansessions - X2Go Server Cleanup Daemon
 
 =head1 SYNOPSIS
 
-x2gocleansessions [options]
+=over
 
-  Options:
-    --help|-h|-?            brief help message
-    --man                   full documentation
-    --debug|-d              enable debugging and don't daemonize
+=item B<x2gocleansessions> B<--help>|B<-h>|B<-?>
+
+=item B<x2gocleansessions> B<--man>
+
+=item B<x2gocleansessions> [B<--debug>|B<-d>]
+
+=back
+
+=head1 DESCRIPTION
+
+B<x2gocleansessions> is run as a service on X2Go servers to handle the cleanup
+of stale sessions and synchronizing database state with on-disk state.
+
+B<x2gocleansessions> must be run (as a service) with root privileges.
 
 =head1 OPTIONS
 
 =over 8
 
-=item B<--help>|B<-?>|B<-h>
+=item B<--help>|B<-h>|B<-?>
 
 Print a brief help message and exits.
 
@@ -398,13 +408,6 @@ Override debugging setting in global config and keep application in foreground
 instead of daemonizing.
 
 =back
-
-=head1 DESCRIPTION
-
-B<x2gocleansessions> is run as a service on X2Go servers to handle the cleanup
-of stale sessions.
-
-B<x2gocleansessions> must be run (as a service) with root privileges.
 
 =head1 AUTHOR
 
