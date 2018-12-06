@@ -1,0 +1,287 @@
+#!/usr/bin/perl
+
+# Copyright (C) 2018 X2Go Project - https://wiki.x2go.org
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the
+# Free Software Foundation, Inc.,
+# 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+
+use strict;
+use warnings;
+
+#use X2Go::Utils qw (is_int);
+use Data::Dumper qw (Dumper);
+use Getopt::Long;
+use Pod::Usage;
+
+# Accepts an option string and returns a reference to an array of hashes
+# (actually hash references) corresponding to the parsed key-value pairs.
+#
+# Empty components are allowed, but will issue a warning message. In such a
+# case, the hash at the corresponding array position will be empty.
+#
+# Keys that do not have a value assigned will be given a value of "undef" in
+# order to be able to distinguish them from keys with an empty string as their
+# value.
+#
+# Caveat: the last component will be split from the port definition. DO NOT
+# SIMPLY JOIN THE LIST OR YOU WILL ADD A TRAILING COMMA! The port component
+# hash retains the colon separator.
+#
+# On error, returns an undef reference.
+sub parse_options {
+  my $ret = undef;
+  my @intermediate = ();
+  my $error_detected = 0;
+  my $options = shift;
+  my $next_discard = shift;
+
+  if (defined ($next_discard)) {
+    print STDERR "Multiple arguments passed in, all but the first one are ignored!\n";
+  }
+
+  if (!(defined ($options))) {
+    print STDERR "No argument provided for options string, returning undef.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    my @components = split (/,/sxm, $options, -1);
+    foreach my $option (@components) {
+      # We use undef to denote that some component was not provided at all
+      # to disambiguate non-provided and empty strings.
+      my ($key, $value) = (undef, undef);
+      my %kv_hash = ();
+
+      my @kv = split (/=/, $option, 2);
+
+      if (1 > scalar (@kv)) {
+        print STDERR "Options string has empty component, this is deprecated. Adding empty element.\n";
+
+        push (@intermediate, \%kv_hash);
+      }
+      elsif (3 <= scalar (@kv)) {
+        print STDERR "Options string has three or more components, this is a bug in $0. Erroring out.\n";
+        $error_detected = 1;
+        last;
+      }
+      else {
+        $key = shift (@kv);
+        $value = shift (@kv);
+
+        # Add to hash - every hash will contain a single key-value pair only.
+        $kv_hash{$key} = $value;
+
+        # Then add the hash as an entry in our return array - by reference.
+        push (@intermediate, \%kv_hash);
+      }
+    }
+
+    # Special handling for the last option, which does not use a comma as the
+    # delimiter but a colon.
+    #
+    # Note that it can either be part of the key or the value.
+    if (!($error_detected)) {
+      if ((0 < scalar (@intermediate)) && (defined ($intermediate[0]))) {
+        my $last_hash_ref = pop (@intermediate);
+        my $hash_count = 0;
+        my $last_component = '';
+        my $in_value = 0;
+        my $last_component_key = undef;
+
+        # Fetch last component and check for sanity.
+        # An empty hash is implicitly handled by initializing $last_component to
+        # an empty string, which will fail the splitting later on.
+        foreach my $key (keys %{$last_hash_ref}) {
+          ++$hash_count;
+
+          if (1 < $hash_count) {
+            print STDERR "More than one element found in last element's hash, this is a bug in $0. Ignoring subsequent entries.\n";
+            last;
+          }
+
+          $last_component = $last_component_key = $key;
+
+          if (defined ($last_hash_ref->{$key})) {
+            # If a value exists, the display specifier can not be part of the
+            # key.
+            $in_value = 1;
+            $last_component = $last_hash_ref->{$key};
+          }
+        }
+
+        # Don't use split() here. While we could use a more or less complex
+        # regex to extract the last(!) port specifier only, this would render
+        # the LIMIT parameter to split() useless (since additional capture
+        # groups are not part of the limit).
+        # Thus going the manual route here.
+        my $last_pos = rindex ($last_component, ':');
+
+        if ($[ > $last_pos) {
+          print STDERR "No display port seperator found in the options string. Erroring out.\n";
+          $error_detected = 1;
+        }
+        else {
+          my $last_component_left = substr ($last_component, 0, $last_pos);
+          my $last_component_right = substr ($last_component, $last_pos);
+
+          my %last_component_hash = ();
+
+          if ($in_value) {
+            $last_component_hash{$last_component_key} = $last_component_left;
+          }
+          else {
+            # Sanity check on the key. If it's empty, issue a warning and don't
+            # use it.
+            if (0 == length ($last_component_left)) {
+              print STDERR "Options string has empty component, this is deprecated. Adding empty element.\n";
+            }
+            else {
+              $last_component_hash{$last_component_left} = undef;
+            }
+          }
+
+          # Now add the last component hash to the array again.
+          push (@intermediate, \%last_component_hash);
+
+          # Prepare a new hash object, with the key set to the display port part
+          # and value to undef to mark it invalid.
+          my %display_port_hash = ();
+          $display_port_hash{$last_component_right} = undef;
+
+          # Add this to the return value as well.
+          push (@intermediate, \%display_port_hash);
+        }
+      }
+    }
+  }
+
+  if (!($error_detected)) {
+    $ret = \@intermediate;
+  }
+
+  return $ret;
+}
+
+Getopt::Long::Configure("gnu_getopt", "no_auto_abbrev");
+
+my $help = 0;
+my $man = 0;
+GetOptions('help|?|h' => \$help, 'man' => \$man) or pod2usage(2);
+pod2usage(1) if $help;
+pod2usage(-verbose => 2, -exitval => 0) if $man;
+
+my $options = shift;
+
+print STDERR Dumper (parse_options ($options)) . "\n";
+
+#my $value = shift;
+#my $allow_negative = shift;
+#
+#if (!(defined ($value))) {
+#  print STDERR "No value passed in, assuming empty string.\n";
+#  $value = '';
+#}
+#
+#if (!(defined ($allow_negative))) {
+#  $allow_negative = 0;
+#}
+#
+#exit is_int ($value);
+
+exit 1;
+
+__END__
+
+=head1 NAME
+
+x2goupdateoptionsstring - X2Go Agent Options String Manipulator
+
+=head1 SYNOPSIS
+
+=over
+
+=item B<x2goupdateoptionsstring> B<--help>|B<-h>|B<-?>
+
+=item B<x2goupdateoptionsstring> B<--man>
+
+=item B<x2goupdateoptionsstring> I<options> [B<->]I<key>[B<=>I<value>] ...
+
+=back
+
+=head1 DESCRIPTION
+
+B<x2goupdateoptionsstring> is a utility for manipulating options strings as
+passed to X2Go Agent/NX Agent.
+
+Called it with the options string as the first parameter and the options you
+want to manipulate as additional parameters. At least one additional parameter
+must be provided.
+
+It can either add, remove or replace components.
+
+To add or replace a component, pass I<key>[B<=>I<value>] as a parameter. If the
+options string does not include a B<key> key, it will be appended to the end of
+the options string. If it already exists, either with no value or a different
+value, the component will be replaced with the provided value.
+
+To fully remove a component, pass B<->I<key>. To only remove it if it is set to
+a specific value, pass B<->I<key>B<=>I<value>.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--help>|B<-?>|B<-h>
+
+Print a brief help message and exits.
+
+=item B<--man>
+
+Prints the manual page and exits.
+
+=back
+
+=head1 EXAMPLE
+
+For an options string such as
+
+ nx/nx,clipboard=both,foo:50
+
+calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50'
+'-clipboard'> shall return
+
+ nx/nx,foo:50
+
+while calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50'
+'-clipboard=server'> shall return
+
+ nx/nx,clipboard=both,foo:50
+
+Calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50' 'bar'> shall
+return
+
+ nx/nx,clipboard=both,foo,bar:50
+
+and calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50' 'bar'
+'foo=gulp' '-clipboard=client'> shall return
+
+ nx/nx,clipboard=both,foo=gulp,bar:50
+
+=head1 AUTHOR
+
+This manual has been written by Mihai Moldovan <ionic@ionic.de> for the X2Go
+project (https://www.x2go.org).
+
+=cut

@@ -21,6 +21,9 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver/lib/x2gois{int,true}: add newlines to (error) output.
     - x2goserver/lib/x2gois{int,true}: add optional warnings.
     - x2goserver/sbin/x2gocleansessions: rework manpage/POD.
+    - x2goserver/lib: add new (stub) file x2goupdateoptionsstring to deal with
+      options string manipulations. Currently only parsing into an
+      intermediate state is supported, the script dumps that state for now.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
