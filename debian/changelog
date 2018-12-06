@@ -18,6 +18,7 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - X2Go/Utils.pm: add new is_int subroutine, checking if the provided value
       is an integer.
     - x2goserver/lib: new x2goisint wrapper.
+    - x2goserver/lib/x2gois{int,true}: add newlines to (error) output.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
