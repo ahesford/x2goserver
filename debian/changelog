@@ -24,6 +24,9 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver/lib: add new (stub) file x2goupdateoptionsstring to deal with
       options string manipulations. Currently only parsing into an
       intermediate state is supported, the script dumps that state for now.
+    - x2goserver/lib/x2goupdateoptionsstring: add function to transform the
+      intermediate options string representation back into a string and some
+      code that uses this new function.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

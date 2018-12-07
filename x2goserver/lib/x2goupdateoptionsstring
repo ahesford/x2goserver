@@ -174,6 +174,117 @@ sub parse_options {
   return $ret;
 }
 
+# Takes an intermediate options string representation array reference(!) and
+# returns a string.
+# This is essentially the opposite of parse_options.
+# Parsing an options string and passing the result through this function again
+# SHOULD (if initial options string has been a valid one to begin with) yield
+# the initial options string again.
+# On error, returns undef.
+sub intermediate_to_string {
+  my $ret = undef;
+  my $error_detected = 0;
+
+  my $options = shift;
+
+  if ('ARRAY' ne ref ($options)) {
+    print STDERR "Invalid options reference type passed (" . ref ($options) . "), returning undef.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    if (1 == scalar (@$options)) {
+      foreach my $entry (@$options) {
+        if (!defined ($entry)) {
+          print STDERR "Invalid options array passed, returning undef.\n";
+          $error_detected = 1;
+        }
+      }
+    }
+  }
+
+  if (!($error_detected)) {
+    # Last entry should contain the display port part only.
+    # We can detect it through counting.
+    my $elements_left = @$options;
+
+    # Handle entries iteratively, merging then into one string.
+    foreach my $entry (@$options) {
+      --$elements_left;
+
+      if (!defined ($entry)) {
+        print STDERR "Invalid options entry encountered, returning undef.\n";
+        $error_detected = 1;
+        last;
+      }
+
+      if ('HASH' ne ref ($entry)) {
+        print STDERR "Entry in array has invalid type (" . ref ($entry) ."), returning undef.\n";
+        $error_detected = 1;
+        last;
+      }
+
+      if (1 < scalar (keys (%$entry))) {
+        print STDERR "More than one entry encountered in hash of current element, returning undef.\n";
+        $error_detected = 1;
+        last;
+      }
+
+      # Must be either empty or have one element, so... go for it.
+      if (0 == scalar (keys (%$entry))) {
+        if (0 != $elements_left) {
+          if (defined ($ret)) {
+            $ret .= ',';
+          }
+          else {
+            # Mark first entry as empty. Don't remove this, or else.
+            $ret = '';
+          }
+        }
+        else {
+          # Special handling for last element, which is always supposed to
+          # contain the display port.
+          print STDERR "No entry found in display port hash, returning undef.\n";
+          $error_detected = 1;
+          last;
+        }
+      }
+      else {
+        # This foreach loop may look weird because, at that point, we know that
+        # the hash contains one key exactly, but it's still an elegant way to
+        # fetch the key and pseudo-iterate over it.
+        foreach my $key (keys (%$entry)) {
+          my $tmp = $key;
+
+          if (0 != $elements_left) {
+            if (defined ($entry->{$key})) {
+              $tmp .= '=' . $entry->{$key};
+            }
+          }
+
+          if (defined ($ret)) {
+            if (0 != $elements_left) {
+              $ret = join (',', ($ret, $tmp));
+            }
+            else {
+              $ret .= $tmp;
+            }
+          }
+          else {
+            $ret = $tmp;
+          }
+        }
+      }
+    }
+  }
+
+  if ($error_detected) {
+    $ret = undef;
+  }
+
+  return $ret;
+}
+
 Getopt::Long::Configure("gnu_getopt", "no_auto_abbrev");
 
 my $help = 0;
@@ -184,7 +295,11 @@ pod2usage(-verbose => 2, -exitval => 0) if $man;
 
 my $options = shift;
 
-print STDERR Dumper (parse_options ($options)) . "\n";
+my $intermediate = parse_options ($options);
+
+print STDERR Dumper ($intermediate) . "\n";
+
+print STDERR Dumper (intermediate_to_string ($intermediate)) . "\n";
 
 #my $value = shift;
 #my $allow_negative = shift;
