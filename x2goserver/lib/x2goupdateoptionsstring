@@ -48,11 +48,11 @@ sub parse_options {
   my $next_discard = shift;
 
   if (defined ($next_discard)) {
-    print STDERR "Multiple arguments passed in, all but the first one are ignored!\n";
+    print {*STDERR} "Multiple arguments passed in, all but the first one are ignored!\n";
   }
 
   if (!(defined ($options))) {
-    print STDERR "No argument provided for options string, returning undef.\n";
+    print {*STDERR} "No argument provided for options string, returning undef.\n";
     $error_detected = 1;
   }
 
@@ -67,12 +67,12 @@ sub parse_options {
       my @kv = split (/=/, $option, 2);
 
       if (1 > scalar (@kv)) {
-        print STDERR "Options string has empty component, this is deprecated. Adding empty element.\n";
+        print {*STDERR} "Options string has empty component, this is deprecated. Adding empty element.\n";
 
         push (@intermediate, \%kv_hash);
       }
       elsif (3 <= scalar (@kv)) {
-        print STDERR "Options string has three or more components, this is a bug in $0. Erroring out.\n";
+        print {*STDERR} "Options string has three or more components, this is a bug in $0. Erroring out.\n";
         $error_detected = 1;
         last;
       }
@@ -107,7 +107,7 @@ sub parse_options {
           ++$hash_count;
 
           if (1 < $hash_count) {
-            print STDERR "More than one element found in last element's hash, this is a bug in $0. Ignoring subsequent entries.\n";
+            print {*STDERR} "More than one element found in last element's hash, this is a bug in $0. Ignoring subsequent entries.\n";
             last;
           }
 
@@ -129,7 +129,7 @@ sub parse_options {
         my $last_pos = rindex ($last_component, ':');
 
         if ($[ > $last_pos) {
-          print STDERR "No display port seperator found in the options string. Erroring out.\n";
+          print {*STDERR} "No display port seperator found in the options string. Erroring out.\n";
           $error_detected = 1;
         }
         else {
@@ -145,7 +145,7 @@ sub parse_options {
             # Sanity check on the key. If it's empty, issue a warning and don't
             # use it.
             if (0 == length ($last_component_left)) {
-              print STDERR "Options string has empty component, this is deprecated. Adding empty element.\n";
+              print {*STDERR} "Options string has empty component, this is deprecated. Adding empty element.\n";
             }
             else {
               $last_component_hash{$last_component_left} = undef;
@@ -188,7 +188,7 @@ sub intermediate_to_string {
   my $options = shift;
 
   if ('ARRAY' ne ref ($options)) {
-    print STDERR "Invalid options reference type passed (" . ref ($options) . "), returning undef.\n";
+    print {*STDERR} "Invalid options reference type passed (" . ref ($options) . "), returning undef.\n";
     $error_detected = 1;
   }
 
@@ -196,7 +196,7 @@ sub intermediate_to_string {
     if (1 == scalar (@$options)) {
       foreach my $entry (@$options) {
         if (!defined ($entry)) {
-          print STDERR "Invalid options array passed, returning undef.\n";
+          print {*STDERR} "Invalid options array passed, returning undef.\n";
           $error_detected = 1;
         }
       }
@@ -213,19 +213,19 @@ sub intermediate_to_string {
       --$elements_left;
 
       if (!defined ($entry)) {
-        print STDERR "Invalid options entry encountered, returning undef.\n";
+        print {*STDERR} "Invalid options entry encountered, returning undef.\n";
         $error_detected = 1;
         last;
       }
 
       if ('HASH' ne ref ($entry)) {
-        print STDERR "Entry in array has invalid type (" . ref ($entry) ."), returning undef.\n";
+        print {*STDERR} "Entry in array has invalid type (" . ref ($entry) ."), returning undef.\n";
         $error_detected = 1;
         last;
       }
 
       if (1 < scalar (keys (%$entry))) {
-        print STDERR "More than one entry encountered in hash of current element, returning undef.\n";
+        print {*STDERR} "More than one entry encountered in hash of current element, returning undef.\n";
         $error_detected = 1;
         last;
       }
@@ -244,7 +244,7 @@ sub intermediate_to_string {
         else {
           # Special handling for last element, which is always supposed to
           # contain the display port.
-          print STDERR "No entry found in display port hash, returning undef.\n";
+          print {*STDERR} "No entry found in display port hash, returning undef.\n";
           $error_detected = 1;
           last;
         }
@@ -297,15 +297,15 @@ my $options = shift;
 
 my $intermediate = parse_options ($options);
 
-print STDERR Dumper ($intermediate) . "\n";
+print {*STDERR} Dumper ($intermediate) . "\n";
 
-print STDERR Dumper (intermediate_to_string ($intermediate)) . "\n";
+print {*STDERR} Dumper (intermediate_to_string ($intermediate)) . "\n";
 
 #my $value = shift;
 #my $allow_negative = shift;
 #
 #if (!(defined ($value))) {
-#  print STDERR "No value passed in, assuming empty string.\n";
+#  print {*STDERR} "No value passed in, assuming empty string.\n";
 #  $value = q{};
 #}
 #

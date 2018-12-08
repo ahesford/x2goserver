@@ -25,7 +25,7 @@ use X2Go::Utils qw (is_true);
 my $value = shift;
 
 if (!(defined ($value))) {
-  print STDERR "No value passed in, assuming empty string.\n";
+  print {*STDERR} "No value passed in, assuming empty string.\n";
   $value = q{};
 }
 
