@@ -26,7 +26,7 @@ my $value = shift;
 
 if (!(defined ($value))) {
   print STDERR "No value passed in, assuming empty string.\n";
-  $value = "";
+  $value = q{};
 }
 
 print is_true ($value) . "\n";

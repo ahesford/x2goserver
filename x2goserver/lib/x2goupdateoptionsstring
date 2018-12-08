@@ -96,7 +96,7 @@ sub parse_options {
       if ((0 < scalar (@intermediate)) && (defined ($intermediate[0]))) {
         my $last_hash_ref = pop (@intermediate);
         my $hash_count = 0;
-        my $last_component = '';
+        my $last_component = q{};
         my $in_value = 0;
         my $last_component_key = undef;
 
@@ -238,7 +238,7 @@ sub intermediate_to_string {
           }
           else {
             # Mark first entry as empty. Don't remove this, or else.
-            $ret = '';
+            $ret = q{};
           }
         }
         else {
@@ -306,7 +306,7 @@ print STDERR Dumper (intermediate_to_string ($intermediate)) . "\n";
 #
 #if (!(defined ($value))) {
 #  print STDERR "No value passed in, assuming empty string.\n";
-#  $value = '';
+#  $value = q{};
 #}
 #
 #if (!(defined ($allow_negative))) {

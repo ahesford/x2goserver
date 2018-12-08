@@ -27,7 +27,7 @@ my $allow_negative = shift;
 
 if (!(defined ($value))) {
   print STDERR "No value passed in, assuming empty string.\n";
-  $value = '';
+  $value = q{};
 }
 
 if (!(defined ($allow_negative))) {
