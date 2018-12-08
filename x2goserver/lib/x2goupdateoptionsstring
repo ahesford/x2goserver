@@ -24,6 +24,7 @@ use warnings;
 use Data::Dumper qw (Dumper);
 use Getopt::Long;
 use Pod::Usage;
+use English qw (-no_match_vars);
 
 # Accepts an option string and returns a reference to an array of hashes
 # (actually hash references) corresponding to the parsed key-value pairs.
@@ -64,7 +65,7 @@ sub parse_options {
       my ($key, $value) = (undef, undef);
       my %kv_hash = ();
 
-      my @kv = split (/=/, $option, 2);
+      my @kv = split (/=/sxm, $option, 2);
 
       if (1 > scalar (@kv)) {
         print {*STDERR} "Options string has empty component, this is deprecated. Adding empty element.\n";
@@ -72,7 +73,7 @@ sub parse_options {
         push (@intermediate, \%kv_hash);
       }
       elsif (3 <= scalar (@kv)) {
-        print {*STDERR} "Options string has three or more components, this is a bug in $0. Erroring out.\n";
+        print {*STDERR} "Options string has three or more components, this is a bug in $PROGRAM_NAME. Erroring out.\n";
         $error_detected = 1;
         last;
       }
@@ -107,7 +108,7 @@ sub parse_options {
           ++$hash_count;
 
           if (1 < $hash_count) {
-            print {*STDERR} "More than one element found in last element's hash, this is a bug in $0. Ignoring subsequent entries.\n";
+            print {*STDERR} "More than one element found in last element's hash, this is a bug in $PROGRAM_NAME. Ignoring subsequent entries.\n";
             last;
           }
 
@@ -126,7 +127,7 @@ sub parse_options {
         # the LIMIT parameter to split() useless (since additional capture
         # groups are not part of the limit).
         # Thus going the manual route here.
-        my $last_pos = rindex ($last_component, ':');
+        my $last_pos = rindex ($last_component, q{:});
 
         if ($[ > $last_pos) {
           print {*STDERR} "No display port seperator found in the options string. Erroring out.\n";
@@ -188,13 +189,13 @@ sub intermediate_to_string {
   my $options = shift;
 
   if ('ARRAY' ne ref ($options)) {
-    print {*STDERR} "Invalid options reference type passed (" . ref ($options) . "), returning undef.\n";
+    print {*STDERR} 'Invalid options reference type passed (' . ref ($options) . "), returning undef.\n";
     $error_detected = 1;
   }
 
   if (!($error_detected)) {
-    if (1 == scalar (@$options)) {
-      foreach my $entry (@$options) {
+    if (1 == scalar (@{$options})) {
+      foreach my $entry (@{$options}) {
         if (!defined ($entry)) {
           print {*STDERR} "Invalid options array passed, returning undef.\n";
           $error_detected = 1;
@@ -206,10 +207,10 @@ sub intermediate_to_string {
   if (!($error_detected)) {
     # Last entry should contain the display port part only.
     # We can detect it through counting.
-    my $elements_left = @$options;
+    my $elements_left = @{$options};
 
     # Handle entries iteratively, merging then into one string.
-    foreach my $entry (@$options) {
+    foreach my $entry (@{$options}) {
       --$elements_left;
 
       if (!defined ($entry)) {
@@ -224,17 +225,17 @@ sub intermediate_to_string {
         last;
       }
 
-      if (1 < scalar (keys (%$entry))) {
+      if (1 < scalar (keys (%{$entry}))) {
         print {*STDERR} "More than one entry encountered in hash of current element, returning undef.\n";
         $error_detected = 1;
         last;
       }
 
       # Must be either empty or have one element, so... go for it.
-      if (0 == scalar (keys (%$entry))) {
+      if (0 == scalar (keys (%{$entry}))) {
         if (0 != $elements_left) {
           if (defined ($ret)) {
-            $ret .= ',';
+            $ret .= q{,};
           }
           else {
             # Mark first entry as empty. Don't remove this, or else.
@@ -253,18 +254,18 @@ sub intermediate_to_string {
         # This foreach loop may look weird because, at that point, we know that
         # the hash contains one key exactly, but it's still an elegant way to
         # fetch the key and pseudo-iterate over it.
-        foreach my $key (keys (%$entry)) {
+        foreach my $key (keys (%{$entry})) {
           my $tmp = $key;
 
           if (0 != $elements_left) {
             if (defined ($entry->{$key})) {
-              $tmp .= '=' . $entry->{$key};
+              $tmp .= q{=} . $entry->{$key};
             }
           }
 
           if (defined ($ret)) {
             if (0 != $elements_left) {
-              $ret = join (',', ($ret, $tmp));
+              $ret = join (q{,}, ($ret, $tmp));
             }
             else {
               $ret .= $tmp;
@@ -285,7 +286,7 @@ sub intermediate_to_string {
   return $ret;
 }
 
-Getopt::Long::Configure("gnu_getopt", "no_auto_abbrev");
+Getopt::Long::Configure('gnu_getopt', 'no_auto_abbrev');
 
 my $help = 0;
 my $man = 0;
