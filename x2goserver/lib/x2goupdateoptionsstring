@@ -287,62 +287,101 @@ sub intermediate_to_string {
   return $ret;
 }
 
-# Helper for a grep operation on the intermediate options array.
+# Helper function that checks for errors in options passed as filter
+# parameters (which, in turn, are the parameter this function expects).
 #
-# Takes the option to remove, the current element and amount of elements left
-# in the array as arguments and returns true if the element is not to be
-# removed, false otherwise.
-sub filter_option_remove {
+# Returns true if all checks passed, false otherwise.
+sub sanitize_input_filter {
   my $ret = 1;
-  my $error_detected = 0;
-  my $to_remove = shift;
+
+  my $work_option_key = shift;
+  my $work_option_value = shift;
   my $cur_option = shift;
   my $elems_left = shift;
 
-  if (!((defined ($to_remove)) && (defined ($cur_option)) && (defined ($elems_left)))) {
-    # Undefined values are an error in this context, but erroring out in a
-    # comparison function is... weird, so let's treat such errors as "don't
-    # modify the array".
-    print {*STDERR} "Invalid options passed to removal filter, keeping entry.\n";
-    $error_detected = 1;
+  if (!((defined ($work_option_key)) && (defined ($cur_option)) && (defined ($elems_left)))) {
+    print {*STDERR} "Invalid options passed to filter, keeping entry.\n";
+    $ret = 0;
   }
 
-  if (!($error_detected)) {
+  if ($ret) {
     if ('HASH' ne ref ($cur_option)) {
-      print {*STDERR} "Option passed to removal filter is not a hash reference, keeping entry.\n";
-      $error_detected = 1;
+      print {*STDERR} "Option passed to filter is not a hash reference, keeping entry.\n";
+      $ret = 0;
     }
   }
 
-  if (!($error_detected)) {
+  if ($ret) {
     if (1 < scalar (keys (%{$cur_option}))) {
-      print {*STDERR} "Option passed to removal filter has more than one entry in hash, keeping entry.\n";
-      $error_detected = 1;
+      print {*STDERR} "Option passed to filter has more than one entry in hash, keeping entry.\n";
+      $ret = 0;
     }
   }
 
-  my $to_remove_key = undef;
-  my $to_remove_value = undef;
-  my @to_remove_kv = split (/=/smx, $to_remove, 2);
+  return $ret;
+}
 
-  if (!($error_detected)) {
-    if (2 < scalar (@to_remove_kv)) {
-      print {*STDERR} "Option-to-be-removed string in removal filter has three or more components, this is a bug in $PROGRAM_NAME. Keeping entry.\n";
+# Helper function that splits up the working option into a key and a value.
+#
+# Expects the working option as its only parameter.
+#
+# Returns a reference to an array with two entries - the key and the value.
+# Caveat: the key cannot be undef (it's set to the empty string if it would
+# be), but the value can be undef.
+#
+# In case of errors, returns a reference to undef.
+sub sanitize_workoption_filter {
+  my $ret = undef;
+  my $error_detected = 0;
+
+  my $working_option = shift;
+
+  if (defined ($working_option)) {
+    my $work_key = undef;
+    my $work_value = undef;
+    my @work_kv = split (/=/smx, $working_option, 2);
+
+    if (2 < scalar (@work_kv)) {
+      print {*STDERR} "Option-to-be-acted-upon string in filter has three or more components, this is a bug in $PROGRAM_NAME. Returning error.\n";
       $error_detected = 1;
+    }
+
+    if (!($error_detected)) {
+      $work_key = shift (@work_kv);
+
+      # Key can be undef if splitting failed, e.g., due to an empty input
+      # string. We don't consider this an error, so reset the key to an empty
+      # string.
+      if (!(defined ($work_key))) {
+        $work_key = q{};
+      }
+
+      $work_value = shift (@work_kv);
+
+      $ret = [ $work_key, $work_value ];
     }
   }
 
-  if (!($error_detected) && (0 < $elems_left)) {
-    $to_remove_key = shift (@to_remove_kv);
+  return $ret;
+}
 
-    # Key can be undef if splitting failed, e.g., due to an empty input string.
-    # We don't consider this an error, so reset the key to an empty string.
-    if (!(defined ($to_remove_key))) {
-      $to_remove_key = q{};
-    }
+# Helper for a grep operation on the intermediate options array.
+#
+# Takes the option-to-remove's key and value, the current element and amount
+# of elements left in the array as arguments and returns true if the element is
+# not to be removed, false otherwise.
+sub filter_option_remove {
+  my $ret = 1;
+  my $skip = 0;
+  my $to_remove_key = shift;
+  my $to_remove_value = shift;
+  my $cur_option = shift;
+  my $elems_left = shift;
 
-    $to_remove_value = shift (@to_remove_kv);
+  $skip = ((!(sanitize_input_filter ($to_remove_key, $to_remove_value, $cur_option, $elems_left)))
+           || (0 == $elems_left));
 
+  if (!($skip)) {
     my $option_key = q{};
     my $option_value = undef;
 
@@ -370,23 +409,111 @@ sub filter_option_remove {
   return $ret;
 }
 
-# Removes an entry from the intermediate options array.
+# Helper for a grep operation on the intermediate options array.
 #
-# If only a key is specified, removes any entry that matches this key,
-# regardless of its value.
+# Takes the option-to-find's key and value, the current element and amount of
+# elements left in the array as arguments and returns true if the element has
+# the same as the option we search for, false otherwise.
+sub filter_find_key {
+  my $ret = 0;
+  my $skip = 0;
+  my $needle_key = shift;
+  my $needle_value = shift;
+  my $cur_option = shift;
+  my $elems_left = shift;
+
+  $skip = ((!(sanitize_input_filter ($needle_key, $needle_value, $cur_option, $elems_left)))
+           || (0 == $elems_left));
+
+  if (!($skip)) {
+    # We don't care about the values this time around.
+
+    my $option_key = q{};
+
+    foreach my $tmp_option_key (keys (%{$cur_option})) {
+      $option_key = $tmp_option_key;
+    }
+
+    if ($option_key eq $needle_key) {
+      $ret = 1;
+    }
+  }
+
+  return $ret;
+}
+
+# Helper for a map operation on the intermediate options array.
 #
-# If both a key and a value are specified, only matching combinations will be
-# removed from the array. That is, if the array already contains such a key
-# with either no value or a different value, it will be unaffected.
+# Takes the option-to-modify's key and value, the current element and amount of
+# elements left in the array as arguments and returns the modified element or
+# the original one, if modification was not necessary.
+sub filter_option_modify {
+  my $skip = 0;
+  my $needle_key = shift;
+  my $needle_value = shift;
+  my $cur_option = shift;
+  my $elems_left = shift;
+
+  my @ret = ( $cur_option );
+
+  $skip = ((!(sanitize_input_filter ($needle_key, $needle_value, $cur_option, $elems_left)))
+           || (0 == $elems_left));
+
+  if (!($skip)) {
+    my $option_key = q{};
+
+    foreach my $tmp_option_key (keys (%{$cur_option})) {
+      $option_key = $tmp_option_key;
+    }
+
+    if ($option_key eq $needle_key) {
+      my $new_opt = { };
+
+      # Don't add empty options as an empty string key with undef value; even
+      # though that's technically legit we want to represent this situation by
+      # an empty hash.
+      if (!(($needle_key) || (defined ($needle_value)))) {
+        print {*STDERR} "Empty option addition/modification requested, this is deprecated. Adding empty hash.\n";
+      }
+      else {
+        $new_opt->{$needle_key} = $needle_value;
+      }
+
+      @ret = ( $new_opt );
+    }
+  }
+
+  return @ret;
+}
+
+# Removes from, adds to or modifies an entry in the intermediate options array.
 #
-# Returns a reference to a modified copy of the intermediate options array.
+# Expects an intermediate options reference as its first parameter, a boolean
+# value which should be set to true for removals or false for
+# modifications/additions and the option-to-be-modified as a third parameter.
+#
+# For removals, the function behaves like this:
+#   - If only a key is specified, removes any entry that matches this key,
+#     regardless of its value.
+#   - If both a key and a value are specified, only matching combinations will
+#     be removed from the array. That is, if the array already contains such a
+#     key with either no value or a different value, it will be unaffected.
+#
+# Additions or modifications are handled like this:
+#   - If a given key is part of the intermediate representation, all such
+#     occurrences will be replaced by the new value.
+#   - Otherwise, the new value will be added at the end of the intermediate
+#     representation.
+#
+# Returns a reference to a modified *copy* of the intermediate options array.
 #
 # On error, returns a reference to undef.
-sub remove_option {
+sub transform_intermediate {
   my $ret = undef;
   my $error_detected = 0;
 
   my $options = shift;
+  my $remove = shift;
   my $option = shift;
 
   if ('ARRAY' ne ref ($options)) {
@@ -406,9 +533,32 @@ sub remove_option {
   }
 
   if (!($error_detected)) {
-    if (!(defined ($option))) {
-      print {*STDERR} "No or invalid option to be removed passed, erroring out.\n";
+    if (!(defined ($remove))) {
+      print {*STDERR} "Invalid mode option boolean passed, erroring out.\n";
       $error_detected = 1;
+    }
+  }
+
+  if (!($error_detected)) {
+    if (!(defined ($option))) {
+      print {*STDERR} "No or invalid new option passed, erroring out.\n";
+      $error_detected = 1;
+    }
+  }
+
+  my $work_option_key = undef;
+  my $work_option_value = undef;
+
+  if (!($error_detected)) {
+    my $work_opt_kv = sanitize_workoption_filter ($option);
+
+    if (!(defined ($work_opt_kv))) {
+      print {*STDERR} "Unable to split up working option into key and value pair, returning undef.\n";
+      $error_detected = 1;
+    }
+    else {
+      $work_option_key = shift (@{$work_opt_kv});
+      $work_option_value = shift (@{$work_opt_kv});
     }
   }
 
@@ -418,8 +568,46 @@ sub remove_option {
 
     my $elements_left = @{$ret};
 
-    # Let the filter function handle the actual work.
-    @{$ret} = grep { filter_option_remove ($option, $_, --$elements_left) } (@{$ret});
+    if ($remove) {
+      # Let the filter function handle the actual work.
+      @{$ret} = grep { filter_option_remove ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret});
+
+      # Check to see if the intermediate representation is empty now (save for
+      # the display port entry) and add an empty element if it is.
+      if (1 == scalar (@{$ret})) {
+        print {*STDERR} "Removal operation led to option string being empty, adding empty element though deprecated.\n";
+        unshift (@{$ret}, { });
+      }
+    }
+    else {
+      # Yes, grep () isn't a great choice for a boolean comparison. It will do
+      # what we need just fine, but doesn't short-circuit after finding the
+      # first match, hence uselessly continuing through the full array.
+      # List::MoreUtils::any would be more appropriate here, but this would add
+      # another dependency and option strings are pretty small, so don't
+      # overoptimize here.
+      if (scalar (grep { filter_find_key ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret}))) {
+        # Such an option already exists, we'll modify all occurrences.
+        $elements_left = @{$ret};
+        $ret = [ map { filter_option_modify ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret}) ];
+      }
+      else {
+        my $new_opt = { $work_option_key => $work_option_value };
+
+        # No such option exists, we'll add it to the end of the current
+        # options.
+        # At least in theory. Practically, there's one special case: if the
+        # only "real" element is an empty one, for instance because the option
+        # string was empty to begin with save the display port specifier, then
+        # we want to replace this option instead.
+        if ((2 == scalar (@{$ret})) && (!(scalar (keys (%{$ret->[0]}))))) {
+          splice (@{$ret}, 0, 1, $new_opt);
+        }
+        else {
+          splice (@{$ret}, -1, 0, $new_opt);
+        }
+      }
+    }
   }
 
   return $ret;
@@ -443,9 +631,19 @@ print {*STDERR} Dumper (intermediate_to_string ($intermediate)) . "\n";
 
 my $option_to_remove = shift;
 
-print {*STDERR} Dumper (remove_option ($intermediate, $option_to_remove)) . "\n";
+my $intermediate_removed = transform_intermediate ($intermediate, 1, $option_to_remove);
 
-print {*STDERR} Dumper (intermediate_to_string (remove_option ($intermediate, $option_to_remove))) . "\n";
+print {*STDERR} Dumper ($intermediate_removed) . "\n";
+
+print {*STDERR} Dumper (intermediate_to_string ($intermediate_removed)) . "\n";
+
+my $option_to_add = shift;
+
+my $intermediate_added = transform_intermediate ($intermediate_removed, 0, $option_to_add);
+
+print {*STDERR} Dumper ($intermediate_added) . "\n";
+
+print {*STDERR} Dumper (intermediate_to_string ($intermediate_added)) . "\n";
 
 #my $value = shift;
 #my $allow_negative = shift;

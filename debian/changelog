@@ -38,6 +38,9 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: update documentation to include
       the notion of the +key[=value] syntax, which makes sense to use if key
       starts with a dash and would be ambiguously interpreted as a removal.
+    - x2goserver/lib/x2goupdateoptionsstring: refactor remove_option
+      subprocedure into a more general transform_intermediate one and add code
+      for the modification/addition case.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
