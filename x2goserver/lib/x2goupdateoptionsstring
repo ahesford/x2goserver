@@ -21,10 +21,11 @@ use strict;
 use warnings;
 
 #use X2Go::Utils qw (is_int);
-use Data::Dumper qw (Dumper);
+use English qw (-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
-use English qw (-no_match_vars);
+use Storable qw (dclone);
+use Data::Dumper qw (Dumper);
 
 # Accepts an option string and returns a reference to an array of hashes
 # (actually hash references) corresponding to the parsed key-value pairs.
@@ -286,6 +287,144 @@ sub intermediate_to_string {
   return $ret;
 }
 
+# Helper for a grep operation on the intermediate options array.
+#
+# Takes the option to remove, the current element and amount of elements left
+# in the array as arguments and returns true if the element is not to be
+# removed, false otherwise.
+sub filter_option_remove {
+  my $ret = 1;
+  my $error_detected = 0;
+  my $to_remove = shift;
+  my $cur_option = shift;
+  my $elems_left = shift;
+
+  if (!((defined ($to_remove)) && (defined ($cur_option)) && (defined ($elems_left)))) {
+    # Undefined values are an error in this context, but erroring out in a
+    # comparison function is... weird, so let's treat such errors as "don't
+    # modify the array".
+    print {*STDERR} "Invalid options passed to removal filter, keeping entry.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    if ('HASH' ne ref ($cur_option)) {
+      print {*STDERR} "Option passed to removal filter is not a hash reference, keeping entry.\n";
+      $error_detected = 1;
+    }
+  }
+
+  if (!($error_detected)) {
+    if (1 < scalar (keys (%{$cur_option}))) {
+      print {*STDERR} "Option passed to removal filter has more than one entry in hash, keeping entry.\n";
+      $error_detected = 1;
+    }
+  }
+
+  my $to_remove_key = undef;
+  my $to_remove_value = undef;
+  my @to_remove_kv = split (/=/smx, $to_remove, 2);
+
+  if (!($error_detected)) {
+    if (2 < scalar (@to_remove_kv)) {
+      print {*STDERR} "Option-to-be-removed string in removal filter has three or more components, this is a bug in $PROGRAM_NAME. Keeping entry.\n";
+      $error_detected = 1;
+    }
+  }
+
+  if (!($error_detected) && (0 < $elems_left)) {
+    $to_remove_key = shift (@to_remove_kv);
+
+    # Key can be undef if splitting failed, e.g., due to an empty input string.
+    # We don't consider this an error, so reset the key to an empty string.
+    if (!(defined ($to_remove_key))) {
+      $to_remove_key = q{};
+    }
+
+    $to_remove_value = shift (@to_remove_kv);
+
+    my $option_key = q{};
+    my $option_value = undef;
+
+    foreach my $tmp_option_key (keys (%{$cur_option})) {
+      $option_key = $tmp_option_key;
+      $option_value = $cur_option->{$tmp_option_key};
+    }
+
+    if ($to_remove_key eq $option_key) {
+      # Okay, we've got a match. But we might have to also check the value...
+      if (defined ($to_remove_value)) {
+        # Yep, value must match, too, but beware of undef values in the current
+        # option entry.
+        if ((defined ($option_value)) && ($to_remove_value eq $option_value)) {
+          # Everything matches, mark for removal.
+          $ret = 0;
+        }
+      }
+      else {
+        $ret = 0;
+      }
+    }
+  }
+
+  return $ret;
+}
+
+# Removes an entry from the intermediate options array.
+#
+# If only a key is specified, removes any entry that matches this key,
+# regardless of its value.
+#
+# If both a key and a value are specified, only matching combinations will be
+# removed from the array. That is, if the array already contains such a key
+# with either no value or a different value, it will be unaffected.
+#
+# Returns a reference to a modified copy of the intermediate options array.
+#
+# On error, returns a reference to undef.
+sub remove_option {
+  my $ret = undef;
+  my $error_detected = 0;
+
+  my $options = shift;
+  my $option = shift;
+
+  if ('ARRAY' ne ref ($options)) {
+    print {*STDERR} 'Invalid options reference type passed (' . ref ($options) . "), erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    if (1 == scalar (@{$options})) {
+      foreach my $entry (@{$options}) {
+        if (!defined ($entry)) {
+          print {*STDERR} "Invalid options array passed, erroring out.\n";
+          $error_detected = 1;
+        }
+      }
+    }
+  }
+
+  if (!($error_detected)) {
+    if (!(defined ($option))) {
+      print {*STDERR} "No or invalid option to be removed passed, erroring out.\n";
+      $error_detected = 1;
+    }
+  }
+
+  if (!($error_detected)) {
+    # Set return value to a *deep copy* of our original array.
+    $ret = dclone ($options);
+
+    my $elements_left = @{$ret};
+
+    # Let the filter function handle the actual work.
+    @{$ret} = grep { filter_option_remove ($option, $_, --$elements_left) } (@{$ret});
+  }
+
+  return $ret;
+}
+
 Getopt::Long::Configure('gnu_getopt', 'no_auto_abbrev');
 
 my $help = 0;
@@ -301,6 +440,12 @@ my $intermediate = parse_options ($options);
 print {*STDERR} Dumper ($intermediate) . "\n";
 
 print {*STDERR} Dumper (intermediate_to_string ($intermediate)) . "\n";
+
+my $option_to_remove = shift;
+
+print {*STDERR} Dumper (remove_option ($intermediate, $option_to_remove)) . "\n";
+
+print {*STDERR} Dumper (intermediate_to_string (remove_option ($intermediate, $option_to_remove))) . "\n";
 
 #my $value = shift;
 #my $allow_negative = shift;
