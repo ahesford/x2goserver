@@ -35,6 +35,9 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
       Perl::Critic in brutal mode.
     - x2goserver/lib/x2goupdateoptionsstring: add functionality for options
       removal.
+    - x2goserver/lib/x2goupdateoptionsstring: update documentation to include
+      the notion of the +key[=value] syntax, which makes sense to use if key
+      starts with a dash and would be ambiguously interpreted as a removal.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

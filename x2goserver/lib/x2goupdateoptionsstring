@@ -477,7 +477,7 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator
 
 =item B<x2goupdateoptionsstring> B<--man>
 
-=item B<x2goupdateoptionsstring> I<options> [B<->]I<key>[B<=>I<value>] ...
+=item B<x2goupdateoptionsstring> I<options> [B<->|B<+>]I<key>[B<=>I<value>] ...
 
 =back
 
@@ -492,10 +492,12 @@ must be provided.
 
 It can either add, remove or replace components.
 
-To add or replace a component, pass I<key>[B<=>I<value>] as a parameter. If the
-options string does not include a B<key> key, it will be appended to the end of
-the options string. If it already exists, either with no value or a different
-value, the component will be replaced with the provided value.
+To add or replace a component, pass I<key>[B<=>I<value>] or
+B<+>I<key>[B<=>I<value>] as a parameter. The latter syntax is useful if I<key>
+starts with a dash and would therefore be interpreted as a removal operation.
+If the options string does not include a B<key> key, it will be appended to the
+end of the options string. If it already exists, either with no value or a
+different value, the component will be replaced with the provided value.
 
 To fully remove a component, pass B<->I<key>. To only remove it if it is set to
 a specific value, pass B<->I<key>B<=>I<value>.
@@ -535,10 +537,10 @@ return
 
  nx/nx,clipboard=both,foo,bar:50
 
-and calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50' 'bar'
+and calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50' '+-bar'
 'foo=gulp' '-clipboard=client'> shall return
 
- nx/nx,clipboard=both,foo=gulp,bar:50
+ nx/nx,clipboard=both,foo=gulp,-bar:50
 
 =head1 AUTHOR
 
