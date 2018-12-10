@@ -41,6 +41,8 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: refactor remove_option
       subprocedure into a more general transform_intermediate one and add code
       for the modification/addition case.
+    - x2goserver/lib/x2goupdateoptionsstring: ignore some very noisy
+      Perl::Critic warnings that we're going to ignore anyway.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
