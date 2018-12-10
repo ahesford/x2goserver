@@ -224,7 +224,7 @@ sub intermediate_to_string {
       }
 
       if ('HASH' ne ref ($entry)) {
-        print {*STDERR} "Entry in array has invalid type (" . ref ($entry) ."), returning undef.\n";
+        print {*STDERR} 'Entry in array has invalid type (' . ref ($entry) ."), returning undef.\n";
         $error_detected = 1;
         last;
       }
