@@ -715,12 +715,12 @@ sub Main {
     }
   }
 
-  if ($debug) {
-    print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
-  }
-
   if (!($error_detected)) {
     my $cur_transform = shift;
+
+    if ($debug) {
+      print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
+    }
 
     # Nasty trick (to some degree): "do"-blocks are not recognized as loops by
     # Perl, but we can wrap the body in another block, which WILL BE recognized
