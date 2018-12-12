@@ -28,6 +28,7 @@ use English qw (-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
 use Storable qw (dclone);
+use Switch qw (fallthrough);
 use Data::Dumper qw (Dumper);
 
 # Accepts an option string and returns a reference to an array of hashes
@@ -613,6 +614,56 @@ sub transform_intermediate {
     }
   }
 
+  return $ret;
+}
+
+# Helper function "interpreting" a transformation string.
+#
+# Takes the raw transformation string as its only parameter.
+#
+# Returns an array reference containing two elements: the transformation mode
+# and a sanitized version of the transformation string, suitable for passing to
+# transform_intermediate ().
+#
+# On error, returns undef.
+sub interpret_transform {
+  my $ret = undef;
+
+  my $transform = shift;
+
+  if (defined ($transform)) {
+    my $mode = 0;
+    my $sanitized_transform = $transform;
+
+    # Check if non-empty, empty transform strings can only mean an
+    # append/modify operation.
+    if ($transform) {
+      switch (substr ($transform, 0, 1)) {
+        case (q{-}) {
+                      # Option starts with a dash, so must be a removal
+                      # operation.
+                      $mode = 1;
+                   }
+        case (q{+}) {
+                      # Options starting with a plus character are add/modify
+                      # operations. The default mode option here is fine, but
+                      # we'll need to strip the initial character.
+                      # Careful: switch-fallthrough, even for the previous
+                      # case(s)!
+                      $sanitized_transform = substr ($sanitized_transform, 1);
+                      last;
+                    }
+        else {
+                      # Everything else does not feature an explicit modifier,
+                      # so we can take the transformation string verbatim.
+                      # No need to actually do anything here, handled by the
+                      # initialization.
+        }
+      }
+    }
+    # Set up return value accordingly.
+    $ret = [ $mode, $sanitized_transform ];
+  }
   return $ret;
 }
 
