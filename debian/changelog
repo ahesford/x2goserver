@@ -52,6 +52,9 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: add debug option and some
       debugging output.
     - x2goserver/lib/x2goupdateoptionsstring: remove dead code.
+    - x2goserver/lib/x2goupdateoptionsstring: update documentation and clarify
+      risks of option parsing. It's better to always use -- to terminate
+      program options parsing when no longer needed.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

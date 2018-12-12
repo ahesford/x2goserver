@@ -822,6 +822,11 @@ different value, the component will be replaced with the provided value.
 To fully remove a component, pass B<->I<key>. To only remove it if it is set to
 a specific value, pass B<->I<key>B<=>I<value>.
 
+You can terminate program options parsing via a standard double-dash (B<-->)
+pseudo-option. It is recommended to always do so if you pass removal
+transformation operations, even if no actual options are used to avoid
+misinterpreting such transformation options as options/flags to the program.
+
 =head1 OPTIONS
 
 =over 8
