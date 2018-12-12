@@ -25,11 +25,18 @@ use warnings;
 
 #use X2Go::Utils qw (is_int);
 use English qw (-no_match_vars);
-use Getopt::Long;
+use Getopt::Long qw (GetOptionsFromArray);
 use Pod::Usage;
 use Storable qw (dclone);
 use Switch qw (fallthrough);
 use Data::Dumper qw (Dumper);
+
+exit (Main (@ARGV));
+
+BEGIN {
+}
+
+# No code past this point should be getting executed!
 
 # Accepts an option string and returns a reference to an array of hashes
 # (actually hash references) corresponding to the parsed key-value pairs.
@@ -661,59 +668,137 @@ sub interpret_transform {
         }
       }
     }
+
     # Set up return value accordingly.
     $ret = [ $mode, $sanitized_transform ];
   }
+
   return $ret;
 }
 
-Getopt::Long::Configure('gnu_getopt', 'no_auto_abbrev');
-
-my $help = 0;
-my $man = 0;
-GetOptions('help|?|h' => \$help, 'man' => \$man) or pod2usage(2);
-pod2usage(1) if $help;
-pod2usage(-verbose => 2, -exitval => 0) if $man;
-
-my $options = shift;
-
-my $intermediate = parse_options ($options);
-
-print {*STDERR} Dumper ($intermediate) . "\n";
-
-print {*STDERR} Dumper (intermediate_to_string ($intermediate)) . "\n";
-
-my $option_to_remove = shift;
-
-my $intermediate_removed = transform_intermediate ($intermediate, 1, $option_to_remove);
-
-print {*STDERR} Dumper ($intermediate_removed) . "\n";
-
-print {*STDERR} Dumper (intermediate_to_string ($intermediate_removed)) . "\n";
-
-my $option_to_add = shift;
-
-my $intermediate_added = transform_intermediate ($intermediate_removed, 0, $option_to_add);
-
-print {*STDERR} Dumper ($intermediate_added) . "\n";
-
-print {*STDERR} Dumper (intermediate_to_string ($intermediate_added)) . "\n";
-
-#my $value = shift;
-#my $allow_negative = shift;
+# Main function, no code outside of it shall be executed.
 #
-#if (!(defined ($value))) {
-#  print {*STDERR} "No value passed in, assuming empty string.\n";
-#  $value = q{};
-#}
-#
-#if (!(defined ($allow_negative))) {
-#  $allow_negative = 0;
-#}
-#
-#exit is_int ($value);
+# Expects @ARGV to be passed in.
+sub Main {
+  my $error_detected = 0;
 
-exit 1;
+  Getopt::Long::Configure ('gnu_getopt', 'no_auto_abbrev', 'pass_through');
+
+  my $help = 0;
+  my $man = 0;
+  GetOptionsFromArray (\@_, 'help|?|h' => \$help, 'man' => \$man) or pod2usage (2);
+
+  if ($help) {
+    pod2usage (1);
+  }
+
+  if ($man) {
+    pod2usage (-verbose => 2, -exitval => 3);
+  }
+
+  my $options = shift;
+
+  if (!(defined ($options))) {
+    print {*STDERR} "No or invalid options string given, aborting.\n";
+    $error_detected = 4;
+  }
+
+  my $intermediate = undef;
+
+  if (!($error_detected)) {
+    $intermediate = parse_options ($options);
+
+    if (!(defined ($intermediate))) {
+      print {*STDERR} "Unable to parse option string, aborting.\n";
+      $error_detected = 5;
+    }
+  }
+
+  if (!($error_detected)) {
+    my $cur_transform = shift;
+
+    # Nasty trick (to some degree): "do"-blocks are not recognized as loops by
+    # Perl, but we can wrap the body in another block, which WILL BE recognized
+    # as a loop (one, that only executes once), oddly enough.
+    do {{
+      # Shall only be relevant for the first run of the loop.
+      if (!(defined ($cur_transform))) {
+        print {*STDERR} "No transformation passed, aborting.\n";
+        $error_detected = 6;
+        last;
+      }
+
+      my $interpreted_transform_ref = interpret_transform ($cur_transform);
+
+      if (!(defined ($interpreted_transform_ref))) {
+        print {*STDERR} "Invalid transformation passed, aborting.\n";
+        $error_detected = 7;
+        last;
+      }
+
+      my ($transform_mode, $sanitized_transform) = @{$interpreted_transform_ref};
+
+      $intermediate = transform_intermediate ($intermediate, $transform_mode, $sanitized_transform);
+
+      if (!(defined ($intermediate))) {
+        print {*STDERR} "Error while transforming intermediate representation, aborting.\n";
+        $error_detected = 7;
+        last;
+      }
+    }} while (defined ($cur_transform = shift));
+  }
+
+  my $out = undef;
+
+  if (!($error_detected)) {
+    $out = intermediate_to_string ($intermediate);
+
+    if (!(defined ($out))) {
+      print {*STDERR} "Unable to transform intermediate back into string, aborting.\n";
+      $error_detected = 8;
+    }
+  }
+
+  if (!($error_detected)) {
+    print {*STDOUT} $out . "\n";
+  }
+
+  #print {*STDERR} Dumper ($intermediate) . "\n";
+
+  #print {*STDERR} Dumper (intermediate_to_string ($intermediate)) . "\n";
+
+  #my $option_to_remove = shift;
+
+  #my $intermediate_removed = transform_intermediate ($intermediate, 1, $option_to_remove);
+
+  #print {*STDERR} Dumper ($intermediate_removed) . "\n";
+
+  #print {*STDERR} Dumper (intermediate_to_string ($intermediate_removed)) . "\n";
+
+  #my $option_to_add = shift;
+
+  #my $intermediate_added = transform_intermediate ($intermediate_removed, 0, $option_to_add);
+
+  #print {*STDERR} Dumper ($intermediate_added) . "\n";
+
+  #print {*STDERR} Dumper (intermediate_to_string ($intermediate_added)) . "\n";
+
+  #my $value = shift;
+  #my $allow_negative = shift;
+  #
+  #if (!(defined ($value))) {
+  #  print {*STDERR} "No value passed in, assuming empty string.\n";
+  #  $value = q{};
+  #}
+  #
+  #if (!(defined ($allow_negative))) {
+  #  $allow_negative = 0;
+  #}
+  #
+  #exit is_int ($value);
+
+  return $error_detected;
+}
 
 __END__
 
