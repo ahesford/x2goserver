@@ -57,6 +57,8 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
       program options parsing when no longer needed.
     - x2goserver/lib/x2goupdateoptionsstring: don't debug-output the
       intermediate representation if we know that parsing failed.
+    - x2goserver/lib/x2goupdateoptionsstring: fix debug string and add another
+      one dumping the raw options string.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

@@ -700,13 +700,17 @@ sub Main {
   my $options = shift;
 
   if (!(defined ($options))) {
-    print {*STDERR} "No or invalid options string given, aborting.\n";
+    print {*STDERR} "No options string given, aborting.\n";
     $error_detected = 4;
   }
 
   my $intermediate = undef;
 
   if (!($error_detected)) {
+    if ($debug) {
+      print {*STDERR} 'Fetched options string as: ' . Dumper (\$options);
+    }
+
     $intermediate = parse_options ($options);
 
     if (!(defined ($intermediate))) {
