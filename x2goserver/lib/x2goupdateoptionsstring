@@ -780,40 +780,6 @@ sub Main {
     print {*STDOUT} $out . "\n";
   }
 
-  #print {*STDERR} Dumper ($intermediate) . "\n";
-
-  #print {*STDERR} Dumper (intermediate_to_string ($intermediate)) . "\n";
-
-  #my $option_to_remove = shift;
-
-  #my $intermediate_removed = transform_intermediate ($intermediate, 1, $option_to_remove);
-
-  #print {*STDERR} Dumper ($intermediate_removed) . "\n";
-
-  #print {*STDERR} Dumper (intermediate_to_string ($intermediate_removed)) . "\n";
-
-  #my $option_to_add = shift;
-
-  #my $intermediate_added = transform_intermediate ($intermediate_removed, 0, $option_to_add);
-
-  #print {*STDERR} Dumper ($intermediate_added) . "\n";
-
-  #print {*STDERR} Dumper (intermediate_to_string ($intermediate_added)) . "\n";
-
-  #my $value = shift;
-  #my $allow_negative = shift;
-  #
-  #if (!(defined ($value))) {
-  #  print {*STDERR} "No value passed in, assuming empty string.\n";
-  #  $value = q{};
-  #}
-  #
-  #if (!(defined ($allow_negative))) {
-  #  $allow_negative = 0;
-  #}
-  #
-  #exit is_int ($value);
-
   return $error_detected;
 }
 
