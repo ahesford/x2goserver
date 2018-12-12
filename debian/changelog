@@ -49,6 +49,8 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: write wrapper that handles
       program options, creates intermediate, passes through transform chains,
       reconverts to a string and prints it.
+    - x2goserver/lib/x2goupdateoptionsstring: add debug option and some
+      debugging output.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

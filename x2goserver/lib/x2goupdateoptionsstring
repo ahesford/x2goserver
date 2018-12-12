@@ -686,7 +686,8 @@ sub Main {
 
   my $help = 0;
   my $man = 0;
-  GetOptionsFromArray (\@_, 'help|?|h' => \$help, 'man' => \$man) or pod2usage (2);
+  my $debug = 0;
+  GetOptionsFromArray (\@_, 'help|?|h' => \$help, 'man' => \$man, 'debug|d' => \$debug) or pod2usage (2);
 
   if ($help) {
     pod2usage (1);
@@ -714,6 +715,10 @@ sub Main {
     }
   }
 
+  if ($debug) {
+    print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
+  }
+
   if (!($error_detected)) {
     my $cur_transform = shift;
 
@@ -728,6 +733,10 @@ sub Main {
         last;
       }
 
+      if ($debug) {
+        print {*STDERR} 'Parsing current raw transformation option: ' . Dumper ($cur_transform);
+      }
+
       my $interpreted_transform_ref = interpret_transform ($cur_transform);
 
       if (!(defined ($interpreted_transform_ref))) {
@@ -738,12 +747,20 @@ sub Main {
 
       my ($transform_mode, $sanitized_transform) = @{$interpreted_transform_ref};
 
+      if ($debug) {
+        print {*STDERR} 'Parsed raw transformation option into mode \'' . $transform_mode . '\' and sanitized transform option \'' . Dumper ($sanitized_transform) . "'\n";
+      }
+
       $intermediate = transform_intermediate ($intermediate, $transform_mode, $sanitized_transform);
 
       if (!(defined ($intermediate))) {
         print {*STDERR} "Error while transforming intermediate representation, aborting.\n";
         $error_detected = 7;
         last;
+      }
+
+      if ($debug) {
+        print {*STDERR} 'Dumping transformed intermediate array: ' . Dumper ($intermediate);
       }
     }} while (defined ($cur_transform = shift));
   }
@@ -814,7 +831,7 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator
 
 =item B<x2goupdateoptionsstring> B<--man>
 
-=item B<x2goupdateoptionsstring> I<options> [B<->|B<+>]I<key>[B<=>I<value>] ...
+=item B<x2goupdateoptionsstring> [B<--debug>|B<-d>] [B<-->] [B<->|B<+>]I<key>[B<=>I<value>] ...
 
 =back
 
@@ -823,9 +840,9 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator
 B<x2goupdateoptionsstring> is a utility for manipulating options strings as
 passed to X2Go Agent/NX Agent.
 
-Called it with the options string as the first parameter and the options you
-want to manipulate as additional parameters. At least one additional parameter
-must be provided.
+Call it with optional flags, the options string as the first parameter and the
+options you want to manipulate as additional parameters. At least one
+additional parameter must be provided.
 
 It can either add, remove or replace components.
 
@@ -850,6 +867,10 @@ Print a brief help message and exits.
 =item B<--man>
 
 Prints the manual page and exits.
+
+=item B<--debug>|B<-d>
+
+Enables noisy debug output.
 
 =back
 
