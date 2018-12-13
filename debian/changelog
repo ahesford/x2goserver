@@ -75,6 +75,7 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver/Makefile: add x2goupdateoptionsstring POD-to-man-page
       handling.
     - x2goserver/Makefile: don't quote POD_SCRIPTS, because of... make.
+    - x2goserver/Makefile: install man1 files and dirs, too.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
