@@ -59,6 +59,10 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
       intermediate representation if we know that parsing failed.
     - x2goserver/lib/x2goupdateoptionsstring: fix debug string and add another
       one dumping the raw options string.
+    - x2goserver/lib/x2goupdateoptionsstring: fix parsing of transformation
+      strings by replacing the switch statement with if statements.
+      "Fallthrough" doesn't mean the same thing as in C, apparently. Buyer
+      beware.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
