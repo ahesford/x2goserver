@@ -63,6 +63,11 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
       strings by replacing the switch statement with if statements.
       "Fallthrough" doesn't mean the same thing as in C, apparently. Buyer
       beware.
+    - x2goserver/lib/x2goupdateoptionsstring: handle options in a more robust
+      way. First, we scan for unknown options and error out. If we find a
+      separating "--" pseudo-option, we keep that in mind and will not process
+      further options next time. Do this for every run of the transformation
+      loop.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

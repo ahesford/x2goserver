@@ -668,11 +668,107 @@ sub interpret_transform {
   return $ret;
 }
 
+# Helper function handling unknown options or ignoring the well-known
+# separator. It scans for options until hitting the first non-option entry.
+#
+# Takes an array reference with unparsed options and a boolean value denoting
+# whether the separating "--" pseudo-option should be skipped or not as its
+# parameters.
+#
+# Returns an array reference containing a boolean value denoting whether a
+# separating "--" pseudo-option has been found *and* skipping it was requested,
+# and the sanitized version of the original array reference.
+#
+# On error, returns undef.
+sub sanitize_program_options {
+  my $ret = undef;
+  my $error_detected = 0;
+  my $found_separator = 0;
+
+  my $args = shift;
+  my $skip_separator = shift;
+
+  if ((!(defined ($args))) || ('ARRAY' ne ref ($args))) {
+    print {*STDERR} "Invalid argument array reference passed to program sanitization helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    if (!(defined ($skip_separator))) {
+      print {*STDERR} "No skip-separator parameter passed to program sanitization helper, erroring out.\n";
+      $error_detected = 1;
+    }
+  }
+
+  if (!($error_detected)) {
+    $args = dclone ($args);
+
+    my $opt = 1;
+    for (my $cur_arg = shift (@{$args}); ((defined ($cur_arg)) && ($opt)); $cur_arg = shift (@{$args})) {
+      if (q{-} eq substr ($cur_arg, 0, 1)) {
+        # Looks like an option so far. Let's continue scanning.
+
+        if (1 == length ($cur_arg)) {
+          # But isn't a real option. Add back to argument list and stop
+          # processing.
+          unshift (@{$args}, $cur_arg);
+          last;
+        }
+        elsif ((2 == length ($cur_arg)) && (q{-} eq substr ($cur_arg, 1, 1))) {
+          if ($skip_separator) {
+            # Found separating "--" pseudo-option, but skipping requested. Only
+            # set the boolean value for our return value.
+            $found_separator = 1;
+          }
+          else {
+            # Not skipping separating "--" pseudo-option - i.e., we'll treat this
+            # as a non-option.
+            unshift (@{$args}, $cur_arg);
+            last;
+          }
+        }
+        else {
+          # Otherwise this is an actual option.
+          # We either want to error out, if no previous separating "--"
+          # pseudo-option was found, or ignore it.
+          # The weird 0 + (...) construct here is forcing an arithmetic
+          # context. Otherwise, the interpreter might use a string context,
+          # in which the value "0" is dualvar'd to both an arithmetic 0 and
+          # an empty string.
+          my $separator_found = (0 + ((!($skip_separator)) | ($found_separator)));
+          if ($separator_found) {
+            # Put back into array. We'll handle this as not-an-option.
+            unshift (@{$args}, $cur_arg);
+            last;
+          }
+          else {
+            print {*STDERR} "Unknown option encountered: " . $cur_arg ."; erroring out.\n";
+            $error_detected = 1;
+            last;
+          }
+        }
+      }
+      else {
+        # Definitely not an option, add back to array.
+        unshift (@{$args}, $cur_arg);
+        last;
+      }
+    }
+  }
+
+  if (!($error_detected)) {
+    $ret = [ $found_separator, $args ];
+  }
+
+  return $ret;
+}
+
 # Main function, no code outside of it shall be executed.
 #
 # Expects @ARGV to be passed in.
 sub Main {
   my $error_detected = 0;
+  my $found_separator = 0;
 
   Getopt::Long::Configure ('gnu_getopt', 'no_auto_abbrev', 'pass_through');
 
@@ -689,11 +785,26 @@ sub Main {
     pod2usage (-verbose => 2, -exitval => 3);
   }
 
-  my $options = shift;
+  my $sanitized_options = sanitize_program_options (\@_, (!($found_separator)));
 
-  if (!(defined ($options))) {
-    print {*STDERR} "No options string given, aborting.\n";
+  if (!(defined ($sanitized_options))) {
+    pod2usage (-exitval => 'NOEXIT');
     $error_detected = 4;
+  }
+
+  my $options = undef;
+
+  if (!($error_detected)) {
+    $found_separator |= (0 + shift (@{$sanitized_options}));
+    $sanitized_options = shift (@{$sanitized_options});
+    @_ = @{$sanitized_options};
+
+    $options = shift;
+
+    if (!(defined ($options))) {
+      print {*STDERR} "No options string given, aborting.\n";
+      $error_detected = 5;
+    }
   }
 
   my $intermediate = undef;
@@ -707,11 +818,24 @@ sub Main {
 
     if (!(defined ($intermediate))) {
       print {*STDERR} "Unable to parse option string, aborting.\n";
-      $error_detected = 5;
+      $error_detected = 6;
     }
   }
 
   if (!($error_detected)) {
+    $sanitized_options = sanitize_program_options (\@_, (!($found_separator)));
+
+    if (!(defined ($sanitized_options))) {
+      pod2usage (-exitval => 'NOEXIT');
+      $error_detected = 7;
+    }
+  }
+
+  if (!($error_detected)) {
+    $found_separator |= (0 + shift (@{$sanitized_options}));
+    $sanitized_options = shift (@{$sanitized_options});
+    @_ = @{$sanitized_options};
+
     my $cur_transform = shift;
 
     if ($debug) {
@@ -719,13 +843,16 @@ sub Main {
     }
 
     # Nasty trick (to some degree): "do"-blocks are not recognized as loops by
-    # Perl, but we can wrap the body in another block, which WILL BE recognized
-    # as a loop (one, that only executes once), oddly enough.
-    do {{
+    # Perl, but we could wrap the body in another block, which WILL BE recognized
+    # as a loop (one, that only executes once), oddly enough. However, using
+    # "last" won't work in such a situation, but rather behave like "next".
+    # Worse, the condition will also not be checked in such a case.
+    # Thus, we'd better use a real loop.
+    while (1) {
       # Shall only be relevant for the first run of the loop.
       if (!(defined ($cur_transform))) {
         print {*STDERR} "No transformation passed, aborting.\n";
-        $error_detected = 6;
+        $error_detected = 8;
         last;
       }
 
@@ -737,7 +864,7 @@ sub Main {
 
       if (!(defined ($interpreted_transform_ref))) {
         print {*STDERR} "Invalid transformation passed, aborting.\n";
-        $error_detected = 7;
+        $error_detected = 9;
         last;
       }
 
@@ -751,14 +878,27 @@ sub Main {
 
       if (!(defined ($intermediate))) {
         print {*STDERR} "Error while transforming intermediate representation, aborting.\n";
-        $error_detected = 7;
+        $error_detected = 10;
         last;
       }
 
       if ($debug) {
         print {*STDERR} 'Dumping transformed intermediate array: ' . Dumper ($intermediate);
       }
-    }} while (defined ($cur_transform = shift));
+
+      # Skip pseudo-option, if necessary.
+      $sanitized_options = sanitize_program_options (\@_, (!($found_separator)));
+
+      if (!(defined ($sanitized_options))) {
+        pod2usage (-exitval => 'NOEXIT');
+        $error_detected = 11;
+        last;
+      }
+
+      $found_separator |= (0 + shift (@{$sanitized_options}));
+      $sanitized_options = shift (@{$sanitized_options});
+      @_ = @{$sanitized_options};
+    } continue { last unless (defined ($cur_transform = shift)) };
   }
 
   my $out = undef;
@@ -768,7 +908,7 @@ sub Main {
 
     if (!(defined ($out))) {
       print {*STDERR} "Unable to transform intermediate back into string, aborting.\n";
-      $error_detected = 8;
+      $error_detected = 12;
     }
   }
 
