@@ -898,6 +898,7 @@ fi
 %{_libdir}/x2go/x2gosyslog
 %{_sbindir}/x2go*
 %{_mandir}/man8/x2go*.8*
+%{_mandir}/man1/x2go*.1*
 %exclude %{_mandir}/man8/x2gofm.8*
 %exclude %{_mandir}/man8/x2goprint.8*
 %exclude %{_mandir}/man8/x2goserver-run-extensions.8*

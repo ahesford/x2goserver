@@ -83,6 +83,7 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     + Install x2goupdateoptionsstring man page.
   * x2goserver.spec:
     + Install new x2goisint wrapper.
+    + Install section 1 man pages.
   * debian/x2goserver.install:
     + Install bin/x2goupdateoptionsstring.
 
