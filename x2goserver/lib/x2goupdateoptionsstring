@@ -767,6 +767,7 @@ sub sanitize_program_options {
 #
 # Expects @ARGV to be passed in.
 sub Main {
+  my @program_arguments = @_;
   my $error_detected = 0;
   my $found_separator = 0;
 
@@ -775,7 +776,7 @@ sub Main {
   my $help = 0;
   my $man = 0;
   my $debug = 0;
-  GetOptionsFromArray (\@_, 'help|?|h' => \$help, 'man' => \$man, 'debug|d' => \$debug) or pod2usage (2);
+  GetOptionsFromArray (\@program_arguments, 'help|?|h' => \$help, 'man' => \$man, 'debug|d' => \$debug) or pod2usage (2);
 
   if ($help) {
     pod2usage (1);
@@ -785,7 +786,7 @@ sub Main {
     pod2usage (-verbose => 2, -exitval => 3);
   }
 
-  my $sanitized_options = sanitize_program_options (\@_, (!($found_separator)));
+  my $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
 
   if (!(defined ($sanitized_options))) {
     pod2usage (-exitval => 'NOEXIT');
@@ -797,9 +798,9 @@ sub Main {
   if (!($error_detected)) {
     $found_separator |= (0 + shift (@{$sanitized_options}));
     $sanitized_options = shift (@{$sanitized_options});
-    @_ = @{$sanitized_options};
+    @program_arguments = @{$sanitized_options};
 
-    $options = shift;
+    $options = shift (@program_arguments);
 
     if (!(defined ($options))) {
       print {*STDERR} "No options string given, aborting.\n";
@@ -823,7 +824,7 @@ sub Main {
   }
 
   if (!($error_detected)) {
-    $sanitized_options = sanitize_program_options (\@_, (!($found_separator)));
+    $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
 
     if (!(defined ($sanitized_options))) {
       pod2usage (-exitval => 'NOEXIT');
@@ -834,9 +835,9 @@ sub Main {
   if (!($error_detected)) {
     $found_separator |= (0 + shift (@{$sanitized_options}));
     $sanitized_options = shift (@{$sanitized_options});
-    @_ = @{$sanitized_options};
+    @program_arguments = @{$sanitized_options};
 
-    my $cur_transform = shift;
+    my $cur_transform = shift (@program_arguments);
 
     if ($debug) {
       print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
@@ -887,7 +888,7 @@ sub Main {
       }
 
       # Skip pseudo-option, if necessary.
-      $sanitized_options = sanitize_program_options (\@_, (!($found_separator)));
+      $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
 
       if (!(defined ($sanitized_options))) {
         pod2usage (-exitval => 'NOEXIT');
@@ -897,8 +898,8 @@ sub Main {
 
       $found_separator |= (0 + shift (@{$sanitized_options}));
       $sanitized_options = shift (@{$sanitized_options});
-      @_ = @{$sanitized_options};
-    } continue { last unless (defined ($cur_transform = shift)) };
+      @program_arguments = @{$sanitized_options};
+    } continue { last unless (defined ($cur_transform = shift (@program_arguments))) };
   }
 
   my $out = undef;

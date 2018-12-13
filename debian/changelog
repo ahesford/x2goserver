@@ -68,6 +68,7 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
       separating "--" pseudo-option, we keep that in mind and will not process
       further options next time. Do this for every run of the transformation
       loop.
+    - x2goserver/lib/x2goupdateoptionsstring: fix another Perl::Critic nit.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
