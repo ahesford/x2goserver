@@ -23,4 +23,5 @@ debian/tmp/usr/share/man/man8/x2gosuspend-session.8*
 debian/tmp/usr/share/man/man8/x2goterminate-session.8*
 debian/tmp/usr/share/man/man8/x2goumount-session.8*
 debian/tmp/usr/share/man/man8/x2goumount_session.8*
+debian/tmp/usr/share/man/man1/x2goupdateoptionsstring.1*
 debian/tmp/usr/share/man/man8/x2goversion.8*
