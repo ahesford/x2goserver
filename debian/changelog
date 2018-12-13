@@ -72,6 +72,8 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: move into x2goserver/bin, since
       it's really a standalone program and also useful for non-X2Go-internal
       usage.
+    - x2goserver/Makefile: add x2goupdateoptionsstring POD-to-man-page
+      handling.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
