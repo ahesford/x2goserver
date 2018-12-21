@@ -211,6 +211,8 @@ COLORDEPTH="$(awk '{split($0,a,"-depth_"); print a[2]}' <<< "${X2GO_TYPE}")"
 SESSION_TYPE='D'
 NOEXITPARAM=''
 
+AGENTBIN=x2goagent
+
 if [[ "${X2GO_STYPE}" = 'R' ]]; then
 	SESSION_TYPE='R'
 elif [[ "${X2GO_STYPE}" = 'P' ]]; then
@@ -218,6 +220,9 @@ elif [[ "${X2GO_STYPE}" = 'P' ]]; then
 	NOEXITPARAM='-norootlessexit'
 elif [[ "${X2GO_STYPE}" = 'S' ]]; then
 	SESSION_TYPE='S'
+elif [[ "${X2GO_STYPE}" = 'K' ]]; then
+	SESSION_TYPE='K'
+	AGENTBIN='x2gokdrive'
 fi
 
 if [[ -z "${X2GO_CLIENT}" ]]; then
@@ -462,9 +467,9 @@ if [[ "${X2GO_STYPE}" = 'S' ]]; then
 	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "started nxagent: NX_TEMP=/tmp x2goagent X2GO_NXAGENT_OPTIONS ('${X2GO_NXAGENT_OPTIONS}') NOLISTOPT ('${NOLISTOPT}') X2GODPIOPTION_ ('${X2GODPIOPTION_}') -SESSION_TYPE ('-${SESSION_TYPE}') -auth \"XAUTHORITY\" ('\"${XAUTHORITY}\"') -shadow SHADOW_DESKTOP ('${SHADOW_DESKTOP}') -shadowmode SHADOW_MODE ('${SHADOW_MODE}') agent_geometry ('${agent_geometry}') -name \"SESSION_WINDOW_TITLE\" ('\"${SESSION_WINDOW_TITLE}\"') \"NX_AGENT\" ('\"${NX_AGENT}\"') 2>\"SESSION_LOG\" ('\"${SESSION_LOG}\"') &"
 	NX_TEMP='/tmp' x2goagent ${X2GO_NXAGENT_OPTIONS} ${NOLISTOPT} ${X2GODPIOPTION_} -${SESSION_TYPE} -auth "${XAUTHORITY}" -shadow ${SHADOW_DESKTOP} -shadowmode ${SHADOW_MODE} ${agent_geometry} -name "${SESSION_WINDOW_TITLE}" "${NX_AGENT}" 2>"${SESSION_LOG}" &
 else
-	# set NX_TEMP to /tmp, make sure x2goagent starts when pam_tmpdir.so is in use
+	# set NX_TEMP to /tmp, make sure agent starts when pam_tmpdir.so is in use
 	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "started nxagent: NX_TEMP=/tmp x2goagent X2GO_NXAGENT_OPTIONS ('${X2GO_NXAGENT_OPTIONS}') NOLISTOPT ('${NOLISTOPT}') X2GODPIOPTION_ ('${X2GODPIOPTION_}') XDMCPPOPT ('${XDMCPOPT}') -SESSION_TYPE ('-${SESSION_TYPE}') NOEXITPARAM ('${NOEXITPARAM}') -auth \"XAUTHORITY\" ('\"${XAUTHORITY}\"') agent_geometry ('${agent_geometry}') -name \"SESSION_WINDOW_TITLE\" ('\"${SESSION_WINDOW_TITLE}\"') \"NX_AGENT\" ('\"${NX_AGENT}\"') 2>\"SESSION_LOG\" ('\"${SESSION_LOG}\"') &"
-	NX_TEMP='/tmp' x2goagent ${X2GO_NXAGENT_OPTIONS} ${NOLISTOPT} ${X2GODPIOPTION_} ${XDMCPOPT} -${SESSION_TYPE} ${NOEXITPARAM} -auth "${XAUTHORITY}" ${agent_geometry} -name "${SESSION_WINDOW_TITLE}" "${NX_AGENT}" 2>"${SESSION_LOG}" &
+	NX_TEMP='/tmp' ${AGENTBIN} ${X2GO_NXAGENT_OPTIONS} ${NOLISTOPT} ${X2GODPIOPTION_} ${XDMCPOPT} -${SESSION_TYPE} ${NOEXITPARAM} -auth "${XAUTHORITY}" ${agent_geometry} -name "${SESSION_WINDOW_TITLE}" "${NX_AGENT}" 2>"${SESSION_LOG}" &
 fi
 
 ln -s -- "${SESSION_DIR}" "${X2GO_ROOT}/C-${SESSION_NAME}"

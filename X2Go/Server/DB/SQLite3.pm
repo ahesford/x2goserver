@@ -682,7 +682,7 @@ sub check_user
 	$realuser =~ s/\\//;
 
 	# perform the user check
-	$user =~ s/($realuser-[0-9]{2,}-[0-9]{10,}_st(D|R).*|.*-[0-9]{2,}-[0-9]{10,}_stS(0|1)XSHAD$realuser.*)/$realuser/;
+	$user =~ s/($realuser-[0-9]{2,}-[0-9]{10,}_st(D|R|K).*|.*-[0-9]{2,}-[0-9]{10,}_stS(0|1)XSHAD$realuser.*)/$realuser/;
 	$user eq $realuser or die "$realuser is not authorized";
 }
 

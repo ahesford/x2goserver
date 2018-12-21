@@ -93,6 +93,10 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
   * debian/x2goserver.install:
     + Install bin/x2goupdateoptionsstring.
 
+  [ Oleksandr Shneyder ]
+  * New upstream version (4.1.0.4):
+    - Add support for X2Go KDrive.
+
   [ Tom Ruzicka ]
   * debian/po: Add Czech debconf translation.
 
