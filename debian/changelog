@@ -5,7 +5,7 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
     - Fix version number in VERSION.x2goserver-desktopsharing.
     - x2goserver-x2goagent: Drop x2goagent.keyboard file.
     - x2goversion: Fix situations where ${compfile} contains a
-      non-absolute path (e.g. it contains '../').
+      non-absolute path (e.g. it contains '../'). (Fixes: #1357).
   * debian/x2goserver.postinst:
     + Drop duplicate sourcing of debconf includes.
 
