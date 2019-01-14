@@ -1,0 +1,279 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or https://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: x2goserver@packages.debian.org\n"
+"POT-Creation-Date: 2018-11-14 10:45+0100\n"
+"PO-Revision-Date: 2019-01-14 11:37+0100\n"
+"Last-Translator: Tom Ruzicka <tr3027@seznam.cz>\n"
+"Language: cs_CZ\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
+"X-Language: cs_CZ\n"
+"X-Source-Language: C\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.0.7\n"
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:1001
+msgid "X2Go Server / PostgreSQL Upgrade"
+msgstr "Aktualizace X2Go Server / PostgreSQL"
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:1001
+msgid ""
+"You have configured X2Go Server with PostgreSQL as session DB backend and "
+"you are upgrading x2goserver from a version minor to 3.1.0.0."
+msgstr ""
+"Váš X2Go Server používá pro ukládání informací o X2Go relacích databázový "
+"server PostgreSQL a pokoušíte se aktualizovat x2goserver z verze nižší než "
+"3.1.0.0."
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:1001
+msgid ""
+"Please follow these PostgreSQL DB upgrade instructions before you continue "
+"using your X2Go Server: /usr/share/doc/x2goserver/README.upgrade-pgsql-"
+"database.gz"
+msgstr ""
+"Před dalším používáním X2Go Server prosím postupujte podle následujících "
+"instrukcí pro aktualizací databáze: /usr/share/doc/x2goserver/README.upgrade-"
+"pgsl-database.gz"
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:2001
+msgid "X2Go Server Upgrade"
+msgstr "Aktualizace X2Go Server"
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:2001
+msgid ""
+"You are upgrading from an X2Go Server version (< 4.1.0.0). Between 4.1.0.0 "
+"and 4.0.0.x the package structure has undergone a major change."
+msgstr ""
+"Aktualizujete X2Go Server z verze nižší než 4.1.0.0. Od verze 4.0.0.x došlo "
+"v balíčku k výrazným změnám."
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:2001
+msgid ""
+"Note that most of the Perl code in X2Go Server has been moved into its own "
+"Perl API X2Go::Server."
+msgstr ""
+"Většina X2Go Server kódu psaném v Perlu byla přesunuta do nového Perl API "
+"X2Go::Server."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:2001
+msgid "Create group for X2Go Desktop Sharing now?"
+msgstr "Chcete nyní vytvořit skupinu pro X2Go Desktop Sharing?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:2001
+msgid ""
+"In X2Go Desktop Sharing users gain the privilege to share one another's X2Go/"
+"X11 desktop session by being members of a common POSIX group. The POSIX "
+"group being used for this can be configured system-wide and on a per user "
+"basis."
+msgstr ""
+"X2Go Desktop Sharing umožňuje uživatelům na základě členství ve standardní "
+"uživatelské skupině sdílet X2Go/X11 relace ostatních uživatelů. Skupinu, jež "
+"toto oprávnění bude poskytovat, lze nastavit centrálně pro celý systém, ale "
+"také zvlášť pro každého uživatele."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:2001
+msgid ""
+"In X2Go Desktop Sharing's user configuration you can adjust what group to "
+"use for this later on. Here, you are asked for the system-wide default."
+msgstr ""
+"V konfiguraci X2Go Desktop Sharing uživatele můžete zvolit skupinu pro "
+"sdílení později. Zde zadejte výchozí systémovou skupinu."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:2001
+msgid ""
+"If this group is not created now, you should assign this desktop sharing "
+"privilege to an already existing group on the next screen."
+msgstr ""
+"Není-li tato skupina vytvořena, měli byste oprávnění X2Go Desktop Sharing na "
+"další obrazovce přiřadit již existující skupině."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:2001
+msgid ""
+"If this group is not created / not assigned, users will not be able to share "
+"X2Go/X11 desktop sessions with each other."
+msgstr ""
+"Pokud tato skupina neexistuje nebo není přiřazena, uživatelé nebudou mít "
+"možnost sdílet své X2Go/X11 relace s ostatními."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:3001
+msgid "Use already existing groups for X2Go Desktop Sharing?"
+msgstr "Chcete pro X2Go Desktop Sharing použít již existující skupiny?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:3001
+msgid ""
+"If a group appropriate for being assigned the desktop sharing privilege has "
+"already been created (e.g. in an LDAP user/group database) then you can "
+"specify this group name on the next screen."
+msgstr ""
+"Pokud už je skupina pro X2Go Desktop Sharing oprávnění vytvořena (např. v "
+"LDAP), můžete ji zadat na příští obrazovce."
+
+#. Type: string
+#. Description
+#: ../x2goserver-desktopsharing.templates:4001
+msgid "Assign X2Go Desktop Sharing privilege to POSIX group:"
+msgstr "Přiřadit X2Go Desktop Sharing oprávnění skupině:"
+
+#. Type: string
+#. Description
+#: ../x2goserver-desktopsharing.templates:4001
+msgid ""
+"Please specify the name of the POSIX group that you want to assign the X2Go "
+"Desktop Sharing privilege to."
+msgstr ""
+"Prosím zadejte název skupiny, které chcete přiřadit oprávnění X2Go Desktop "
+"Sharing."
+
+#. Type: string
+#. Description
+#: ../x2goserver-desktopsharing.templates:4001
+msgid "If you leave this empty, the \"root\" group will be used."
+msgstr "Pokud nic nezadáte, použije se skupina \"root\"."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:5001
+msgid "Delete the group that was formerly used for this?"
+msgstr "Smazat dříve použitou skupinu?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:5001
+msgid "The group for the X2Go Desktop Sharing privilege has been modified."
+msgstr "Skupina s oprávněním X2Go Desktop Sharing byla změněna."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:5001
+msgid ""
+"Please specify whether the old group should be deleted. If unsure, keep the "
+"formerly used group and manually investigate later."
+msgstr ""
+"Prosím vyberte, zda má být dříve použitá skupina odstraněna. Pokud si nejste "
+"jistí, nemažte ji."
+
+#. Type: error
+#. Description
+#: ../x2goserver-desktopsharing.templates:6001
+msgid "Non-existing group"
+msgstr "Neexistující skupina"
+
+#. Type: error
+#. Description
+#: ../x2goserver-desktopsharing.templates:6001
+msgid ""
+"The given group does not exist on this system. You should specify an already "
+"existing group."
+msgstr ""
+"Zadaná skupina v systému neexistuje. Prosím zadejte již existující skupinu."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:7001
+msgid "Auto-start X2Go Desktop Sharing applet on desktop session startup?"
+msgstr "Spouštět X2Go Desktop Sharing applet automaticky při spuštění relace?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:7001
+msgid ""
+"For an X2Go/X11 desktop session to be accessible via X2Go Desktop Sharing, "
+"the X2Go Desktop Sharing applet needs to be running. It advertises the users "
+"X2Go/X11 session through an access controlled socket to X2Go client "
+"applications."
+msgstr ""
+"Aby bylo možné sdílet relace, musí být spuštěný X2Go Desktop applet. Ten "
+"poté oznamuje dostupnost sdílených X2Go/X11 relací klientským aplikacím X2Go."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:7001
+msgid ""
+"The applet can be configured to start automatically on desktop session "
+"startup, but for security reasons this is not the default."
+msgstr ""
+"Applet lze spouštět automaticky při startu relace. Z bezpečnostních důvodů "
+"to ovšem není výchozí nastavení."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:8001
+msgid "Auto-activate X2Go Desktop Sharing on desktop session startup?"
+msgstr "Aktivovat X2Go Desktop Sharing automaticky při spuštění relace?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:8001
+msgid ""
+"The X2Go Desktop Sharing applet normally starts in non-sharing mode (users "
+"that request to share the running desktop session get auto-rejected). The "
+"user normally has to actively activate the sharing mode in the applet's GUI."
+msgstr ""
+"X2Go Desktop Sharing applet se standardně spouští v zakázaném režimu "
+"(připojení k běžící relaci bude zamítnuto). Uživatel relace musí sám povolit "
+"sdílení relace v appletu."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:8001
+msgid ""
+"If you enabled the auto-start option in the previous screen, you can "
+"additionally choose here, if desktop sharing shall be activated when the "
+"X2Go Desktop Sharing applet is auto-started at session logon."
+msgstr ""
+"Pokud jste povolili automatický start na předchozí obrazovce, můžete nyní "
+"povolit také automatickou aktivaci X2Go Desktop Sharing po spuštění relace."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:8001
+msgid ""
+"For security and data protection reasons, this is not the default. Use this "
+"auto-activation feature only in appropriate environments (e.g. on class room "
+"computers)."
+msgstr ""
+"Z důvodu bezpečnosti a ochrany dat není automatická aktivace povolena ve "
+"výchozím nastavení. Používejte pouze ve vhodných prostředích (např. na "
+"počítačích v učebnách)."
