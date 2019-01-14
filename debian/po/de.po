@@ -1,34 +1,27 @@
-#
-#    Translators, if you are not familiar with the PO format, gettext
-#    documentation is worth reading, especially sections dedicated to
-#    this format, e.g. by running:
-#         info -n '(gettext)PO Files'
-#         info -n '(gettext)Header Entry'
-#
-#    Some information specific to po-debconf are available at
-#            /usr/share/doc/po-debconf/README-trans
-#         or https://www.debian.org/intl/l10n/po-debconf/README-trans
-#
-#    Developers do not need to manually edit POT or PO files.
+# Translation of the x2goserver debconf template to German.
+# Copyright (C) 2007-2018, Heinz-Markus Graesing, 2007-2018, Oleksandr
+#   Shneyder <o.shneyder@phoca-gmbh.de>, 2007-2018, X2Go Project.
+# This file is distributed under the same license as the x2goserver package.
+# Chris Leick <c.leick@vollbio.de>, 2018.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: x2goserver 4.1.0.3-2\n"
 "Report-Msgid-Bugs-To: x2goserver@packages.debian.org\n"
-"POT-Creation-Date: 2018-11-14 10:45+0100\n"
-"PO-Revision-Date: 2012-09-20 23:48+0100\n"
-"Last-Translator: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2018-11-29 09:26+0100\n"
+"PO-Revision-Date: 2018-12-09 13:43+0200\n"
+"Last-Translator: Chris Leick <c.leick@vollbio.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: text
 #. Description
 #: ../x2goserver.templates:1001
 msgid "X2Go Server / PostgreSQL Upgrade"
-msgstr "X2Go Server / PostgreSQL Upgrade"
+msgstr "X2Go-Server- / PostgreSQL-Upgrade"
 
 #. Type: text
 #. Description
@@ -37,9 +30,9 @@ msgid ""
 "You have configured X2Go Server with PostgreSQL as session DB backend and "
 "you are upgrading x2goserver from a version minor to 3.1.0.0."
 msgstr ""
-"Ihr X2Go Server nutzt eine PostgreSQL Datenbank, um X2Go Sitzungsdaten zu "
-"verwalten, und Sie aktualisieren gerade das Paket x2goserver von einer "
-"Version kleiner als 3.1.0.0."
+"Sie haben den X2Go-Server mit PostgreSQL als Sitzungsdatenbank-Backend "
+"konfiguriert und führen ein Upgrade von X2goserver von einer Version kleiner "
+"als 3.1.0.0 durch."
 
 #. Type: text
 #. Description
@@ -49,15 +42,15 @@ msgid ""
 "using your X2Go Server: /usr/share/doc/x2goserver/README.upgrade-pgsql-"
 "database.gz"
 msgstr ""
-"Bitte befolgen Sie daher die PostgreSQL-Aktualisierungshinweise bevor sie "
-"mit der Weiternutzung Ihres X2Go Servers fortfahren: /usr/share/doc/"
-"x2goserver/README.upgrade-pgsl-database.gz"
+"Bitte befolgen Sie die PostgreSQL-Aktualisierungshinweise, bevor sie Ihren "
+"X2Go-Server weiter benutzen: "
+"/usr/share/doc/x2goserver/README.upgrade-pgsl-database.gz"
 
 #. Type: text
 #. Description
 #: ../x2goserver.templates:2001
 msgid "X2Go Server Upgrade"
-msgstr "X2Go Server Upgrade"
+msgstr "X2Go-Server-Upgrade"
 
 #. Type: text
 #. Description
@@ -66,8 +59,8 @@ msgid ""
 "You are upgrading from an X2Go Server version (< 4.1.0.0). Between 4.1.0.0 "
 "and 4.0.0.x the package structure has undergone a major change."
 msgstr ""
-"Sie aktualisieren X2Go Server von einer Version (< 4.1.0.0). Seit 4.0.0.x "
-"wurde das Paket einigen strukturellen �nderungen unterzogen."
+"Sie aktualisieren X2Go-Server von einer Version < 4.1.0.0. Zwischen 4.1.0.0 "
+"und 4.0.0.x hat die Paketstruktur einige große Änderungen erfahren."
 
 #. Type: text
 #. Description
@@ -76,171 +69,180 @@ msgid ""
 "Note that most of the Perl code in X2Go Server has been moved into its own "
 "Perl API X2Go::Server."
 msgstr ""
-"Der gr��te Anteil des Perl Codes in X2Go Server ist migriert worden in die "
-"neue Perl API X2Go::Server."
+"Beachten Sie, dass der größte Anteil des Perl-Codes in X2Go-Server in die "
+"neue Perl-API X2Go::Server verschoben worden ist."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:1001
+msgid "Create x2godesktopsharing group?"
+msgstr "Soll die Gruppe »x2godesktopsharing« erstellt werden?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:1001
+msgid ""
+" X2Go Desktop Sharing grants users the privileges to share X2Go/X11\n"
+" desktop session with one another via membership of a common POSIX\n"
+" group. The group being used for this can be configured system-wide and\n"
+" on a per-user basis (in X2Go Desktop Sharing's user configuration).\n"
+" .\n"
+" Please specify whether X2Go Desktop Sharing should set up the group\n"
+" \"x2godesktopsharing\" as the system-wide default group used for this\n"
+" purpose.\n"
+" .\n"
+" Alternatively, if you reject this option, you will be asked to assign\n"
+" the role to some already existing group.\n"
+" .\n"
+" With no such group users will not be able to share X2Go/X11 desktop\n"
+" sessions."
+msgstr ""
+" Die gemeinsame Benutzung von X2Go-Arbeitsflächen gewährt Anwendern die\n"
+" Rechte, X2Go-/X11-Arbeitsflächensitzungen mit Anderen über die "
+"Mitgliedschaft\n"
+" in einer gemeinsamen POSIX-Gruppe gemeinsam zu verwenden. Die Gruppe, die\n"
+" dazu benutzt wird, kann systemweit oder individuell konfiguriert werden (in\n"
+" der X2Go-Benutzerkonfiguration zum gemeinsamen Benutzen von "
+"Arbeitsflächen).\n"
+" .\n"
+" Bitte geben Sie an, ob die gemeinsame Benutzung von X2Go-Arbeitsflächen die\n"
+" Gruppe »x2godesktopsharing« als systemweite Standardgruppe für diesen Zweck\n"
+" einrichten soll.\n"
+" .\n"
+" Alternativ, falls Sie diese Option ablehnen, werden Sie gebeten, die Rolle\n"
+" einer bestehenden Gruppe zuzuweisen.\n"
+" .\n"
+" Ohne eine derartige Gruppe werden Anwender nicht in der Lage sein, ihre\n"
+" X2Go-/X11-Arbeitsflächensitzungen gemeinsam zu benutzen."
 
 #. Type: boolean
 #. Description
 #: ../x2goserver-desktopsharing.templates:2001
-msgid "Create group for X2Go Desktop Sharing now?"
+msgid "Use existing group for X2Go Desktop Sharing?"
 msgstr ""
+"Soll eine bestehende Gruppe zum gemeinsamen Benutzen von X2Go-Arbeitsflächen "
+"verwendet werden?"
 
 #. Type: boolean
 #. Description
 #: ../x2goserver-desktopsharing.templates:2001
 msgid ""
-"In X2Go Desktop Sharing users gain the privilege to share one another's X2Go/"
-"X11 desktop session by being members of a common POSIX group. The POSIX "
-"group being used for this can be configured system-wide and on a per user "
-"basis."
+" If X2Go Desktop Sharing can use an existing group (possibly from an LDAP\n"
+" database) then you can specify this group name on the next screen."
 msgstr ""
+" Falls das gemeinsame Benutzen von X2Go-Arbeitsflächen eine bestehende "
+"Gruppe\n"
+" verwenden kann (möglicherweise aus einer LDAP-Datenbank), dann können Sie "
+"den\n"
+" Namen dieser Gruppe im nächsten Schritt angeben."
 
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:2001
-msgid ""
-"In X2Go Desktop Sharing's user configuration you can adjust what group to "
-"use for this later on. Here, you are asked for the system-wide default."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:2001
-msgid ""
-"If this group is not created now, you should assign this desktop sharing "
-"privilege to an already existing group on the next screen."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:2001
-msgid ""
-"If this group is not created / not assigned, users will not be able to share "
-"X2Go/X11 desktop sessions with each other."
-msgstr ""
-
-#. Type: boolean
+#. Type: string
 #. Description
 #: ../x2goserver-desktopsharing.templates:3001
-msgid "Use already existing groups for X2Go Desktop Sharing?"
+msgid "Group to use for X2Go Desktop Sharing:"
 msgstr ""
+"Gruppe, die zum gemeinsamen Benutzen der X2Go-Arbeitsfläche verwendet werden "
+"soll:"
 
-#. Type: boolean
+#. Type: string
 #. Description
 #: ../x2goserver-desktopsharing.templates:3001
 msgid ""
-"If a group appropriate for being assigned the desktop sharing privilege has "
-"already been created (e.g. in an LDAP user/group database) then you can "
-"specify this group name on the next screen."
+" Please specify the name of the existing POSIX group that you want to\n"
+" assign X2Go Desktop Sharing privileges to.\n"
+" .\n"
+" An empty string will be replaced by the \"root\" group."
 msgstr ""
-
-#. Type: string
-#. Description
-#: ../x2goserver-desktopsharing.templates:4001
-msgid "Assign X2Go Desktop Sharing privilege to POSIX group:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../x2goserver-desktopsharing.templates:4001
-msgid ""
-"Please specify the name of the POSIX group that you want to assign the X2Go "
-"Desktop Sharing privilege to."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../x2goserver-desktopsharing.templates:4001
-msgid "If you leave this empty, the \"root\" group will be used."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:5001
-msgid "Delete the group that was formerly used for this?"
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:5001
-msgid "The group for the X2Go Desktop Sharing privilege has been modified."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:5001
-msgid ""
-"Please specify whether the old group should be deleted. If unsure, keep the "
-"formerly used group and manually investigate later."
-msgstr ""
+" Bitte geben Sie den Namen der bestehenden POSIX-Gruppe an, der Sie die\n"
+" Rechte zum gemeinsamen Benutzen von X2Go-Arbeitsflächen zuweisen wollen.\n"
+" .\n"
+" Eine leere Zeichenkette wird durch die Gruppe »root« ersetzt."
 
 #. Type: error
 #. Description
-#: ../x2goserver-desktopsharing.templates:6001
+#: ../x2goserver-desktopsharing.templates:4001
 msgid "Non-existing group"
-msgstr ""
+msgstr "Gruppe besteht nicht"
 
 #. Type: error
 #. Description
+#: ../x2goserver-desktopsharing.templates:4001
+msgid ""
+" The given group does not exist on this system. You should specify an\n"
+" already existing group."
+msgstr ""
+" Die angegebene Gruppe besteht auf diesem System nicht, Sie sollten eine\n"
+" bereits bestehende Gruppe angeben."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:5001
+msgid "Auto-start X2Go Desktop Sharing applet?"
+msgstr ""
+"Soll das Applet zum gemeinsamen Benutzen der X2Go-Arbeitsfläche automatisch "
+"gestartet werden?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:5001
+msgid ""
+" For an X2Go/X11 desktop session to be accessible via X2Go Desktop\n"
+" Sharing, the X2Go Desktop Sharing applet needs to be running. It\n"
+" advertises the user's X2Go/X11 session through an access controlled\n"
+" socket to X2Go client applications.\n"
+" .\n"
+" The applet can be configured to start automatically on desktop session\n"
+" startup, but for security reasons this is not the default."
+msgstr ""
+" Damit auf eine X2Go-/X11-Arbeitsflächensitzung über das gemeinsame Benutzen\n"
+" von X2Go-Arbeitsflächen zugegriffen werden kann, muss das\n"
+" Applet für das gemeinsame Benutzen von X2Go laufen. Es kündigt die\n"
+" X2Go-/X11-Sitzung des Anwenders den X2Go-Client-Anwendungen über ein\n"
+" zugriffsgesteuertes Socket an.\n"
+" .\n"
+" Das Applet kann so eingerichtet werden, dass es automatisch beim Start "
+"einer\n"
+" Arbeitsflächensitzung gestartet wird, allerdings ist dies aus\n"
+" Sicherheitsgründen nicht die Voreinstellung."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:6001
+msgid "Auto-activate X2Go Desktop Sharing?"
+msgstr ""
+"Soll das gemeinsame Benutzen von X2Go-Arbeitsflächen automatisch aktiviert "
+"werden?"
+
+#. Type: boolean
+#. Description
 #: ../x2goserver-desktopsharing.templates:6001
 msgid ""
-"The given group does not exist on this system. You should specify an already "
-"existing group."
+" The X2Go Desktop Sharing applet normally starts in non-sharing mode\n"
+" (users that request to share the running desktop session get\n"
+" auto-rejected). The user normally has to choose to activate the sharing\n"
+" mode in the applet's GUI.\n"
+" .\n"
+" If the auto-start option is active, you can additionally choose here\n"
+" whether desktop sharing should be activated when the X2Go Desktop\n"
+" Sharing applet is auto-started at session logon.\n"
+" .\n"
+" For security and data protection reasons, this is not the default. Use\n"
+" this auto-activation feature only in appropriate environments, such as\n"
+" for classroom computers."
 msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:7001
-msgid "Auto-start X2Go Desktop Sharing applet on desktop session startup?"
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:7001
-msgid ""
-"For an X2Go/X11 desktop session to be accessible via X2Go Desktop Sharing, "
-"the X2Go Desktop Sharing applet needs to be running. It advertises the users "
-"X2Go/X11 session through an access controlled socket to X2Go client "
-"applications."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:7001
-msgid ""
-"The applet can be configured to start automatically on desktop session "
-"startup, but for security reasons this is not the default."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:8001
-msgid "Auto-activate X2Go Desktop Sharing on desktop session startup?"
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:8001
-msgid ""
-"The X2Go Desktop Sharing applet normally starts in non-sharing mode (users "
-"that request to share the running desktop session get auto-rejected). The "
-"user normally has to actively activate the sharing mode in the applet's GUI."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:8001
-msgid ""
-"If you enabled the auto-start option in the previous screen, you can "
-"additionally choose here, if desktop sharing shall be activated when the "
-"X2Go Desktop Sharing applet is auto-started at session logon."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../x2goserver-desktopsharing.templates:8001
-msgid ""
-"For security and data protection reasons, this is not the default. Use this "
-"auto-activation feature only in appropriate environments (e.g. on class room "
-"computers)."
-msgstr ""
+" Das Applet zum gemeinsamen Benutzen von X2Go-Arbeitsflächen startet\n"
+" normalerweise in einem Modus, der die Arbeitsfläche nicht freigibt "
+"(Anwender,\n"
+" die anfragen, eine laufende Arbeitsflächensitzung gemeinsam zu benutzen,\n"
+" werden automatisch abgewiesen). Der Anwender muss normalerweise auswählen, "
+"ob\n"
+" er den Freigabemodus in der grafischen Oberfläche des Applets aktiviert.\n"
+" .\n"
+" Falls die Option Autostart aktiv ist, können Sie hier zusätzlich auswählen,\n"
+" ob die Freigabe der Arbeitsfläche automatisch aktiviert werden soll, wenn\n"
+" das X2Go-Arbeitsflächenfreigabe-Applet bei der Sitzungsanmeldung\n"
+" automatisch gestartet wird.\n"
+" .\n"
+" Aus Sicherheits- und Datenschutzgründen ist dies nicht die Voreinstellung.\n"
+" Benutzen Sie diese automatische Aktivierungsfunktionalität nur in\n"
+" angemessenen Umgebungen wie auf Unterrichtsrechnern."
