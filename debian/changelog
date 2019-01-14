@@ -1,4 +1,4 @@
-x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
+x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
 
   [ Mike Gabriel ]
   * New upstream version (4.1.0.4):
@@ -8,6 +8,9 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
       non-absolute path (e.g. it contains '../'). (Fixes: #1357).
   * debian/x2goserver.postinst:
     + Drop duplicate sourcing of debconf includes.
+    + Add Dutch debconf translation. Thanks to Frans Spiesschaert.
+    + Add Russian debconf translation. Thanks to Lev Lamberov.
+    + Add Portuguese debconf translation. Thanks to Américo Monteiro.
 
   [ Mihai Moldovan ]
   * New upstream version (4.1.0.4):
@@ -91,7 +94,7 @@ x2goserver (4.1.0.4-0x2go1) UNRELEASED; urgency=medium
   [ Tom Ruzicka ]
   * debian/po: Add Czech debconf translation.
 
- -- X2Go Release Manager <git-admin@x2go.org>  Thu, 29 Nov 2018 07:57:20 +0100
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Mon, 14 Jan 2019 16:33:04 +0100
 
 x2goserver (4.1.0.3-0x2go1) unstable; urgency=medium
 

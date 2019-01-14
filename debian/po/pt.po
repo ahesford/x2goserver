@@ -1,0 +1,234 @@
+# Translation of x2goserver's debconf messages to European Portuguese.
+# Copyright (C) 2018 THE x2goserver'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the x2goserver package.
+#
+# Américo Monteiro <a_monteiro@gmx.com>, 2018, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: x2goserver 4.1.0.3-3\n"
+"Report-Msgid-Bugs-To: x2goserver@packages.debian.org\n"
+"POT-Creation-Date: 2018-11-29 09:26+0100\n"
+"PO-Revision-Date: 2019-01-13 11:02+0000\n"
+"Last-Translator: Américo Monteiro <a_monteiro@gmx.com>\n"
+"Language-Team: Portuguese <>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:1001
+msgid "X2Go Server / PostgreSQL Upgrade"
+msgstr "Servidor X2Go / Actualização do PostgreSQL"
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:1001
+msgid ""
+"You have configured X2Go Server with PostgreSQL as session DB backend and "
+"you are upgrading x2goserver from a version minor to 3.1.0.0."
+msgstr ""
+"Você tem o servidor X2Go configurado com PostgreSQL como sessão de backend "
+"de DB e você está a actualizar o x2goserver a partir de uma versão inferior "
+"a 3.1.0.0."
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:1001
+msgid ""
+"Please follow these PostgreSQL DB upgrade instructions before you continue "
+"using your X2Go Server: /usr/share/doc/x2goserver/README.upgrade-pgsql-"
+"database.gz"
+msgstr ""
+"Por favor siga estas instruções de actualização de DB PostgreSQL antes de "
+"continuar a usar o seu servidor X2Go: /usr/share/doc/x2goserver/README."
+"upgrade-pgsql-database.gz"
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:2001
+msgid "X2Go Server Upgrade"
+msgstr "Actualização do servidor X2Go"
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:2001
+msgid ""
+"You are upgrading from an X2Go Server version (< 4.1.0.0). Between 4.1.0.0 "
+"and 4.0.0.x the package structure has undergone a major change."
+msgstr ""
+"Você está a actualizar o servidor X2Go a partir de uma versão inferior a "
+"4.1.0.0. Entre 4.1.0.0 e 4.0.0.x a estrutura do pacote sofreu grandes "
+"alterações."
+
+#. Type: text
+#. Description
+#: ../x2goserver.templates:2001
+msgid ""
+"Note that most of the Perl code in X2Go Server has been moved into its own "
+"Perl API X2Go::Server."
+msgstr ""
+"Note que a maioria do código Perl no servidor X2Go foi movido para o seu "
+"próprio servidor Perl API X2Go::Server."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:1001
+msgid "Create x2godesktopsharing group?"
+msgstr "Criar grupo x2godesktopsharing?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:1001
+msgid ""
+" X2Go Desktop Sharing grants users the privileges to share X2Go/X11\n"
+" desktop session with one another via membership of a common POSIX\n"
+" group. The group being used for this can be configured system-wide and\n"
+" on a per-user basis (in X2Go Desktop Sharing's user configuration).\n"
+" .\n"
+" Please specify whether X2Go Desktop Sharing should set up the group\n"
+" \"x2godesktopsharing\" as the system-wide default group used for this\n"
+" purpose.\n"
+" .\n"
+" Alternatively, if you reject this option, you will be asked to assign\n"
+" the role to some already existing group.\n"
+" .\n"
+" With no such group users will not be able to share X2Go/X11 desktop\n"
+" sessions."
+msgstr ""
+" O X2Go Desktop Sharing dá aos utilizadores o privilégio de partilhar\n"
+" sessões de desktop X2Go/X11 com outros membros de um grupo POSIX comum.\n"
+" O grupo a ser usado para isto pode ser configurado em todo o sistema e\n"
+" numa base por-utilizador (na configuração de utilizador do X2Go Desktop\n"
+" Sharing).\n"
+" \n"
+" Por favor especifique se o X2Go Desktop Sharing deve definir o grupo\n"
+" \"x2godesktopsharing\" como o grupo predefinido de todo o sistema usado\n"
+" usado para este objectivo.\n"
+" \n"
+" Em alternativa, se rejeitar esta opção, ser-lhe-à pedido para atribuir este\n"
+" papel a algum grupo já existente.\n"
+" \n"
+" Sem tal grupo, os utilizadores não serão capazes de partilhar sessões\n"
+" de ambiente de trabalho X2Go/X11."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:2001
+msgid "Use existing group for X2Go Desktop Sharing?"
+msgstr "Usar grupo existente para X2Go Desktop Sharing?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:2001
+msgid ""
+" If X2Go Desktop Sharing can use an existing group (possibly from an LDAP\n"
+" database) then you can specify this group name on the next screen."
+msgstr ""
+" Se o X2Go Desktop Sharing puder usar um grupo existente (possivelmente de\n"
+" uma base de dados LDAP) então você pode especificar este grupo no próximo\n"
+" ecrã."
+
+#. Type: string
+#. Description
+#: ../x2goserver-desktopsharing.templates:3001
+msgid "Group to use for X2Go Desktop Sharing:"
+msgstr "Grupo a usar para X2Go Desktop Sharing:"
+
+#. Type: string
+#. Description
+#: ../x2goserver-desktopsharing.templates:3001
+msgid ""
+" Please specify the name of the existing POSIX group that you want to\n"
+" assign X2Go Desktop Sharing privileges to.\n"
+" .\n"
+" An empty string will be replaced by the \"root\" group."
+msgstr ""
+" Por favor especifique do grupo POSIX existente ao qual deseja atribuir\n"
+" os privilégios do X2Go Desktop Sharing.\n"
+" \n"
+" Uma string vazia será substituída pelo grupo \"root\"."
+
+#. Type: error
+#. Description
+#: ../x2goserver-desktopsharing.templates:4001
+msgid "Non-existing group"
+msgstr "Grupo não-existente"
+
+#. Type: error
+#. Description
+#: ../x2goserver-desktopsharing.templates:4001
+msgid ""
+" The given group does not exist on this system. You should specify an\n"
+" already existing group."
+msgstr ""
+" O grupo indicado não existe neste sistema. Você deve especificar um\n"
+" grupo já existente."
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:5001
+msgid "Auto-start X2Go Desktop Sharing applet?"
+msgstr "Auto-iniciar o aplicativo X2Go Desktop Sharing?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:5001
+msgid ""
+" For an X2Go/X11 desktop session to be accessible via X2Go Desktop\n"
+" Sharing, the X2Go Desktop Sharing applet needs to be running. It\n"
+" advertises the user's X2Go/X11 session through an access controlled\n"
+" socket to X2Go client applications.\n"
+" .\n"
+" The applet can be configured to start automatically on desktop session\n"
+" startup, but for security reasons this is not the default."
+msgstr ""
+" Para que uma sessão desktop X2Go/X11 fique acessível via X2Go Desktop\n"
+" Sharing, a aplicação X2Go Desktop Sharing precisa estar a correr. Ela\n"
+" anuncia a sessão X2Go/X11 do utilizador através dum socket de acesso\n"
+" controlado às aplicações cliente do X2Go.\n"
+" \n"
+" A aplicação pode ser configurada para iniciar automaticamente com o\n"
+" arranque da sessão de desktop, mas por razões de segurança, não é esta\n"
+" a predefinição. "
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:6001
+msgid "Auto-activate X2Go Desktop Sharing?"
+msgstr "Auto-activar o X2Go Desktop Sharing?"
+
+#. Type: boolean
+#. Description
+#: ../x2goserver-desktopsharing.templates:6001
+msgid ""
+" The X2Go Desktop Sharing applet normally starts in non-sharing mode\n"
+" (users that request to share the running desktop session get\n"
+" auto-rejected). The user normally has to choose to activate the sharing\n"
+" mode in the applet's GUI.\n"
+" .\n"
+" If the auto-start option is active, you can additionally choose here\n"
+" whether desktop sharing should be activated when the X2Go Desktop\n"
+" Sharing applet is auto-started at session logon.\n"
+" .\n"
+" For security and data protection reasons, this is not the default. Use\n"
+" this auto-activation feature only in appropriate environments, such as\n"
+" for classroom computers."
+msgstr ""
+" A aplicação X2Go Desktop Sharing arranca normalmente em modo de\n"
+" não-partilha (os utilizadores que peçam para partilhar a sua sessão de\n"
+" desktop são auto-rejeitados). O utilizador normalmente tem de escolher\n"
+" activar o modo de partilha na GUI da aplicação.\n"
+" \n"
+" Se a opção de auto-arranque estiver activa, você pode adicionalmente\n"
+" escolher aqui se a partilha de desktop deve ser activada quando a aplicação\n"
+" X2Go Desktop Sharing é auto-iniciada no logon da sessão.\n"
+" \n"
+" Por razões de segurança e protecção de dados, esta não é a predefinição.\n"
+" Use esta funcionalidade de auto-activação apenas em ambientes apropriados,\n"
+" tais como em computadores de sala de aula."
+
+
