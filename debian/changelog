@@ -81,6 +81,7 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     - x2goserver/Makefile: don't quote POD_SCRIPTS, because of... make.
     - x2goserver/Makefile: install man1 files and dirs, too.
     - x2goserver/bin/x2goruncommand: fix typo in IceWM branch.
+    - X2Go_in_progress_do_not_use/Server/DB/MySQL.pm: backport kdrive change.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

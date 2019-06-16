@@ -129,7 +129,7 @@ sub validate_session_id
 	$uname_ =~ s/\\//;
 
 	# perform the user check
-	$user =~ s/($uname_-[0-9]{2,}-[0-9]{10,}_st(D|R).*|.*-[0-9]{2,}-[0-9]{10,}_stS(0|1)XSHAD$uname_.*)/$uname_/;
+	$user =~ s/($uname_-[0-9]{2,}-[0-9]{10,}_st(D|R|K).*|.*-[0-9]{2,}-[0-9]{10,}_stS(0|1)XSHAD$uname_.*)/$uname_/;
 	die "$uname_ is not authorized to perform this operation" unless ($uname_ eq $user);
 }
 
