@@ -83,6 +83,7 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     - x2goserver/bin/x2goruncommand: fix typo in IceWM branch.
     - X2Go_in_progress_do_not_use/Server/DB/MySQL.pm: backport kdrive change.
     - x2goserver/bin/x2gostartagent: fix quoting.
+    - x2goserver/bin/x2gostartagent: adapt debug message to ${AGENTBIN} usage.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
