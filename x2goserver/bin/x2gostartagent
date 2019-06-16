@@ -211,7 +211,7 @@ COLORDEPTH="$(awk '{split($0,a,"-depth_"); print a[2]}' <<< "${X2GO_TYPE}")"
 SESSION_TYPE='D'
 NOEXITPARAM=''
 
-AGENTBIN=x2goagent
+AGENTBIN='x2goagent'
 
 if [[ "${X2GO_STYPE}" = 'R' ]]; then
 	SESSION_TYPE='R'
@@ -469,7 +469,7 @@ if [[ "${X2GO_STYPE}" = 'S' ]]; then
 else
 	# set NX_TEMP to /tmp, make sure agent starts when pam_tmpdir.so is in use
 	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "started nxagent: NX_TEMP=/tmp x2goagent X2GO_NXAGENT_OPTIONS ('${X2GO_NXAGENT_OPTIONS}') NOLISTOPT ('${NOLISTOPT}') X2GODPIOPTION_ ('${X2GODPIOPTION_}') XDMCPPOPT ('${XDMCPOPT}') -SESSION_TYPE ('-${SESSION_TYPE}') NOEXITPARAM ('${NOEXITPARAM}') -auth \"XAUTHORITY\" ('\"${XAUTHORITY}\"') agent_geometry ('${agent_geometry}') -name \"SESSION_WINDOW_TITLE\" ('\"${SESSION_WINDOW_TITLE}\"') \"NX_AGENT\" ('\"${NX_AGENT}\"') 2>\"SESSION_LOG\" ('\"${SESSION_LOG}\"') &"
-	NX_TEMP='/tmp' ${AGENTBIN} ${X2GO_NXAGENT_OPTIONS} ${NOLISTOPT} ${X2GODPIOPTION_} ${XDMCPOPT} -${SESSION_TYPE} ${NOEXITPARAM} -auth "${XAUTHORITY}" ${agent_geometry} -name "${SESSION_WINDOW_TITLE}" "${NX_AGENT}" 2>"${SESSION_LOG}" &
+	NX_TEMP='/tmp' "${AGENTBIN}" ${X2GO_NXAGENT_OPTIONS} ${NOLISTOPT} ${X2GODPIOPTION_} ${XDMCPOPT} -${SESSION_TYPE} ${NOEXITPARAM} -auth "${XAUTHORITY}" ${agent_geometry} -name "${SESSION_WINDOW_TITLE}" "${NX_AGENT}" 2>"${SESSION_LOG}" &
 fi
 
 ln -s -- "${SESSION_DIR}" "${X2GO_ROOT}/C-${SESSION_NAME}"
