@@ -101,6 +101,7 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
   [ Oleksandr Shneyder ]
   * New upstream version (4.1.0.4):
     - Add support for X2Go KDrive.
+    - x2goruncommand: start Xsession on X2Go KDrive desktops.
 
   [ Tom Ruzicka ]
   * debian/po: Add Czech debconf translation.
