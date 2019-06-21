@@ -86,6 +86,7 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     - x2goserver/bin/x2gostartagent: adapt debug message to ${AGENTBIN} usage.
     - x2goserver/bin/x2gostartagent: also use ${AGENTBIN} in shadow session
       code.
+    - x2goserver/bin/x2goruncommand: fix syntax.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
