@@ -21,8 +21,8 @@
 # Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 
-base="${0%/*}";
-if test "$base" = "$0"; then
+base="${BASH_SOURCE[0]%/*}"
+if test "${base}" = "${BASH_SOURCE[0]}"; then
 	base=".";
 fi;
 
