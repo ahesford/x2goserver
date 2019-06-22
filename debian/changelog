@@ -110,6 +110,8 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
       sed.
   * debian/x2goserver.install:
     + Install bin/x2goupdateoptionsstring.
+  * debian/rules:
+    + Export and pass down LIBDIR.
 
   [ Oleksandr Shneyder ]
   * New upstream version (4.1.0.4):
