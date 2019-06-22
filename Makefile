@@ -7,7 +7,7 @@ DESTDIR ?=
 PREFIX ?= /usr/local
 ETCDIR=/etc/x2go
 LIBDIR ?= $(PREFIX)/lib/x2go
-SHAREDIR=$(PREFIX)/share/x2go
+SHAREDIR ?= $(PREFIX)/share/x2go
 
 PERL ?= /usr/bin/perl
 PERL_INSTALLDIRS ?= vendor
