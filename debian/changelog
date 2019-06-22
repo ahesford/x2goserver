@@ -98,6 +98,7 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
       build time, but also allow re-rooting afterwards - derived from the
       original values.
     - Makefile: specify SHAREDIR as a default-if-not-specified variable.
+    - Makefile: same change, but for ETCDIR.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
