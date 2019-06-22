@@ -92,6 +92,8 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     - x2goserver/bin: rename x2gopath to x2gopath.in.
     - x2goserver/bin/x2gopath.in: use ${BASH_SOURCE[0]} instead of ${0}... for
       reasons.
+    - x2goserver/bin/x2gopath.in: rework quoting, variable usage, drop
+      unnecessary semicolons etc.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
