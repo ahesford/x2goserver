@@ -99,6 +99,10 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
       original values.
     - Makefile: specify SHAREDIR as a default-if-not-specified variable.
     - Makefile: same change, but for ETCDIR.
+    - {libx2go-server-db-perl,x2goserver{,-{common,desktopsharing,extensions,
+                                            fmbindings,printing,x2goagent,
+                                            xsession}}}/Makefile: apply
+      default-if-not-specified-logic to all the other Makefiles as well.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

@@ -12,11 +12,11 @@ RM_DIR=rmdir -p --ignore-fail-on-non-empty
 
 DESTDIR ?=
 PREFIX ?= /usr/local
-ETCDIR=/etc/x2go
-BINDIR=$(PREFIX)/bin
-LIBDIR=$(PREFIX)/lib/x2go
-MANDIR=$(PREFIX)/share/man
-SHAREDIR=$(PREFIX)/share/x2go
+ETCDIR ?= /etc/x2go
+BINDIR ?= $(PREFIX)/bin
+LIBDIR ?= $(PREFIX)/lib/x2go
+MANDIR ?= $(PREFIX)/share/man
+SHAREDIR ?= $(PREFIX)/share/x2go
 
 BIN_SCRIPTS=$(shell cd bin && echo *)
 FEATURE_SCRIPTS=$(shell cd share/x2go/x2gofeature.d && echo *.features)
