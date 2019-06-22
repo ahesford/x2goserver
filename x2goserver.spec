@@ -615,18 +615,15 @@ false-positives when running X2Go sessions.
 %prep
 %setup -q
 
-# Set path
-find -type f | xargs sed -i -r -e '/^LIBDIR=/s,/lib/,/%{_lib}/,'
-sed -i -e 's,/lib/,/%{_lib}/,' x2goserver/bin/x2gopath
 # Don't try to be root
 sed -i -e 's/-o root -g root//' */Makefile
 
 %build
-make %{?_smp_mflags} CFLAGS="%{?__global_cppflags} %{?__global_cflags} %{optflags}" LDFLAGS="%{?__global_ldflags}" PERL_INSTALLDIRS=vendor PREFIX=%{_prefix} NXLIBDIR=%{_libdir}/nx
+make %{?_smp_mflags} CFLAGS='%{?__global_cppflags} %{?__global_cflags} %{optflags}' LDFLAGS='%{?__global_ldflags}' PERL_INSTALLDIRS='vendor' PREFIX='%{_prefix}' NXLIBDIR='%{_libdir}/nx' LIBDIR='%{_libdir}/x2go'
 
 
 %install
-make install DESTDIR=%{buildroot} PREFIX=%{_prefix} NXLIBDIR=%{_libdir}/nx
+make install DESTDIR='%{buildroot}' PREFIX='%{_prefix}' NXLIBDIR='%{_libdir}/nx' LIBDIR='%{_libdir}/x2go'
 
 # Make sure the .packlist file is removed from %%{perl_vendorarch}...
 find %{buildroot}%{perl_vendorarch} -name .packlist | while read file; do rm -f "$file"; done

@@ -106,6 +106,8 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     + Install new x2goisint wrapper.
     + Install section 1 man pages.
     + Exclude x2goagent man page from x2goserver package.
+    + Pass down LIBDIR via make calls, not by modifying all source files with
+      sed.
   * debian/x2goserver.install:
     + Install bin/x2goupdateoptionsstring.
 
