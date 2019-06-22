@@ -5,6 +5,7 @@
 # Copyright (C) 2012-2018 Heinz-Markus Graesing <heinz-m.graesing@obviously-nice.de>
 # Copyright (C) 2012-2015 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 # Copyright (C) 2012-2015 Jan Engelhard <jengelh@inai.de>
+# Copyright (C) 2019 Mihai Moldovan <ionic@ionic.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +22,10 @@
 # Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 
+typeset installed_prefix='@@PREFIX@@'
+typeset installed_libdir='@@LIBDIR@@'
+typeset installed_sharedir='@@SHAREDIR@@'
+
 typeset base="${BASH_SOURCE[0]%/*}"
 if test "${base}" = "${BASH_SOURCE[0]}"; then
 	base='.'
@@ -28,14 +33,31 @@ fi
 
 base="$(readlink -f "${base}/..")"
 
-# The following section is subject to substitution by distro packaging tools.
+if [ "${base}" != "${installed_prefix}" ]; then
+	printf 'WARNING: X2Go Server was originally installed into %s, but seems to have been re-rooted to %s. There is potential for breakage.\n' "${installed_prefix}" "${base}" >&2
+fi
+
+typeset x2go_share_subdir="${installed_sharedir#${installed_prefix}}"
+typeset x2go_lib_subdir="${installed_libdir#${installed_prefix}}"
+
+if [ "${x2go_lib_subdir}" = "${installed_libdir}" ]; then
+	printf 'WARNING: X2Go Server was built with a LIBDIR (%s) not starting with PREFIX (%s). Such a setup will likely not work correctly.\n' "${installed_libdir}" "${installed_prefix}" >&2
+fi
+
+# Try to fetch the system library dir.
+# Drop leading slashes.
+typeset lib_subdir="$(sed -e 's#^/*##g' <<< "${x2go_lib_subdir}")"
+# Extract first element - should be the library directory.
+lib_subdir="${lib_subdir%%/*}"
+
+# Distributions should not modify the following section, but rather build the package with their custom PREFIX, LIBDIR, SHAREDIR etc. values.
 case "${1}" in
 	('base') printf '%s' "${base}";;
-	('lib') printf '%s' "${base}/lib/x2go";;
-	('libexec') printf '%s' "${base}/lib/x2go";;
-	('share') printf '%s' "${base}/share/x2go";;
-	('nx-x11') printf '%s' "${base}/lib/nx/X11";;
-	('xinerama') printf '%s' "${base}/lib/nx/X11/Xinerama";;
+	('lib'|'libexec') printf '%s' "${base}/${x2go_lib_subdir}";;
+	('share') printf '%s' "${base}/${x2go_share_subdir}";;
+	# Assume that X2Go Server and nx-libs share the same library subdir.
+	('nx-x11') printf '%s' "${base}/${lib_subdir}/nx/X11";;
+	('xinerama') printf '%s' "${base}/${lib_subdir}/nx/X11/Xinerama";;
 	(*) exit 1;;
 esac;
 
