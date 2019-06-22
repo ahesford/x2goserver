@@ -38,6 +38,27 @@ build: build-arch build-indep
 build-arch:
 
 build-indep: build_pod2man build_man2html
+	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
+		for gen_file in "$${!dir}/"*; do \
+			file="$${gen_file%.in}"; \
+			if [ "$${gen_file}" != "$${file}" ]; then \
+				$$("# Copy the file first, making sure we keep permissions."); \
+				cp -a "$${gen_file}" "$${file}"; \
+				\
+				$$("# Run actual substitutions."); \
+				PREFIX='$(PREFIX)'; \
+				ETCDIR='$(ETCDIR)'; \
+				BINDIR='$(BINDIR)'; \
+				SBINDIR='$(SBINDIR)'; \
+				LIBDIR='$(LIBDIR)'; \
+				MANDIR='$(MANDIR)'; \
+				SHAREDIR='$(SHAREDIR)'; \
+				for subst in 'PREFIX' 'ETCDIR' 'BINDIR' 'SBINDIR' 'LIBDIR' 'MANDIR' 'SHAREDIR'; do \
+					sed -e "s#@@$${subst}@@#$${!subst}#g" "$${gen_file}" > "$${file}"; \
+				done; \
+			fi; \
+		done; \
+	done
 
 build_pod2man:
 	for sectioned_script in $(POD_SCRIPTS); do \
@@ -74,21 +95,44 @@ clean: clean-arch clean-indep
 clean-arch:
 
 clean-indep: clean_man2html
+	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
+		for gen_file in "$${!dir}/"*; do \
+			file="$${gen_file%.in}"; \
+			if [ "$${gen_file}" != "$${file}" ]; then \
+				$(RM_FILE) "$${file}"; \
+			fi; \
+		done; \
+	done
 
 clean_man2html:
 	rm -Rf `dirname $(MAN2HTML_DEST)`
 
-install: install_scripts install_config install_man install_version
+install: build install_scripts install_config install_man install_version
 
 install_scripts:
-	$(INSTALL_DIR) $(DESTDIR)$(BINDIR)
-	$(INSTALL_DIR) $(DESTDIR)$(SBINDIR)
-	$(INSTALL_DIR) $(DESTDIR)$(LIBDIR)
-	$(INSTALL_DIR) $(DESTDIR)$(SHAREDIR)/x2gofeature.d
-	$(INSTALL_PROGRAM) bin/*                $(DESTDIR)$(BINDIR)/
-	$(INSTALL_PROGRAM) sbin/*               $(DESTDIR)$(SBINDIR)/
-	$(INSTALL_PROGRAM) lib/*                   $(DESTDIR)$(LIBDIR)/
-	$(INSTALL_PROGRAM) share/x2gofeature.d/*.features $(DESTDIR)$(SHAREDIR)/x2gofeature.d/
+	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
+		$("# Create (and save) destination directory."); \
+		dest='$(DESTDIR)'; \
+		case "$${dir}" in \
+			('bin') dest="$${dest}$(BINDIR)/";; \
+			('sbin') dest="$${dest}$(SBINDIR)/";; \
+			('lib') dest="$${dest}$(LIBDIR)/";; \
+			('share/x2gofeature.d') dest="$${dest}$(SHAREDIR)/x2gofeature.d/";; \
+			(*) printf '%s\n' 'Unknown component in install_scripts scriptlet.' >&2; exit '1';; \
+		esac; \
+		$(INSTALL_DIR) "$${dest}"; \
+		\
+		$("# Iterate over files and ..."); \
+		for gen_file in "$${!dir}/"*; do \
+			file="$${gen_file%.in}"; \
+			$("# ... filter out generation templates and anything not ending in '.features' for the feature directory."); \
+			if [ "$${gen_file}" != "$${file}" ] || ( [ "$${dir}" = 'share/x2gofeature.d' ] && [ "$${file%.features}" = "$${file}" ] ); then \
+				continue; \
+			fi; \
+			\
+			$(INSTALL_PROGRAM) "$${file}" "$${dest}/"; \
+		done; \
+	done
 
 install_config:
 	$(INSTALL_DIR) $(DESTDIR)$(ETCDIR)
@@ -120,10 +164,25 @@ install_version:
 uninstall: uninstall_scripts uninstall_config uninstall_man uninstall_version
 
 uninstall_scripts:
-	for file in $(BIN_SCRIPTS); do $(RM_FILE) $(DESTDIR)$(BINDIR)/$$file; done
-	for file in $(SBIN_SCRIPTS); do $(RM_FILE) $(DESTDIR)$(SBINDIR)/$$file; done
-	for file in $(LIB_FILES); do $(RM_FILE) $(DESTDIR)$(LIBDIR)/$$file; done
-	for file in $(FEATURE_SCRIPTS); do $(RM_FILE) $(DESTDIR)$(SHAREDIR)/x2gofeature.d/$$file; done
+	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
+		$("# Create (and save) destination directory."); \
+		dest='$(DESTDIR)'; \
+		case "$${dir}" in \
+			('bin') dest="$${dest}$(BINDIR)/";; \
+			('sbin') dest="$${dest}$(SBINDIR)/";; \
+			('lib') dest="$${dest}$(LIBDIR)/";; \
+			('share/x2gofeature.d') dest="$${dest}$(SHAREDIR)/x2gofeature.d/";; \
+			(*) printf '%s\n' 'Unknown component in uninstall_scripts scriptlet.'; exit '1';; \
+		esac; \
+		$(INSTALL_DIR) "$${dest}"; \
+		\
+		$("# Iterate over files and ..."); \
+		for gen_file in "$${!dir}/"*; do \
+			$("# ... map generation templates to generated files (so that uninstallation works correctly after cleaning as well)."); \
+			file="$${gen_file%.in}"; \
+			$(RM_FILE) "$${dest}/$${file}"; \
+		done; \
+	done
 	$(RM_DIR) $(DESTDIR)$(LIBDIR) || true
 	$(RM_DIR) $(DESTDIR)$(SHAREDIR)/x2gofeature.d || true
 	$(RM_DIR) $(DESTDIR)$(SHAREDIR) || true
