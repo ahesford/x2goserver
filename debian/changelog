@@ -89,6 +89,7 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     - x2goserver/bin/x2goruncommand: fix syntax.
     - x2goserver/Makefile: allow auto-generation of files, including
       installation, uninstallation and cleanup.
+    - x2goserver/bin: rename x2gopath to x2gopath.in.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
