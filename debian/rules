@@ -43,7 +43,7 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	if [ -f ChangeLog.gitlog ]; then cp ChangeLog.gitlog ChangeLog; fi
-	$(MAKE) -f Makefile build-arch
+	$(MAKE) -f Makefile build-arch PREFIX='/usr' NXLIBDIR='$(NXLIBDIR)' LIBDIR='$(LIBDIR)'
 	PREFIX='/usr' NXLIBDIR='$(NXLIBDIR)' LIBDIR='$(LIBDIR)' dh_auto_install
 
 override_dh_missing:
