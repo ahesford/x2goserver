@@ -16,6 +16,7 @@ ETCDIR ?= /etc/x2go
 BINDIR ?= $(PREFIX)/bin
 SBINDIR ?= $(PREFIX)/sbin
 LIBDIR ?= $(PREFIX)/lib/x2go
+NXLIBDIR ?= $(LIBDIR)/../nx
 MANDIR ?= $(PREFIX)/share/man
 SHAREDIR ?= $(PREFIX)/share/x2go
 
@@ -51,9 +52,10 @@ build-indep: build_pod2man build_man2html
 				BINDIR='$(BINDIR)'; \
 				SBINDIR='$(SBINDIR)'; \
 				LIBDIR='$(LIBDIR)'; \
+				NXLIBDIR='$(NXLIBDIR)'; \
 				MANDIR='$(MANDIR)'; \
 				SHAREDIR='$(SHAREDIR)'; \
-				for subst in 'PREFIX' 'ETCDIR' 'BINDIR' 'SBINDIR' 'LIBDIR' 'MANDIR' 'SHAREDIR'; do \
+				for subst in 'PREFIX' 'ETCDIR' 'BINDIR' 'SBINDIR' 'LIBDIR' 'NXLIBDIR' 'MANDIR' 'SHAREDIR'; do \
 					sed -e "s#@@$${subst}@@#$${!subst}#g" "$${gen_file}" > "$${file}"; \
 				done; \
 			fi; \
