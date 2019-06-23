@@ -28,23 +28,23 @@ ifeq ($(shell /bin/bash -c '(( $(RELEASE_VER_MAJOR) >= 16 )) && echo yes'),yes)
 endif
 endif
 
-export NXLIBDIR="/usr/lib/$(shell dpkg-architecture -qDEB_HOST_MULTIARCH)/nx"
-export LIBDIR="/usr/lib/x2go"
+export NXLIBDIR='/usr/lib/$(shell dpkg-architecture -qDEB_HOST_MULTIARCH)/nx'
+export LIBDIR='/usr/lib/x2go'
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
 %:
-	PREFIX='/usr' NXLIBDIR='$(NXLIBDIR)' LIBDIR='$(LIBDIR)' dh ${@} --with=systemd || PREFIX='/usr' NXLIBDIR='$(NXLIBDIR)' LIBDIR='$(LIBDIR)' dh ${@}
+	PREFIX='/usr' NXLIBDIR=$(NXLIBDIR) LIBDIR=$(LIBDIR) dh ${@} --with=systemd || PREFIX='/usr' NXLIBDIR=$(NXLIBDIR) LIBDIR=$(LIBDIR) dh ${@}
 
 override_dh_auto_build:
-	PREFIX='/usr' NXLIBDIR='$(NXLIBDIR)' LIBDIR='$(LIBDIR)' PERL_INSTALLDIRS=vendor dh_auto_build
+	PREFIX='/usr' NXLIBDIR=$(NXLIBDIR) LIBDIR=$(LIBDIR) PERL_INSTALLDIRS=vendor dh_auto_build
 
 override_dh_auto_install:
 	if [ -f ChangeLog.gitlog ]; then cp ChangeLog.gitlog ChangeLog; fi
-	$(MAKE) -f Makefile build-arch PREFIX='/usr' NXLIBDIR='$(NXLIBDIR)' LIBDIR='$(LIBDIR)'
-	PREFIX='/usr' NXLIBDIR='$(NXLIBDIR)' LIBDIR='$(LIBDIR)' dh_auto_install
+	$(MAKE) -f Makefile build-arch PREFIX='/usr' NXLIBDIR=$(NXLIBDIR) LIBDIR=$(LIBDIR)
+	PREFIX='/usr' NXLIBDIR=$(NXLIBDIR) LIBDIR=$(LIBDIR) dh_auto_install
 
 override_dh_missing:
 	dh_missing --fail-missing
@@ -56,7 +56,7 @@ override_dh_auto_clean:
 	rm -f ChangeLog.gitlog
 	rm -f MYMETA.yml
 	rm -f Makefile.perl.old
-	PREFIX='/usr' NXLIBDIR='$(NXLIBDIR)' LIBDIR='$(LIBDIR)' dh_auto_clean
+	PREFIX='/usr' NXLIBDIR=$(NXLIBDIR) LIBDIR=$(LIBDIR) dh_auto_clean
 	rm -f Makefile.perl
 
 override_dh_gencontrol:
