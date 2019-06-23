@@ -40,7 +40,7 @@ build-arch:
 
 build-indep: build_pod2man build_man2html
 	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
-		for gen_file in "$${!dir}/"*; do \
+		for gen_file in "$${dir}/"*; do \
 			file="$${gen_file%.in}"; \
 			if [ "$${gen_file}" != "$${file}" ]; then \
 				$$("# Copy the file first, making sure we keep permissions."); \
@@ -98,7 +98,7 @@ clean-arch:
 
 clean-indep: clean_man2html
 	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
-		for gen_file in "$${!dir}/"*; do \
+		for gen_file in "$${dir}/"*; do \
 			file="$${gen_file%.in}"; \
 			if [ "$${gen_file}" != "$${file}" ]; then \
 				$(RM_FILE) "$${file}"; \
@@ -125,7 +125,7 @@ install_scripts:
 		$(INSTALL_DIR) "$${dest}"; \
 		\
 		$("# Iterate over files and ..."); \
-		for gen_file in "$${!dir}/"*; do \
+		for gen_file in "$${dir}/"*; do \
 			file="$${gen_file%.in}"; \
 			$("# ... filter out generation templates and anything not ending in '.features' for the feature directory."); \
 			if [ "$${gen_file}" != "$${file}" ] || ( [ "$${dir}" = 'share/x2gofeature.d' ] && [ "$${file%.features}" = "$${file}" ] ); then \
@@ -179,7 +179,7 @@ uninstall_scripts:
 		$(INSTALL_DIR) "$${dest}"; \
 		\
 		$("# Iterate over files and ..."); \
-		for gen_file in "$${!dir}/"*; do \
+		for gen_file in "$${dir}/"*; do \
 			$("# ... map generation templates to generated files (so that uninstallation works correctly after cleaning as well)."); \
 			file="$${gen_file%.in}"; \
 			$(RM_FILE) "$${dest}/$${file}"; \
