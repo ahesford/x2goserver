@@ -40,8 +40,8 @@ fi
 typeset x2go_share_subdir="${installed_sharedir#${installed_prefix}}"
 typeset x2go_lib_subdir="${installed_libdir#${installed_prefix}}"
 
-if [ "${x2go_lib_subdir}" = "${installed_libdir}" ]; then
-	printf 'WARNING: X2Go Server was built with a LIBDIR (%s) not starting with PREFIX (%s). Such a setup will likely not work correctly.\n' "${installed_libdir}" "${installed_prefix}" >&2
+if [ "${x2go_share_subdir}" = "${installed_sharedir}" ] || [ "${x2go_lib_subdir}" = "${installed_libdir}" ]; then
+	printf 'WARNING: X2Go Server was built with a SHAREDIR (%s) or LIBDIR (%s) not starting with PREFIX (%s). Such a setup will likely not work correctly.\n' "${installed_sharedir}" "${installed_libdir}" "${installed_prefix}" >&2
 fi
 
 # Try to fetch the system library dir.
