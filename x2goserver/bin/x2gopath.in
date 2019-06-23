@@ -28,7 +28,7 @@ typeset installed_nxlibdir='@@NXLIBDIR@@'
 typeset installed_sharedir='@@SHAREDIR@@'
 
 typeset base="${BASH_SOURCE[0]%/*}"
-if test "${base}" = "${BASH_SOURCE[0]}"; then
+if [ "${base}" = "${BASH_SOURCE[0]}" ]; then
 	base='.'
 fi
 
