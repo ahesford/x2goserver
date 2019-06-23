@@ -112,6 +112,14 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     - x2goserver/bin/x2gopath.in: use [] instead of test, for consistency.
     - x2goserver/Makefile: remove indirections, not needed any longer and
       leading to build failures now.
+    - x2goserver/Makefile: fix "inline" commenting syntax. Wrapping everything
+      as one string leads to the shell interpreting it as a verbatim command,
+      which will fail execution. Dropping quotes SHOULD™ work, but doesn't,
+      because the outer shell is treating as a comment for itself - leading to
+      it ignoring everything else on that line, including the closing
+      parenthesis. Escaping the hash char only leads to the initial situation
+      with it being parsed as a comment. Backticks would work, but are ugly.
+      Hence, just use the colon pseudo-command.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

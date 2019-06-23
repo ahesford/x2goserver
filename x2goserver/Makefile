@@ -43,10 +43,10 @@ build-indep: build_pod2man build_man2html
 		for gen_file in "$${dir}/"*; do \
 			file="$${gen_file%.in}"; \
 			if [ "$${gen_file}" != "$${file}" ]; then \
-				$$("# Copy the file first, making sure we keep permissions."); \
+				$$(: "Copy the file first, making sure we keep permissions."); \
 				cp -a "$${gen_file}" "$${file}"; \
 				\
-				$$("# Run actual substitutions."); \
+				$$(: "Run actual substitutions."); \
 				PREFIX='$(PREFIX)'; \
 				ETCDIR='$(ETCDIR)'; \
 				BINDIR='$(BINDIR)'; \
@@ -113,7 +113,7 @@ install: build install_scripts install_config install_man install_version
 
 install_scripts:
 	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
-		$("# Create (and save) destination directory."); \
+		$(: "Create (and save) destination directory."); \
 		dest='$(DESTDIR)'; \
 		case "$${dir}" in \
 			('bin') dest="$${dest}$(BINDIR)/";; \
@@ -124,10 +124,10 @@ install_scripts:
 		esac; \
 		$(INSTALL_DIR) "$${dest}"; \
 		\
-		$("# Iterate over files and ..."); \
+		$(: "Iterate over files and ..."); \
 		for gen_file in "$${dir}/"*; do \
 			file="$${gen_file%.in}"; \
-			$("# ... filter out generation templates and anything not ending in '.features' for the feature directory."); \
+			$(: "... filter out generation templates and anything not ending in '.features' for the feature directory."); \
 			if [ "$${gen_file}" != "$${file}" ] || ( [ "$${dir}" = 'share/x2gofeature.d' ] && [ "$${file%.features}" = "$${file}" ] ); then \
 				continue; \
 			fi; \
@@ -167,7 +167,7 @@ uninstall: uninstall_scripts uninstall_config uninstall_man uninstall_version
 
 uninstall_scripts:
 	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
-		$("# Create (and save) destination directory."); \
+		$(: "Create (and save) destination directory."); \
 		dest='$(DESTDIR)'; \
 		case "$${dir}" in \
 			('bin') dest="$${dest}$(BINDIR)/";; \
@@ -178,9 +178,9 @@ uninstall_scripts:
 		esac; \
 		$(INSTALL_DIR) "$${dest}"; \
 		\
-		$("# Iterate over files and ..."); \
+		$(: "Iterate over files and ..."); \
 		for gen_file in "$${dir}/"*; do \
-			$("# ... map generation templates to generated files (so that uninstallation works correctly after cleaning as well)."); \
+			$(: "... map generation templates to generated files (so that uninstallation works correctly after cleaning as well)."); \
 			file="$${gen_file%.in}"; \
 			$(RM_FILE) "$${dest}/$${file}"; \
 		done; \
