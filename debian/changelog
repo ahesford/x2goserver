@@ -132,6 +132,7 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
       needlessly complicated in this context.
     - x2goserver/Makefile: fix shell quoting issue with newly exported
       ${DESTDIR} variable.
+    - x2goserver/bin/x2gopath.in: more test -> [] conversion.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

@@ -56,6 +56,6 @@ case "${1}" in
 	(*) exit 1;;
 esac;
 
-if test -t 1; then
+if [ -t '1' ]; then
 	printf '\n'
 fi
