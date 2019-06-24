@@ -120,8 +120,8 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
       parenthesis. Escaping the hash char only leads to the initial situation
       with it being parsed as a comment. Backticks would work, but are ugly.
       Hence, just use the colon pseudo-command.
-    - x2goserver/bin/x2gopath.in: fix syntax error due to non-duplicated
-      dollar signs in comment lines.
+    - x2goserver/Makefile: fix syntax error due to non-duplicated dollar signs
+      in comment lines.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
