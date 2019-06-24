@@ -46,13 +46,32 @@ if [ "${x2go_share_subdir}" = "${installed_sharedir}" ] || [ "${x2go_lib_subdir}
 	printf 'WARNING: X2Go Server was built with a SHAREDIR (%s), LIBDIR (%s) or NXLIBDIR (%s) not starting with PREFIX (%s). Such a setup will likely not work correctly.\n' "${installed_sharedir}" "${installed_libdir}" "${installed_nxlibdir}" "${installed_prefix}" >&2
 fi
 
+# Hopefully helpful diagnostic messages.
+typeset x2go_libpath="${base}/${x2go_lib_subdir}"
+typeset x2go_sharepath="${base}/${x2go_share_subdir}"
+typeset x2go_nxx11path="${base}/${x2go_nxlib_subdir}/X11"
+typeset x2go_xineramapath="${base}/${x2go_nxlib_subdir}/X11/Xinerama"
+typeset -a desc_arr
+typeset -a val_arr
+desc_arr=( 'library path' 'share path' 'nx-X11 path' 'xinerama path' )
+val_arr=( 'x2go_libpath' 'x2go_sharepath' 'x2go_nxx11path' 'x2go_xineramapath' )
+
+typeset -i i='0'
+for i in "${!desc_arr[@]}"; do
+	if [ ! -e "${!val_arr[i]}" ]; then
+		printf 'WARNING: determined X2Go %s (%s) does not exist. Such a setup will likely not work correctly.\n' "${desc_arr[i]}" "${!val_arr[i]}"
+	elif [ ! -d "${!val_arr[i]}" ]; then
+		printf 'WARNING: determined X2Go %s (%s) exists, but is not a directory. Such a setup will likely not work correctly.\n' "${desc_arr[i]}" "${!val_arr[i]}"
+	fi
+done
+
 # Distributions should not modify the following section, but rather build the package with their custom PREFIX, LIBDIR, SHAREDIR etc. values.
 case "${1}" in
 	('base') printf '%s' "${base}";;
-	('lib'|'libexec') printf '%s' "${base}/${x2go_lib_subdir}";;
-	('share') printf '%s' "${base}/${x2go_share_subdir}";;
-	('nx-x11') printf '%s' "${base}/${x2go_nxlib_subdir}/X11";;
-	('xinerama') printf '%s' "${base}/${x2go_nxlib_subdir}/X11/Xinerama";;
+	('lib'|'libexec') printf '%s' "${x2go_libpath}";;
+	('share') printf '%s' "${x2go_sharepath}";;
+	('nx-x11') printf '%s' "${x2go_nxx11path}";;
+	('xinerama') printf '%s' "${x2go_xineramapath}";;
 	(*) exit 1;;
 esac;
 
