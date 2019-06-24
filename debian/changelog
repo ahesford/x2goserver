@@ -130,6 +130,8 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
       script, which is not what we want to have. Correctly doing that with
       multiple runs would require the usage of temporary files, which is
       needlessly complicated in this context.
+    - x2goserver/Makefile: fix shell quoting issue with newly exported
+      ${DESTDIR} variable.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

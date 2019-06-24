@@ -111,7 +111,7 @@ install: build install_scripts install_config install_man install_version
 install_scripts:
 	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
 		$$(: "Create (and save) destination directory."); \
-		dest='$${DESTDIR}'; \
+		dest="$${DESTDIR}"; \
 		case "$${dir}" in \
 			('bin') dest="$${dest}$${BINDIR}/";; \
 			('sbin') dest="$${dest}$${SBINDIR}/";; \
@@ -165,7 +165,7 @@ uninstall: uninstall_scripts uninstall_config uninstall_man uninstall_version
 uninstall_scripts:
 	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
 		$$(: "Create (and save) destination directory."); \
-		dest='$${DESTDIR}'; \
+		dest="$${DESTDIR}"; \
 		case "$${dir}" in \
 			('bin') dest="$${dest}$${BINDIR}/";; \
 			('sbin') dest="$${dest}$${SBINDIR}/";; \
