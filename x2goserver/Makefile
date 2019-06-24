@@ -20,6 +20,8 @@ NXLIBDIR ?= $(LIBDIR)/../nx
 MANDIR ?= $(PREFIX)/share/man
 SHAREDIR ?= $(PREFIX)/share/x2go
 
+export DESTDIR PREFIX ETCDIR BINDIR SBINDIR LIBDIR NXLIBDIR MANDIR SHAREDIR
+
 BIN_SCRIPTS=$(shell cd bin && echo *)
 SBIN_SCRIPTS=$(shell cd sbin && echo *)
 LIB_FILES=$(shell cd lib && echo *)
@@ -47,14 +49,6 @@ build-indep: build_pod2man build_man2html
 				cp -a "$${gen_file}" "$${file}"; \
 				\
 				$$(: "Run actual substitutions."); \
-				PREFIX='$(PREFIX)'; \
-				ETCDIR='$(ETCDIR)'; \
-				BINDIR='$(BINDIR)'; \
-				SBINDIR='$(SBINDIR)'; \
-				LIBDIR='$(LIBDIR)'; \
-				NXLIBDIR='$(NXLIBDIR)'; \
-				MANDIR='$(MANDIR)'; \
-				SHAREDIR='$(SHAREDIR)'; \
 				for subst in 'PREFIX' 'ETCDIR' 'BINDIR' 'SBINDIR' 'LIBDIR' 'NXLIBDIR' 'MANDIR' 'SHAREDIR'; do \
 					sed -e "s#@@$${subst}@@#$${!subst}#g" "$${gen_file}" > "$${file}"; \
 				done; \
@@ -114,12 +108,12 @@ install: build install_scripts install_config install_man install_version
 install_scripts:
 	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
 		$$(: "Create (and save) destination directory."); \
-		dest='$(DESTDIR)'; \
+		dest='$${DESTDIR}'; \
 		case "$${dir}" in \
-			('bin') dest="$${dest}$(BINDIR)/";; \
-			('sbin') dest="$${dest}$(SBINDIR)/";; \
-			('lib') dest="$${dest}$(LIBDIR)/";; \
-			('share/x2gofeature.d') dest="$${dest}$(SHAREDIR)/x2gofeature.d/";; \
+			('bin') dest="$${dest}$${BINDIR}/";; \
+			('sbin') dest="$${dest}$${SBINDIR}/";; \
+			('lib') dest="$${dest}$${LIBDIR}/";; \
+			('share/x2gofeature.d') dest="$${dest}$${SHAREDIR}/x2gofeature.d/";; \
 			(*) printf '%s\n' 'Unknown component in install_scripts scriptlet.' >&2; exit '1';; \
 		esac; \
 		$(INSTALL_DIR) "$${dest}"; \
@@ -168,12 +162,12 @@ uninstall: uninstall_scripts uninstall_config uninstall_man uninstall_version
 uninstall_scripts:
 	for dir in 'bin' 'sbin' 'lib' 'share/x2gofeature.d'; do \
 		$$(: "Create (and save) destination directory."); \
-		dest='$(DESTDIR)'; \
+		dest='$${DESTDIR}'; \
 		case "$${dir}" in \
-			('bin') dest="$${dest}$(BINDIR)/";; \
-			('sbin') dest="$${dest}$(SBINDIR)/";; \
-			('lib') dest="$${dest}$(LIBDIR)/";; \
-			('share/x2gofeature.d') dest="$${dest}$(SHAREDIR)/x2gofeature.d/";; \
+			('bin') dest="$${dest}$${BINDIR}/";; \
+			('sbin') dest="$${dest}$${SBINDIR}/";; \
+			('lib') dest="$${dest}$${LIBDIR}/";; \
+			('share/x2gofeature.d') dest="$${dest}$${SHAREDIR}/x2gofeature.d/";; \
 			(*) printf '%s\n' 'Unknown component in uninstall_scripts scriptlet.'; exit '1';; \
 		esac; \
 		$(INSTALL_DIR) "$${dest}"; \
