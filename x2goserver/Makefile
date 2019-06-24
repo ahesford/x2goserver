@@ -49,9 +49,12 @@ build-indep: build_pod2man build_man2html
 				cp -a "$${gen_file}" "$${file}"; \
 				\
 				$$(: "Run actual substitutions."); \
+				typeset -a sed_args; \
+				sed_args=(); \
 				for subst in 'PREFIX' 'ETCDIR' 'BINDIR' 'SBINDIR' 'LIBDIR' 'NXLIBDIR' 'MANDIR' 'SHAREDIR'; do \
-					sed -e "s#@@$${subst}@@#$${!subst}#g" "$${gen_file}" > "$${file}"; \
+					sed_args+=( '-e' "s#@@$${subst}@@#$${!subst}#g" ); \
 				done; \
+				sed "$${sed_args[@]}" "$${gen_file}" > "$${file}"; \
 			fi; \
 		done; \
 	done
