@@ -147,6 +147,9 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
       canonicalizing installed path values.
     - x2goserver/bin/x2gopath.in: avoid double slashes since we now know that
       paths will be canonical.
+    - x2goserver/bin/x2gopath.in: make xinerama path optional, newer releases
+      don't use it any longer, so failures to find it should not result in a
+      warning message.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
