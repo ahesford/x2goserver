@@ -56,8 +56,8 @@ install_config:
 	$(INSTALL_SYMLINK) /etc/X11/Xresources          $(DESTDIR)$(ETCDIR)/
 	if [ -e /etc/debian_version ] || [ -e /etc/devuan_version ]; then if [ -e $(XSESSIONOPTIONFILE) ]; then $(INSTALL_SYMLINK) $(XSESSIONOPTIONFILE) $(DESTDIR)$(ETCDIR)/Xsession.options; else touch $(DESTDIR)$(ETCDIR)/Xsession.options; fi; fi
 	if [ -e /etc/debian_version ] || [ -e /etc/devuan_version ]; then if [ -d $(XSESSIONDIR) ]; then $(RM_FILE) $(DESTDIR)$(ETCDIR)/Xsession.d; $(INSTALL_SYMLINK) $(XSESSIONDIR) $(DESTDIR)$(ETCDIR)/Xsession.d; else $(INSTALL_DIR) $(DESTDIR)$(ETCDIR)/Xsession.d; fi; fi
-	if [ -e /etc/redhat-release ] || [ -e /etc/gentoo-release ]; then if [ -d $(XINITRCDIR) ]; then $(INSTALL_SYMLINK) $(XINITRCDIR) $(DESTDIR)$(ETCDIR)/xinitrc.d; else $(INSTALL_DIR) $(DESTDIR)$(ETCDIR)/xinitrc.d; fi; fi
-	if [ -e /etc/redhat-release ] || [ -e /etc/gentoo-release ]; then if [ -d $(XCLIENTSDIR) ]; then $(INSTALL_SYMLINK) $(XCLIENTSDIR) $(DESTDIR)$(ETCDIR)/Xclients.d; else $(INSTALL_DIR) $(DESTDIR)$(ETCDIR)/Xclients.d; fi; fi
+	if [ -e /etc/redhat-release ] || [ -e /etc/gentoo-release ] || [ -e /etc/rt-os-release ]; then if [ -d $(XINITRCDIR) ]; then $(INSTALL_SYMLINK) $(XINITRCDIR) $(DESTDIR)$(ETCDIR)/xinitrc.d; else $(INSTALL_DIR) $(DESTDIR)$(ETCDIR)/xinitrc.d; fi; fi
+	if [ -e /etc/redhat-release ] || [ -e /etc/gentoo-release ] || [ -e /etc/rt-os-release ]; then if [ -d $(XCLIENTSDIR) ]; then $(INSTALL_SYMLINK) $(XCLIENTSDIR) $(DESTDIR)$(ETCDIR)/Xclients.d; else $(INSTALL_DIR) $(DESTDIR)$(ETCDIR)/Xclients.d; fi; fi
 	if [ -e /etc/os-release ] && cat /etc/os-release | grep "suse" 1>/dev/null || [ -d /usr/share/doc/packages/brp-check-suse ]; then if [ -d $(XINITRCDIR) ]; then $(INSTALL_SYMLINK) $(XINITRCDIR) $(DESTDIR)$(ETCDIR)/xinitrc.d; else $(INSTALL_DIR) $(DESTDIR)$(ETCDIR)/xinitrc.d; fi; fi
 
 install_man:
