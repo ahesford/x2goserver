@@ -68,12 +68,10 @@ if [ "${x2go_share_subdir}" = "${installed_sharedir}" ] || [ "${x2go_lib_subdir}
 fi
 
 # Hopefully helpful diagnostic messages.
-typeset x2go_libpath="${base}/${x2go_lib_subdir}"
-typeset x2go_sharepath="${base}/${x2go_share_subdir}"
-typeset x2go_nxx11path="${base}/${x2go_nxlib_subdir}/X11"
-typeset x2go_xineramapath="${base}/${x2go_nxlib_subdir}/X11/Xinerama"
-typeset -a desc_arr
-typeset -a val_arr
+typeset x2go_libpath="${base}${x2go_lib_subdir}"
+typeset x2go_sharepath="${base}${x2go_share_subdir}"
+typeset x2go_nxx11path="${base}${x2go_nxlib_subdir}/X11"
+typeset x2go_xineramapath="${base}${x2go_nxlib_subdir}/X11/Xinerama"
 desc_arr=( 'library path' 'share path' 'nx-X11 path' 'xinerama path' )
 val_arr=( 'x2go_libpath' 'x2go_sharepath' 'x2go_nxx11path' 'x2go_xineramapath' )
 
