@@ -143,6 +143,8 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
       RPM-based section.
     - x2goserver-xsession/Makefile: generate RPM-based symlinks for Slackware.
     - x2goserver/bin/x2gopath.in: more quoting.
+    - x2goserver/bin/x2gopath.in: avoid spurious warning messages by
+      canonicalizing installed path values.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

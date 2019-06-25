@@ -34,6 +34,27 @@ fi
 
 base="$(readlink -f "${base}/..")"
 
+# Try to sanitize install locations.
+typeset installed_prefix_sanitized="$(readlink -e "${installed_prefix}")"
+typeset installed_libdir_sanitized="$(readlink -e "${installed_libdir}")"
+typeset installed_nxlibdir_sanitized="$(readlink -e "${installed_nxlibdir}")"
+typeset installed_sharedir_sanitized="$(readlink -e "${installed_sharedir}")"
+typeset -a desc_arr
+typeset -a val_arr
+desc_arr=( 'prefix' 'library path' 'nx path' 'share path' )
+val_arr=( 'prefix' 'libdir' 'nxlibdir' 'sharedir' )
+
+typeset -i i='0'
+for i in "${!desc_arr[@]}"; do
+	typeset val_indirect="installed_${val_arr[i]}"
+	typeset sanitized_val_indirect="${val_indirect}_sanitized"
+	if [ -z "${!sanitized_val_indirect}" ]; then
+		printf 'WARNING: X2Go Server was originally installed with %s %s, but this path does not on this machine. There is potential for breakage.\n' "${!desc_arr[i]}" "${!val_indirect}"
+	else
+		typeset "${val_indirect}=${!sanitized_val_indirect}"
+	fi
+done
+
 if [ "${base}" != "${installed_prefix}" ]; then
 	printf 'WARNING: X2Go Server was originally installed into %s, but seems to have been re-rooted to %s. There is potential for breakage.\n' "${installed_prefix}" "${base}" >&2
 fi
