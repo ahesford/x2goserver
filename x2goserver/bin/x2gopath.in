@@ -72,7 +72,7 @@ case "${1}" in
 	('share') printf '%s' "${x2go_sharepath}";;
 	('nx-x11') printf '%s' "${x2go_nxx11path}";;
 	('xinerama') printf '%s' "${x2go_xineramapath}";;
-	(*) exit 1;;
+	(*) exit '1';;
 esac;
 
 if [ -t '1' ]; then
