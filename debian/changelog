@@ -135,6 +135,9 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     - x2goserver/bin/x2gopath.in: more test -> [] conversion.
     - x2goserver/bin/x2gopath.in: output warning messages if directories do
       not exist.
+    - x2goserver-xsession/Makefile: correctly generate Xsession symlinks when
+      building on Devuan. No special conffile handling here since we don't
+      actually build Devuan packages.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
