@@ -1,0 +1,3 @@
+etc/x2go/x2gokdrive.options
+usr/share/x2go/versions/VERSION.x2goserver-x2gokdrive
+usr/share/x2go/x2gofeature.d/x2goserver-x2gokdrive.*

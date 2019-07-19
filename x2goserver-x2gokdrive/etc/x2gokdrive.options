@@ -1,0 +1,50 @@
+#
+# This file can be used to specify default options that are passed to x2gokdrive.
+#
+# These options can be overridden by the client!
+#
+# See the output of `x2gokdrive -help` for the full list of options.
+#
+# Remember:
+# "-extension" disables an extension.
+# "+extension" enables an extension.
+
+X2GO_X2GOKDRIVE_DEFAULT_OPTIONS=""
+
+# FIXME: check if this works with X2Go KDrive!!!
+#
+# Uncomment to disable GLX, the old mesa version is hopelessly outdated anyways.
+# Unbreaks the gnome3 control center
+#
+#X2GO_X2GOKDRIVE_DEFAULT_OPTIONS+=" -extension GLX"
+
+# FIXME: check if this works with X2Go KDrive!!!
+#
+# Launch X2Go's X-server x2goagent with option "-nolisten tcp".
+#
+# This is the default setting and the X2Go developers really recommend not to
+# touch this. However, if you play with this (i.e. if you comment it out) you
+# should really know what you are doing.
+#
+# For everyone else: don't touch the line below!!!
+X2GO_X2GOKDRIVE_DEFAULT_OPTIONS+=" -nolisten tcp"
+
+# FIXME: check if this works with X2Go KDrive!!!
+#
+# Enforce clipboard behaviour in X2Go sessions globally (for all connecting clients)
+# Possible values for the -clipboard option: both, server, client, none
+# If this option stays commented out, clients can choose the sessions' clipboard behaviour...
+#X2GO_X2GOKDRIVE_DEFAULT_OPTIONS+=" -clipboard both"
+
+# FIXME: check if this works with X2Go KDrive!!!
+#
+# BIG-REQUESTS can be problematic. Older versions of nx-libs did not implement
+# this extension correctly, leading to all sorts of weird crashes if left
+# enabled.
+# Newer versions should handle this extension much better, but if you see
+# crashes related to BIG-REQUESTS, uncomment this line to disable the
+# extension.
+#X2GO_X2GOKDRIVE_DEFAULT_OPTIONS+=" -extension BIG-REQUESTS"
+
+# Extra nxagent nx/nx options, separated by commas.  For example: sleep=0
+X2GO_NXOPTIONS=""

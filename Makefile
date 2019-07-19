@@ -22,6 +22,7 @@ build_man2html:
 	$(MAKE) -C x2goserver $@
 	$(MAKE) -C libx2go-server-db-perl $@
 	$(MAKE) -C x2goserver-x2goagent $@
+	$(MAKE) -C x2goserver-x2gokdrive $@
 	$(MAKE) -C x2goserver-printing $@
 	$(MAKE) -C x2goserver-extensions $@
 	$(MAKE) -C x2goserver-xsession $@
@@ -34,6 +35,7 @@ clean:
 	$(MAKE) -C x2goserver $@
 	$(MAKE) -C libx2go-server-db-perl $@
 	$(MAKE) -C x2goserver-x2goagent $@
+	$(MAKE) -C x2goserver-x2gokdrive $@
 	$(MAKE) -C x2goserver-printing $@
 	$(MAKE) -C x2goserver-extensions $@
 	$(MAKE) -C x2goserver-xsession $@
@@ -46,6 +48,7 @@ distclean:
 	$(MAKE) -C x2goserver clean
 	$(MAKE) -C libx2go-server-db-perl clean
 	$(MAKE) -C x2goserver-x2goagent clean
+	$(MAKE) -C x2goserver-x2gokdrive $@
 	$(MAKE) -C x2goserver-printing clean
 	$(MAKE) -C x2goserver-extensions clean
 	$(MAKE) -C x2goserver-xsession clean
@@ -57,6 +60,7 @@ build-arch:
 	$(MAKE) -C x2goserver $@
 	$(MAKE) -C libx2go-server-db-perl $@
 	$(MAKE) -C x2goserver-x2goagent $@
+	$(MAKE) -C x2goserver-x2gokdrive $@
 	$(MAKE) -C x2goserver-printing $@
 	$(MAKE) -C x2goserver-extensions $@
 	$(MAKE) -C x2goserver-xsession $@
@@ -70,6 +74,7 @@ build-indep:
 	$(MAKE) -C x2goserver $@
 	$(MAKE) -C libx2go-server-db-perl $@
 	$(MAKE) -C x2goserver-x2goagent $@
+	$(MAKE) -C x2goserver-x2gokdrive $@
 	$(MAKE) -C x2goserver-printing $@
 	$(MAKE) -C x2goserver-extensions $@
 	$(MAKE) -C x2goserver-xsession $@
@@ -82,6 +87,7 @@ install:
 	$(MAKE) -C x2goserver $@
 	$(MAKE) -C libx2go-server-db-perl $@
 	$(MAKE) -C x2goserver-x2goagent $@
+	$(MAKE) -C x2goserver-x2gokdrive $@
 	$(MAKE) -C x2goserver-printing $@
 	$(MAKE) -C x2goserver-extensions $@
 	$(MAKE) -C x2goserver-xsession $@
@@ -91,6 +97,7 @@ install:
 uninstall:
 	$(MAKE) -C x2goserver-printing $@
 	$(MAKE) -C x2goserver-x2goagent $@
+	$(MAKE) -C x2goserver-x2gokdrive $@
 	$(MAKE) -C x2goserver-xsession $@
 	$(MAKE) -C x2goserver-desktopsharing $@
 	$(MAKE) -C x2goserver-fmbindings $@

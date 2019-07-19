@@ -357,6 +357,33 @@ The x2goserver-x2goagent package is a wrapper that activates X2Go
 branding in nxagent. Please refer to the nxagent package's description
 for more information on NX.
 
+%package x2gokdrive
+Group:          Applications/System
+Summary:        X2Go Server's X2Go KDrive Xserver
+Requires:       xserver-x2gokdrive
+
+%description x2gokdrive
+X2Go is a server based computing environment with
+    - session resuming
+    - low bandwidth support
+    - session brokerage support
+    - client side mass storage mounting support
+    - client side printing support
+    - audio support
+    - authentication by smartcard and USB stick
+
+X2Go is a software suite that uses NX and/or KDrive technology for
+remote desktop computing.
+
+X2Go KDrive technology implements a remote X11 Xserver backend for
+modern desktop environments, namely desktops derived from the GNOME
+desktop shell.
+
+X2Go KDrive does not require an XServer on the client-side, only the
+X11-independent x2gokdriveclient. esktop session data transfers from
+server to client use differential image compression and image data gets
+cached client-side.
+
 %package printing
 Summary:        X2Go Server (printing support)
 Requires:       %{name} = %{version}-%{release}
@@ -1030,6 +1057,15 @@ fi
 %{_mandir}/man1/x2goagent.1*
 %config(noreplace) %{_sysconfdir}/x2go/x2goagent.options
 %config(noreplace) %{_sysconfdir}/x2go/keystrokes.cfg
+
+
+%files x2goagent
+%defattr(-,root,root)
+%doc debian/copyright
+%doc debian/changelog
+%{_datadir}/x2go/versions/VERSION.x2goserver-x2gokdrive
+%{_datadir}/x2go/x2gofeature.d/x2goserver-x2gokdrive.features
+%config(noreplace) %{_sysconfdir}/x2go/x2gokdrive.options
 
 
 %files printing
