@@ -13,6 +13,8 @@ x2goserver (4.1.0.4-0x2go1.1) UNRELEASED; urgency=medium
     + Add Russian debconf translation. Thanks to Lev Lamberov.
     + Add Portuguese debconf translation. Thanks to Américo Monteiro.
     + Update German translation.
+  * debian/control:
+    + Update (LONG_)DESCRIPTION of bin:pkg x2goserver-x2goagent.
 
   [ Mihai Moldovan ]
   * New upstream version (4.1.0.4):

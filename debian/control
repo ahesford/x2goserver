@@ -294,9 +294,9 @@ Breaks:
 Replaces:
  x2goagent (<< 2:3.5.99.2~),
  x2goserver (<< 4.0.1.99~),
-Description: X2Go Server's X2Go Agent
- X2Go is a software suite that uses NX technology for remote desktop
- computing.
+Description: X2Go Server's X2Go Agent Xserver
+ X2Go is a software suite that uses NX and/or KDrive technology for
+ remote desktop computing.
  .
  NX technology implements a very efficient compression of the X11
  protocol. This increases performance when using X applications over a
