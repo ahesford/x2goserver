@@ -12,16 +12,18 @@ x2golistsessions_root \- List X2Go Sessions for System
 'nh
 .fi
 .ad l
-x2golistsessions_root [\fI<server_hostname>\fR]
+x2golistsessions_root [\fI<server_hostname>\fR|--all-servers]
 
 .SH DESCRIPTION
 \fBx2golistsessions_root\fR shows a list of all available X2Go sessions on the server \fI<server_hostname>\fR.
 If no server hostname is given at the command line, the session list query runs for the local system.
+If the option \fI\-\-all\-servers\fR is given, all X2Go Servers (on a terminal server farm) are queried and sessions
+from all servers get listed.
 .PP
 \fBx2golistsessions_root\fR must be run with root privileges.
 .PP
 .SH RETURN VALUES
-Same as explained in x2golistsessions(8).
+Same as explained in x2golistsessions(1).
 .SH SEE ALSO
 x2golistsessions(8)
 .SH AUTHOR

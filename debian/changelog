@@ -8,6 +8,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       non-absolute path (e.g. it contains '../'). (Fixes: #1357).
     - Add X2Go KDrive support (wrapper package: x2goserver-x2gokdrive).
     - Add man page for x2gocleansessions.
+    - x2goserver/man/man8/x2golistsessions_root.8: Mention --all-servers
+      option. (Fixes: #1395).
   * debian/x2goserver.postinst:
     + Drop duplicate sourcing of debconf includes.
     + Add Dutch debconf translation. Thanks to Frans Spiesschaert.
