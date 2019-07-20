@@ -1066,7 +1066,7 @@ fi
 %config(noreplace) %{_sysconfdir}/x2go/keystrokes.cfg
 
 
-%files x2goagent
+%files x2gokdrive
 %defattr(-,root,root)
 %doc debian/copyright
 %doc debian/changelog
