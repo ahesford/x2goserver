@@ -1,0 +1,10 @@
+# GNOME sessions in X2Go Server will try to create a color-manager
+# map device on session startup. Let's disable colord support on
+# this host entirely as a workaround.
+#
+# See: https://gitlab.gnome.org/GNOME/gnome-settings-daemon/issues/273
+
+[Allow all users to manage color devices]
+Identity=unix-user:*
+Action=org.freedesktop.color-manager.*
+ResultAny=no

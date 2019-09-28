@@ -142,6 +142,12 @@ install_config:
 	$(INSTALL_FILE) etc/sudoers.d/x2goserver $(DESTDIR)/etc/sudoers.d/
 	$(INSTALL_DIR) $(DESTDIR)/etc/logcheck/ignore.d.server || true
 	$(INSTALL_FILE) etc/logcheck/ignore.d.server/x2goserver $(DESTDIR)/etc/logcheck/ignore.d.server/
+	# keep this commented out, until x2goserver.spec knows how to
+	# handle pkla/rules file installation for what RPM distro / version
+	#$(INSTALL_DIR) $(DESTDIR)/etc/polkit-1/localauthority/10-vendor.d/ || true
+	#$(INSTALL_FILE) etc/polkit-1/localauthority/10-vendor.d/x2goserver-no-colord.pkla $(DESTDIR)/etc/polkit-1/localauthority/10-vendor.d/
+	#$(INSTALL_DIR) $(DESTDIR)/etc/polkit-1/rules.d/ || true
+	#$(INSTALL_FILE) etc/polkit-1/rules.d/x2goserver-no-colord.rules $(DESTDIR)/etc/polkit-1/rules.d/
 
 install_man:
 	$(INSTALL_DIR) $(DESTDIR)$(MANDIR)

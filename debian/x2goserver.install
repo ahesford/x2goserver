@@ -1,4 +1,6 @@
 etc/logcheck/ignore.d.server/x2goserver
+x2goserver/etc/polkit-1/localauthority/10-vendor.d/x2goserver-no-colord.pkla etc/polkit-1/localauthority/10-vendor.d/
+#x2goserver/etc/polkit-1/rules.d/x2goserver-no-colord.rules etc/polkit-1/rules.d/
 etc/sudoers.d/x2goserver
 etc/x2go/x2go_logout*
 usr/bin/x2gobasepath

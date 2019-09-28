@@ -12,6 +12,13 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       option. (Fixes: #1395).
     - x2goruncommand: Support GNOME-based Ubuntu sessions (via X2Go Kdrive)
       as provided by Ubuntu 18.04 or later.
+    - GNOME sessions: Avoid firing up of a polkit-1 authentication dialog
+      requesting admin credentials to register a new color map device.
+      See GNOME bug:
+      https://gitlab.gnome.org/GNOME/gnome-settings-daemon/issues/273
+      This change only gets activated for Debian for now and focuses
+      on policykit-1 (<= 0.105). (Debian maintainers of policykit-1
+      are holding back newer versions for unknown reason).
   * debian/x2goserver.postinst:
     + Drop duplicate sourcing of debconf includes.
     + Add Dutch debconf translation. Thanks to Frans Spiesschaert.

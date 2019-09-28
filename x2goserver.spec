@@ -159,6 +159,11 @@ Requires:       x2goserver-xsession
 Suggests:     x2goserver-fmbindings
 Suggests:     x2goserver-printing
 %endif
+#Requires:       polkit-pkla-compat (or polkit <= 0.105)
+#                -> /etc/polkit-1/localauthority/10-vendor.d/x2goserver-no-colord.pkla
+#or
+#Requires:       polkit (>= 0.106)
+#                -> /etc/polkit-1/rules.d/x2goserver-no-colord.rules
 
 %{?perl_default_filter}
 
@@ -896,6 +901,10 @@ fi
 %if ( ! 0%{?suse_version} ) || 0%{?suse_version} >= 1210
 %config(noreplace) %{_sysconfdir}/sudoers.d/x2goserver
 %endif
+### polkit (<= 0.105)
+#%config(noreplace) %{_sysconfdir}/polkit-1/localauthority/10-vendor.d/x2goserver-no-colord.pkla
+## polkit (>= 0.106)
+#%config(noreplace) %{_sysconfdir}/polkit-1/rules.d/x2goserver-no-colord.rules
 %{_bindir}/x2go*
 %exclude %{_bindir}/x2goserver-run-extensions
 %exclude %{_bindir}/x2gofm
