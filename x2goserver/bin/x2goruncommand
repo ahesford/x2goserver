@@ -128,7 +128,7 @@ fi
 #		Note that we are assuming that the user has gnome-session
 #		3.9.90-0ubuntu12.1 or later on 14.04, or 3.9.90-0ubuntu16.1 on
 #		14.10, which added --disable-acceleration-check .
-# Ubuntu 15.04 (vivid) & later:
+# Ubuntu 15.04 (vivid) up to 17.10 (artful):
 #		GNOME -> gnome-session --session=gnome-flashback-metacity --disable-acceleration-check
 #		UNITY -> gnome-session --session=ubuntu
 #		(GNOME3 based desktop shells)
@@ -142,10 +142,21 @@ fi
 #
 #		Also note that the XDG_CURRENT_DESKTOP value comes from
 #		"DesktopNames" in the /usr/share/xsessions/ .desktop file
+# Ubuntu 18.04 (bionic) & later (must use X2Go Kdrive)
+#
+#               UBUNTU (GNOME-based) ->
+#               env GNOME_SHELL_SESSION_MODE=ubuntu
+#               gnome-session --session=ubuntu
 
 if [ "$cmd" == "GNOME" ] || [ "$cmd" == "gnome-session" ]; then
 	cmd="/usr/bin/gnome-session"
-	if [ "$DISTRIB_ID" == "Ubuntu" ] && [ "$(echo "$DISTRIB_RELEASE >= 15.04" | bc)" == "1" ]; then
+
+	if [ "$DISTRIB_ID" == "Ubuntu" ] && [ "$(echo "$DISTRIB_RELEASE >= 18.04" | bc)" == "1" ]; then
+		export DESKTOP_SESSION="ubuntu"
+		export XGD_SESSION_DESKTOP="$DESKTOP_SESSION"
+		export GNOME_SHELL_SESSION_MODE="ubuntu"
+		args=" --session=ubuntu"
+	elif [ "$DISTRIB_ID" == "Ubuntu" ] && [ "$(echo "$DISTRIB_RELEASE >= 15.04" | bc)" == "1" ] && [ "$(echo "$DISTRIB_RELEASE <= 17.11" | bc)" == "1" ]; then
 		export DESKTOP_SESSION="gnome-flashback-metacity"
 		if [ -z "$GTK_MODULES" ] ; then
 			export GTK_MODULES="unity-gtk-module"
