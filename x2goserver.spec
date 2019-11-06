@@ -372,7 +372,7 @@ on NX.
 %package x2gokdrive
 Group:          Applications/System
 Summary:        X2Go Server's X2Go KDrive Xserver
-Requires:       xserver-x2gokdrive
+Requires:       xorg-x11-server-x2gokdrive
 
 %description x2gokdrive
 X2Go is a server based computing environment with
