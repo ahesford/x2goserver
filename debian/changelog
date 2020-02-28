@@ -172,6 +172,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       agent-startup-time configurable option, to be set to the allowed time
       period in seconds between session creation and agent PID insertion into
       the database.
+    - x2goserver/sbin/x2gocleansessions: fetch and sanity-check
+      x2gocleansessions.agent-startup-time from config file.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

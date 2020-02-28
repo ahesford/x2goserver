@@ -32,7 +32,7 @@ use X2Go::Log qw( loglevel );
 use X2Go::SupeReNicer qw( superenice );
 use X2Go::Server::Agent qw( session_is_suspended session_is_running session_has_terminated );
 use X2Go::Server::DB qw( dbsys_rmsessionsroot );
-use X2Go::Utils qw( system_capture_stdout_output is_true );
+use X2Go::Utils qw( system_capture_stdout_output is_true is_int );
 my $x2go_lib_path = system_capture_stdout_output("x2gopath", "libexec");
 use Getopt::Long;
 use Pod::Usage;
@@ -120,6 +120,24 @@ elsif ($pid == 0 )
 	# check if we are to use the superenicer script for throttling does the nice level
 	# of suspended sessions...
 	my $Config = get_config();
+
+	my $agent_startup_time = $Config->param ("x2gocleansessions.agent-startup-time");
+	if (!(is_int ($agent_startup_time, 0))) {
+		log_message ('warning', "Agent startup time \"$agent_startup_time\" invalid/not an integer, overriding with default of 10.");
+		$agent_startup_time = 10;
+	}
+	else {
+		# Sanity checks.
+		if ($agent_startup_time < 10) {
+			log_message ('info', "Agent startup time of $agent_startup_time seconds is very low, false evictions are likely.");
+			log_message ('info', "Consider raising the agent startup time.");
+		}
+
+		if ($agent_startup_time > 120) {
+			log_message ('info', "Agent startup time of $agent_startup_time seconds is very high, invalid/stale session startup attempts may clutter the database.");
+			log_message ('info', "Consider lowering the agent startup time.");
+		}
+	}
 
 	my $superenice_enable = is_true($Config->param("superenicer.enable"));
 	my $superenice_forceuser = is_true($Config->param("superenicer.force-user-renice"));
