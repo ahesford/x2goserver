@@ -168,6 +168,10 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/bin/x2gopath.in: make xinerama path optional, newer releases
       don't use it any longer, so failures to find it should not result in a
       warning message.
+    - x2goserver-common/etc/x2goserver.conf: add x2gocleansessions section and
+      agent-startup-time configurable option, to be set to the allowed time
+      period in seconds between session creation and agent PID insertion into
+      the database.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
