@@ -204,9 +204,21 @@ elsif ($pid == 0 )
 
 			my @sinfo=split('\\|',"@outp[$i]");
 
-			# Clean up invalid sessions (i.e., those for which no nxagent process is running anymore)
-			# from the session database, if the status didn't change for more than 10 seconds.
-			if ((!@sinfo[0]) && (defined ($remembered_sessions_status_since_time{@sinfo[1]})) && ((time () - $remembered_sessions_status_since_time{@sinfo[1]}) >= 10))
+			# Clean up invalid sessions (i.e., those for which nxagent failed to spawn to begin with)
+			# from the session database, if the status didn't change for more than X seconds.
+			# The agent PID field (@sinfo[0]) is currently only updated through the createsession
+			# function, which assigns a value.
+			# This value is *not* automatically removed from the DB if the process dies, so,
+			# crucially, the only situations in which the agent PID can be empty/NULL are the early
+			# stage of session creation, specifically:
+			#   - between calling insertsession (which creates a new session entry) and createsession
+			#     (which populates a session entry with additional data, including the agent PID)
+			#   - if spawning nxagent never succeeded, which is really just a special case of the
+			#     above, since insertsession was called but createsession never will be.
+			# Originally, the "allowed nxagent startup time" was hardcoded to 10 seconds, but we
+			# encountered situations/machines that need much longer to spawn nxagent, so this was
+			# made configurable.
+			if ((!@sinfo[0]) && (defined ($remembered_sessions_status_since_time{@sinfo[1]})) && ((time () - $remembered_sessions_status_since_time{@sinfo[1]}) >= $agent_startup_time))
 			{
 				dbsys_rmsessionsroot(@sinfo[1]);
 				next;
