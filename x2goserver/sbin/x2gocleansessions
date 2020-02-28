@@ -61,8 +61,7 @@ sub check_pid
 {
 	my $pid=shift;
 	my $sess=shift;
-	my $sec=shift;
-	if ($sec < 30)
+	if (!$pid)
 	{
 		return 1;
 	}
@@ -252,7 +251,7 @@ elsif ($pid == 0 )
 
 			if (@sinfo[4] eq 'F')
 			{
-				if (!check_pid (@sinfo[0], @sinfo[1], 100)) {
+				if (!check_pid (@sinfo[0], @sinfo[1])) {
 					# No clean up necessary, as the agent is dead.
 					# Removing sockets again would only lead to potentially
 					# overwriting the socket another session claimed in-between.
@@ -304,7 +303,7 @@ elsif ($pid == 0 )
 					system("su", "@sinfo[11]", "-s", "/bin/sh", "-c", "$x2go_lib_path/x2gormforward @sinfo[1]");
 				}
 			}
-			elsif (! check_pid (@sinfo[0],@sinfo[1],@sinfo[12]))
+			elsif (! check_pid (@sinfo[0],@sinfo[1]))
 			{
 				$user = @sinfo[11];
 
