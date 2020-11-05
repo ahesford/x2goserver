@@ -220,7 +220,7 @@ sub intermediate_to_string {
     # We can detect it through counting.
     my $elements_left = @{$options};
 
-    # Handle entries iteratively, merging then into one string.
+    # Handle entries iteratively, merging them into one string.
     foreach my $entry (@{$options}) {
       --$elements_left;
 

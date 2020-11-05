@@ -185,6 +185,7 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       treat a missing PID, which can only happen during session startup, as a
       success.
     - x2goserver/lib/x2goupdateoptionsstring: simplify a for loop a bit.
+    - x2goserver/lib/x2goupdateoptionsstring: fix typo in comment.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
