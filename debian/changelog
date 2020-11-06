@@ -189,6 +189,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: fix typo in print statement
       syntax. Non-functional.
     - x2goserver/lib/x2goupdateoptionsstring: update copyright notice.
+    - X2Go/Server/Agentt/: add new (stub) file NX/Options.pm as a library
+      version of the options string manipulation code.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
