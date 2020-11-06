@@ -661,3 +661,239 @@ sub interpret_transform {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+X2Go::Server::Agent::NX::Options - NX Options modification module
+
+=head1 SYNOPSIS
+
+ use X2Go::Server::Agent::NX::Options;
+
+ # Options string, probably read in from somewhere, but
+ # hardcoded here.
+ my $options = 'some=option,another=opt,more=values:90';
+
+ # Parse into an intermediate form.
+ my $intermediate = X2Go::Server::Agent::NX::Options::parse_options ($options);
+
+ # Check for errors.
+ die "Unable to parse option string, aborting.\n" unless (defined ($intermediate));
+
+ # Add to options string.
+ my $transform_op = '+new=value';
+
+ # Parse and sanitize transform string.
+ my $interpreted_transform_ref = X2Go::Server::Agent::NX::Options::interpret_transform ($transform_op);
+
+ # Error handling...
+ die "Invalid transformation passed, aborting.\n" unless (defined ($interpreted_transform_ref));
+
+ # Extract transformation data.
+ my ($transform_mode, $sanitized_transform) = @{$interpreted_transform_ref};
+
+ # Apply transformation.
+ $intermediate = X2Go::Server::Agent::NX::Options::transform_intermediate ($intermediate, $transform_mode, $sanitized_transform);
+
+ # Error handling ...
+ die "Error while transforming intermediate representation, aborting.\n" unless (defined ($intermediate));
+
+ # Try to remove a combination which doesn't exist, this should not modify the
+ # intermediate.
+ # No more comments for things that were already explained.
+ $transform_op = '-another=doesnotexist';
+ $interpreted_transform_ref = X2Go::Server::Agent::NX::Options::interpret_transform ($transform_op);
+ die "Invalid transformation passed, aborting.\n" unless (defined ($interpreted_transform_ref));
+ ($transform_mode, $sanitized_transform) = @{$interpreted_transform_ref};
+ $intermediate = X2Go::Server::Agent::NX::Options::transform_intermediate ($intermediate, $transform_mode, $sanitized_transform);
+ die "Error while transforming intermediate representation, aborting.\n" unless (defined ($intermediate));
+
+ # Remove a key unconditionally, this should change the intermediate.
+ $transform_op = '-some';
+ $interpreted_transform_ref = X2Go::Server::Agent::NX::Options::interpret_transform ($transform_op);
+ die "Invalid transformation passed, aborting.\n" unless (defined ($interpreted_transform_ref));
+ ($transform_mode, $sanitized_transform) = @{$interpreted_transform_ref};
+ $intermediate = X2Go::Server::Agent::NX::Options::transform_intermediate ($intermediate, $transform_mode, $sanitized_transform);
+ die "Error while transforming intermediate representation, aborting.\n" unless (defined ($intermediate));
+
+ # Modify/update a key.
+ $transform_op = '+another=newval';
+ $interpreted_transform_ref = X2Go::Server::Agent::NX::Options::interpret_transform ($transform_op);
+ die "Invalid transformation passed, aborting.\n" unless (defined ($interpreted_transform_ref));
+ ($transform_mode, $sanitized_transform) = @{$interpreted_transform_ref};
+ $intermediate = X2Go::Server::Agent::NX::Options::transform_intermediate ($intermediate, $transform_mode, $sanitized_transform);
+ die "Error while transforming intermediate representation, aborting.\n" unless (defined ($intermediate));
+
+ # Transform back into a string.
+ my $out = X2Go::Server::Agent::NX::Options::intermediate_to_string ($intermediate);
+
+ # Error handling ...
+ die "Unable to transform intermediate back into string, aborting.\n" unless (defined ($out));
+
+ # At this point, $out should be 'another=newval,more=values,new=value:90'.
+
+=head1 DESCRIPTION
+
+Use this module to modify or extract data from B<X2Go/NX Agent> options
+strings. Refer to L</OPTION STRINGS> for an in-depth description of options
+strings.
+
+First, transform the input options string into an intermediate representation
+via C<parse_options>. The options string I<must> end with a display
+specification (i.e., it must end in C<:displaynumber>).
+Parsing errors are indicated by it returning C<undef>.
+The returned value is actually a I<reference> to an I<array> of I<hash>
+I<references>, but you should make no assumptions to the layout or even its
+actual format. Treat it as a black box. Crucially, whenever an I<intermediate>
+is expected, such a I<reference> should be passed.
+
+To parse transformations, pass each one to C<interpret_transform>. Refer to
+L</TRANSFOMATIONS> for documentation on transformation formats. This will
+either return C<undef> on error, or an array of two scalars - the
+transformation mode (an internal number) and the sanitized transformation
+string (i.e., the original transformation string with any preceding operator
+removed).
+
+Pass the I<intermediate>, the I<transformation mode> and the
+I<sanitized transformation string> to C<transform_intermediate> to modify the
+intermediate value.
+
+Repeat this until the I<intermediate> is modified to your liking.
+
+Finally, pass the I<intermediate> to C<intermediate_to_string> in order to
+parse it back into a normal string. This operation is essentially the opposite
+of C<parse_options>. As usual, C<undef> is returned on error.
+
+Generally, parsing an options string to an intermediate via C<parse_options>
+and then immediately parsing it back into a string via
+C<intermediate_to_string> I<should> always produce an options string that is
+identical to the original options string (assuming no errors occurred).
+
+If this is not the case, please report a bug.
+
+=head1 OPTIONS STRINGS
+
+B<X2Go/NX Agent> options strings are fully documented in L<nxagent> and
+additional, linked places.
+
+This module is not concerned with the actual content of an options string,
+but merely its format.
+
+An options string follows the form
+[[I<key>[C<=>I<value>,]]C<:>I<displaynumber>.
+
+This has some interesting implications:
+
+=over 4
+
+=item *
+
+Key-value pairs are entirely optional. For example, an options string like
+C<:42> is well-formed.
+
+=item *
+
+Options strings I<must> end with a display number separator, i.e., a B<colon>
+(C<:>) and a display number.
+
+No parsing is done on the display number, so any string (even the empty
+string) is valid as far as this module is concerned.
+
+The display number, however, I<can not> contain a B<colon> (C<:>), since that
+would make it a new display number separator.
+
+This module will parse the options string from right to left when searching
+for the display number separator and use the first one it can find.
+
+=item *
+
+Key-value pairs are separated via a B<comma> (C<,>). Hence, this character is
+not valid in neither keys nor values. As a workaround, it can be URL-encoded,
+as, e.g., C<%2C>, and then used as part of either keys or values.
+
+=item *
+
+Key-value pairs can be empty. This is supported and empty key-value pairs will
+be preserved, but will trigger warnings at parse time.
+
+An options string such as C<,,,:65> is hence valid.
+
+=item *
+
+In a key-value pair, keys and values are separated from each other via an
+B<equal sign> (C<=>).
+
+Hence, this character is not a valid part of a key. It can, however, be a
+valid part of a value.
+
+To use this character as part of a key, it can be URL-encoded as, e.g.,
+C<%3D>.
+
+While it is legal as part of a value, it is recommended to also URL-encode it
+when used as part of a value in order to not confuse other parsers.
+
+An options string such as C<this%3Dis%3Da=key:38> is just as valid as
+C<this=is=a=key:38> or C<this=is%3Da%3Dkey:38>.
+
+However, the semantics differ. While the latter two key-value pairs are
+logically equivalent, they are logically very much different from the first
+one.
+
+For the first case, the I<key> will be C<this%3Dis%3Da> (or, logically, also
+C<this=is=a>, which can not be directly represented), while the I<value> will
+be just C<key>.
+
+The latter two will parse into a I<key> C<this> with a I<value> of C<is=a=key>
+(or, logically equivalent, C<is%3Da%3Dkey>).
+
+=item *
+
+Quoting with any character is unsupported. Quotes and other grouping
+characters (like B<curly braces> [C<{}>]) are seen verbatim without any
+special meaning.
+
+=back
+
+=head1 TRANSFORMATIONS
+
+Transformations follow the form [B<+>]|B<->I<key>[B<=>I<value>], which means
+that:
+
+=over 4
+
+=item *
+
+They can be prefixed with a B<plus> character (C<+>) to indicate either
+additions or modifications. A missing prefix character is interpreted like a
+B<plus> character.
+
+If the given I<key> already exists in the intermediate, the key-value pair
+will be updated with the provided I<value> (if any), or a new key-value pair
+added.
+
+Insertions always take place at the end of the intermediate.
+
+The I<value> can be omitted, in which case I<key> will be added without a
+value on insertions or a potentially existing value removed on updates.
+
+=item *
+
+If they are prefixed with a B<minus> character (C<->), deletion mode is
+activated.
+
+If the given I<key> is not part of the intermediate, no deletion will occur.
+
+Otherwise, the optional I<value> determines deletion: if no value has been
+provided, I<key> will be removed from the intermediate regardless of its
+value. If the optional I<value> has been provided, I<key> will only be removed
+if both values match.
+
+=back
+
+=head1 AUTHOR
+
+This manual has been written by Mihai Moldovan <ionic@ionic.de> for the X2Go
+project (https://www.x2go.org).
+
+=cut
