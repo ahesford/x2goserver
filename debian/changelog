@@ -195,6 +195,9 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       options string was missing.
     - x2goserver/lib/x2goupdateoptionsstring: move most code to
       X2Go/Server/Agent/NX/Options.pm.
+    - x2goserver/lib/x2goupdateoptionsstring: revert for loop simplification.
+      We actually depend on the subtle modification of the args reference
+      variable.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

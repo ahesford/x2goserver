@@ -73,7 +73,7 @@ sub sanitize_program_options {
   if (!($error_detected)) {
     $args = dclone ($args);
 
-    foreach my $cur_arg (@{$args}) {
+    for (my $cur_arg = shift (@{$args}); defined ($cur_arg); $cur_arg = shift (@{$args})) {
       if (q{-} eq substr ($cur_arg, 0, 1)) {
         # Looks like an option so far. Let's continue scanning.
 
