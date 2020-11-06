@@ -211,6 +211,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       string should only be quoted once (so that the shell can parse the
       quoted result). Quote the values in the variable directly and try not to
       "double-quote" the resulting string.
+  * debian/libx2go-server-perl.install:
+    + Remove duplicated entry for X2Go/Utils.pm.
 
   [ Oleksandr Shneyder ]
   * New upstream version (4.1.0.4):
