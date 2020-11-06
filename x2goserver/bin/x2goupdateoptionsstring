@@ -314,7 +314,7 @@ passed to X2Go Agent/NX Agent.
 
 Call it with optional flags, the options string as the first parameter and the
 options you want to manipulate as additional parameters. At least one
-additional parameter must be provided.
+additional parameter (i.e., a transformation) must be provided.
 
 It can either add, remove or replace components.
 

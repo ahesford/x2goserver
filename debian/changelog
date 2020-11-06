@@ -202,6 +202,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: update synopsis to include the
       optional character of a plus sign, but a non-optional character for a
       minus sign.
+    - x2goserver/lib/x2goupdateoptionsstring: make clear that "additional
+      parameters" are transformations.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
