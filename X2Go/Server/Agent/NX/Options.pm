@@ -29,7 +29,7 @@ use Storable qw (dclone);
 
 our @EXPORT_OK = qw (parse_options interpret_transform transform_intermediate intermediate_to_string);
 
-# Accepts an option string and returns a reference to an array of hashes
+# Accepts an options string and returns a reference to an array of hashes
 # (actually hash references) corresponding to the parsed key-value pairs.
 #
 # Empty components are allowed, but will issue a warning message. In such a
