@@ -741,7 +741,7 @@ sub sanitize_program_options {
             last;
           }
           else {
-            print {*STDERR} "Unknown option encountered: " . $cur_arg ."; erroring out.\n";
+            print {*STDERR} "Unknown option encountered: " . $cur_arg . "; erroring out.\n";
             $error_detected = 1;
             last;
           }
