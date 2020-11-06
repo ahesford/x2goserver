@@ -303,7 +303,7 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator
 
 =item B<x2goupdateoptionsstring> B<--man>
 
-=item B<x2goupdateoptionsstring> [B<--debug>|B<-d>] [B<-->] I<options_string> [B<->|B<+>]I<key>[B<=>I<value>] ...
+=item B<x2goupdateoptionsstring> [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
 
 =back
 
