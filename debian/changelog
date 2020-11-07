@@ -220,6 +220,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       empty keys or empty (!= non-existent) values.
     - X2Go/Server/Agent/NX/Options.pm: make sure that intermediates never
       include undef entries.
+    - x2goserver/lib/x2goupdateoptionsstring: switch to "X2Go/NX Agent" term
+      and make it bold to denote something special.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

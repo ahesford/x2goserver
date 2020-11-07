@@ -310,7 +310,7 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator
 =head1 DESCRIPTION
 
 B<x2goupdateoptionsstring> is a utility for manipulating options strings as
-passed to X2Go Agent/NX Agent.
+passed to B<X2Go/NX Agent>.
 
 Call it with optional flags, the options string as the first parameter and the
 options you want to manipulate as additional parameters. At least one
