@@ -787,13 +787,20 @@ X2Go::Server::Agent::NX::Options - NX Options modification module
 
  # Options string, probably read in from somewhere, but
  # hardcoded here.
- my $options = 'some=option,another=opt,more=values:90';
+ my $options = 'some=option,another=opt,more=values,some=override,more=data:90';
 
  # Parse into an intermediate form.
  my $intermediate = X2Go::Server::Agent::NX::Options::parse_options ($options);
 
  # Check for errors.
  die "Unable to parse option string, aborting.\n" unless (defined ($intermediate));
+
+ # (Optionally) compact it, this should make the duplicated "some" and "more"
+ # keys unique.
+ $intermediate = X2Go::Server::Agent::NX::Options::compact_intermediate ($intermediate);
+
+ # Error handling ...
+ die "Unable to compact intermediate array, aborting.\n" unless (defined ($intermediate));
 
  # Add to options string.
  my $transform_op = '+new=value';
@@ -845,7 +852,7 @@ X2Go::Server::Agent::NX::Options - NX Options modification module
  # Error handling ...
  die "Unable to transform intermediate back into string, aborting.\n" unless (defined ($out));
 
- # At this point, $out should be 'another=newval,more=values,new=value:90'.
+ # At this point, $out should be 'another=newval,more=data,new=value:90'.
 
 =head1 DESCRIPTION
 
@@ -861,6 +868,10 @@ The returned value is actually a I<reference> to an I<array> of I<hash>
 I<references>, but you should make no assumptions to the layout or even its
 actual format. Treat it as a black box. Crucially, whenever an I<intermediate>
 is expected, such a I<reference> should be passed.
+
+To remove redundant or empty entries within an options string, pass the
+I<intermediate> to C<compact_intermediate>. This is entirely optional and can
+be done at any step, as long as an I<intermediate> is available.
 
 To parse transformations, pass each one to C<interpret_transform>. Refer to
 L</TRANSFOMATIONS> for documentation on transformation formats. This will
@@ -933,6 +944,12 @@ be preserved, but will trigger warnings at parse time.
 
 An options string such as C<,,,:65> is hence valid.
 
+To remove such empty elements, use C<compact_intermediate>. An implicit empty
+element is added whenever the resulting options string would only contain the
+display number. This one I<can not> be removed, but also won't show up
+anywhere. Adding any non-empty new key will automatically replace such an
+empty element, without any need for actual compactation.
+
 =item *
 
 In a key-value pair, keys and values are separated from each other via an
@@ -981,6 +998,9 @@ It is recommended to avoid duplicate keys in the input options string.
 
 Note that, due to the nature of the supported transformations, keys can not be
 duplicated with this module.
+
+To remove duplicated keys, use C<compact_intermediate>. This will preserve the
+order in a first-seen fashion.
 
 =item *
 
