@@ -687,7 +687,7 @@ X2Go::Server::Agent::NX::Options - NX Options modification module
  # Parse and sanitize transform string.
  my $interpreted_transform_ref = X2Go::Server::Agent::NX::Options::interpret_transform ($transform_op);
 
- # Error handling...
+ # Error handling ...
  die "Invalid transformation passed, aborting.\n" unless (defined ($interpreted_transform_ref));
 
  # Extract transformation data.
