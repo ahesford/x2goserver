@@ -145,7 +145,8 @@ sub Main {
   my $help = 0;
   my $man = 0;
   my $debug = 0;
-  GetOptionsFromArray (\@program_arguments, 'help|?|h' => \$help, 'man' => \$man, 'debug|d' => \$debug) or pod2usage (2);
+  my $compact = 0;
+  GetOptionsFromArray (\@program_arguments, 'help|?|h' => \$help, 'man' => \$man, 'debug|d' => \$debug, 'compact|c' => \$compact) or pod2usage (2);
 
   if ($help) {
     pod2usage (1);
@@ -202,15 +203,29 @@ sub Main {
   }
 
   if (!($error_detected)) {
+    if ($debug) {
+      print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
+    }
+
+    if ($compact) {
+      $intermediate = X2Go::Server::Agent::NX::Options::compact_intermediate ($intermediate);
+
+      if (!(defined ($intermediate))) {
+        print {*STDERR} "Unable to compact intermediate options representation, aborting.\n";
+        $error_detected = 8;
+      }
+      elsif ($debug) {
+        print {*STDERR} 'Dumping intermediate array after compacting: ' . Dumper ($intermediate);
+      }
+    }
+  }
+
+  if (!($error_detected)) {
     $found_separator |= (0 + shift (@{$sanitized_options}));
     $sanitized_options = shift (@{$sanitized_options});
     @program_arguments = @{$sanitized_options};
 
     my $cur_transform = shift (@program_arguments);
-
-    if ($debug) {
-      print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
-    }
 
     # Nasty trick (to some degree): "do"-blocks are not recognized as loops by
     # Perl, but we could wrap the body in another block, which WILL BE recognized
@@ -222,7 +237,7 @@ sub Main {
       # Shall only be relevant for the first run of the loop.
       if (!(defined ($cur_transform))) {
         print {*STDERR} "No transformation passed, aborting.\n";
-        $error_detected = 8;
+        $error_detected = 9;
         last;
       }
 
@@ -234,7 +249,7 @@ sub Main {
 
       if (!(defined ($interpreted_transform_ref))) {
         print {*STDERR} "Invalid transformation passed, aborting.\n";
-        $error_detected = 9;
+        $error_detected = 10;
         last;
       }
 
@@ -248,7 +263,7 @@ sub Main {
 
       if (!(defined ($intermediate))) {
         print {*STDERR} "Error while transforming intermediate representation, aborting.\n";
-        $error_detected = 10;
+        $error_detected = 11;
         last;
       }
 
@@ -261,7 +276,7 @@ sub Main {
 
       if (!(defined ($sanitized_options))) {
         pod2usage (-exitval => 'NOEXIT');
-        $error_detected = 11;
+        $error_detected = 12;
         last;
       }
 
@@ -278,7 +293,7 @@ sub Main {
 
     if (!(defined ($out))) {
       print {*STDERR} "Unable to transform intermediate back into string, aborting.\n";
-      $error_detected = 12;
+      $error_detected = 13;
     }
   }
 
