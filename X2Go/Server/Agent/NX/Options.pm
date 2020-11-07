@@ -879,6 +879,14 @@ It is recommended to avoid duplicate keys in the input options string.
 Note that, due to the nature of the supported transformations, keys can not be
 duplicated with this module.
 
+=item *
+
+A key-value pair with an empty key but a non-empty value is allowed.
+
+Likewise, a key-value pair with a non-empty key, but an empty value is
+allowed. In this case, the value will be interpreted as an empty string in
+order to differentiate it from a non-existent value.
+
 =back
 
 =head1 TRANSFORMATIONS
