@@ -28,7 +28,7 @@ use English qw (-no_match_vars);
 use Storable qw (dclone);
 
 our @EXPORT_OK = qw (MODE_INVALID MODE_ADD_UPDATE MODE_REMOVE
-                     parse_options interpret_transform transform_intermediate intermediate_to_string);
+                     parse_options interpret_transform transform_intermediate intermediate_to_string compact_intermediate);
 
 
 # These are actually supposed to be enums, but since Perl doesn't have a
@@ -666,6 +666,109 @@ sub interpret_transform {
 
     # Set up return value accordingly.
     $ret = [ $mode, $sanitized_transform ];
+  }
+
+  return $ret;
+}
+
+# Compacts entries in the intermediate options array.
+#
+# Expects an intermediate options reference as its first and only parameter.
+#
+# Compacting means that:
+#   - Duplicated keys are removed, only the last one is kept.
+#   - Empty key-value pairs are discarded (unless it's the only element).
+#
+# Returns a reference to the modified, compacted intermediate options array.
+#
+# On error, returns a reference to undef.
+sub compact_intermediate {
+  my $ret = undef;
+  my $error_detected = 0;
+  my @new_intermediate = ();
+
+  my $intermediate = shift;
+
+  if ('ARRAY' ne ref ($intermediate)) {
+    print {*STDERR} 'Invalid options reference type passed (' . ref ($intermediate) . "), erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    if (0 < scalar (@{$intermediate})) {
+      foreach my $entry (@{$intermediate}) {
+        if (!defined ($entry)) {
+          print {*STDERR} "Invalid options array passed, erroring out.\n";
+          $error_detected = 1;
+        }
+      }
+    }
+  }
+
+  if (!($error_detected)) {
+    # First, save display number part.
+    my $display_number = pop (@{$intermediate});
+
+    # Here's the clever part:
+    #   - Copy data into a single hash.
+    #     This will not preserve the order, but make sure that each entry is
+    #     unique.
+    #   - To preserve the order, evict entries from the original intermediate
+    #     array iff this temporary hash already contains such a key.
+    #     This makes sure that the original intermediate array will only
+    #     contain unique entries in the right order - at least if the order is
+    #     "first seen". Implementing this in a "last seen" manner would be a
+    #     lot more complicated.
+    my %temp_hash = ();
+    @{$intermediate} = grep {
+      my $grep_ret = 0;
+
+      # This foreach loop will only execute at most once, really, since each
+      # hash in an intermediate array is supposed to contain just one element.
+      #
+      # Additionally, it might not execute at all if the hash is empty, which
+      # will implicitly remove the empty element through our $grep_ret's
+      # initial value.
+      #
+      # Do not use each () here. It doesn't shorten the code and is very
+      # sensitive to the internal iterator. Additionally, it makes
+      # modifications unsafe. While we don't need that right now, it's
+      # probably a good idea to keep this future-proof.
+      foreach my $key (keys (%{$_})) {
+        my $value = $_->{$key};
+
+        # If the key exists in the temporary hash, this element is a duplicate
+        # and we can mark it for deletion.
+        # Otherwise, we'll have to keep it.
+        if (!(exists ($temp_hash{$key}))) {
+          $grep_ret = 1;
+        }
+
+        # And in any case, update the value (or create a new entry).
+        $temp_hash{$key} = $value;
+      }
+
+      $grep_ret;
+    } @{$intermediate};
+
+    # Lastly, map values from the temporary hash back to the intermediate
+    # array.
+    foreach my $entry (@{$intermediate}) {
+      foreach my $key (keys (%{$entry})) {
+        $entry->{$key} = $temp_hash{$key};
+      }
+    }
+
+    # We need to add an empty element if the intermediate array is now empty.
+    if (0 == scalar (@{$intermediate})) {
+      print {*STDERR} "Compacting operation led to option string being empty, adding empty element though deprecated.\n";
+      push (@{$intermediate}, { });
+    }
+
+    # Lastly, re-add the display number part.
+    push (@{$intermediate}, $display_number);
+
+    $ret = $intermediate;
   }
 
   return $ret;
