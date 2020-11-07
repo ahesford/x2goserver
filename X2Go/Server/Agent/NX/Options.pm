@@ -777,8 +777,8 @@ If this is not the case, please report a bug.
 B<X2Go/NX Agent> options strings are fully documented in L<nxagent> and
 additional, linked places.
 
-This module is not concerned with the actual content of an options string,
-but merely its format.
+This module is not really concerned with the actual content of an options
+string, but mostly its format.
 
 An options string follows the form
 [[I<key>[C<=>I<value>,]]C<:>I<displaynumber>.
@@ -852,6 +852,21 @@ The latter two will parse into a I<key> C<this> with a I<value> of C<is=a=key>
 Quoting with any character is unsupported. Quotes and other grouping
 characters (like B<curly braces> [C<{}>]) are seen verbatim without any
 special meaning.
+
+=item *
+
+There are no provisions (other than the mentioned invalid characters) on the
+content of keys and values.
+
+Importantly, this also means that the same key can show up multiple times in
+the options string. Semantically, this is redundant, since only the last
+occurrence of a key (assuming the options string is parsed from left to right)
+will take any effect. Syntactically, it's completely legal, though.
+
+It is recommended to avoid duplicate keys in the input options string.
+
+Note that, due to the nature of the supported transformations, keys can not be
+duplicated with this module.
 
 =back
 
