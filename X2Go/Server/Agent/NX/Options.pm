@@ -598,7 +598,9 @@ sub transform_intermediate {
       # List::MoreUtils::any would be more appropriate here, but this would add
       # another dependency and option strings are pretty small, so don't
       # overoptimize here.
+      ## no critic (BuiltinFunctions::ProhibitBooleanGrep)
       if (scalar (grep { filter_find_key ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret}))) {
+      ## critic (BuiltinFunctions::ProhibitBooleanGrep)
         # Such an option already exists, we'll modify all occurrences.
         $elements_left = @{$ret};
         $ret = [ map { filter_option_modify ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret}) ];
@@ -899,8 +901,8 @@ If this is not the case, please report a bug.
 
 =head1 OPTIONS STRINGS
 
-B<X2Go/NX Agent> options strings are fully documented in L<nxagent> and
-additional, linked places.
+B<X2Go/NX Agent> options strings are fully documented in
+L<nxagent's documentation|nxagent> and additional, linked places therein.
 
 This module is not really concerned with the actual content of an options
 string, but mostly its format.
