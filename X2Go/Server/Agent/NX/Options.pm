@@ -27,7 +27,17 @@ use base 'Exporter';
 use English qw (-no_match_vars);
 use Storable qw (dclone);
 
-our @EXPORT_OK = qw (parse_options interpret_transform transform_intermediate intermediate_to_string);
+our @EXPORT_OK = qw (MODE_INVALID MODE_ADD_UPDATE MODE_REMOVE
+                     parse_options interpret_transform transform_intermediate intermediate_to_string);
+
+
+# These are actually supposed to be enums, but since Perl doesn't have a
+# proper way of creating enums (at least not natively), we'll emulate that
+# using small functions.
+sub MODE_INVALID { return 0; }
+sub MODE_ADD_UPDATE { return 1; }
+sub MODE_REMOVE { return 2; }
+
 
 # Accepts an options string and returns a reference to an array of hashes
 # (actually hash references) corresponding to the parsed key-value pairs.
@@ -490,8 +500,8 @@ sub filter_option_modify {
 
 # Removes from, adds to or modifies an entry in the intermediate options array.
 #
-# Expects an intermediate options reference as its first parameter, a boolean
-# value which should be set to true for removals or false for
+# Expects an intermediate options reference as its first parameter, a mode
+# value which can be either MODE_REMOVE for removals or MODE_ADD_UPDATE for
 # modifications/additions and the option-to-be-modified as a third parameter.
 #
 # For removals, the function behaves like this:
@@ -515,7 +525,7 @@ sub transform_intermediate {
   my $error_detected = 0;
 
   my $options = shift;
-  my $remove = shift;
+  my $mode = shift;
   my $option = shift;
 
   if ('ARRAY' ne ref ($options)) {
@@ -535,8 +545,8 @@ sub transform_intermediate {
   }
 
   if (!($error_detected)) {
-    if (!(defined ($remove))) {
-      print {*STDERR} "Invalid mode option boolean passed, erroring out.\n";
+    if (!(defined ($mode)) || (MODE_INVALID == $mode)) {
+      print {*STDERR} "Invalid mode option passed, erroring out.\n";
       $error_detected = 1;
     }
   }
@@ -570,7 +580,7 @@ sub transform_intermediate {
 
     my $elements_left = @{$ret};
 
-    if ($remove) {
+    if (MODE_REMOVE == $mode) {
       # Let the filter function handle the actual work.
       @{$ret} = grep { filter_option_remove ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret});
 
@@ -629,8 +639,9 @@ sub interpret_transform {
 
   my $transform = shift;
 
+  my $mode = MODE_INVALID;
   if (defined ($transform)) {
-    my $mode = 0;
+    $mode = MODE_ADD_UPDATE;
     my $sanitized_transform = $transform;
 
     # Check if non-empty, empty transform strings can only mean an
@@ -638,7 +649,7 @@ sub interpret_transform {
     if ($transform) {
       if (q{-} eq substr ($transform, 0, 1)) {
         # Option starts with a dash, so must be a removal operation.
-        $mode = 1;
+        $mode = MODE_REMOVE;
         $sanitized_transform = substr ($sanitized_transform, 1);
       }
       elsif ((q{+}) eq substr ($transform, 0, 1)) {
