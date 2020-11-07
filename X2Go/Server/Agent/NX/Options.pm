@@ -524,18 +524,18 @@ sub transform_intermediate {
   my $ret = undef;
   my $error_detected = 0;
 
-  my $options = shift;
+  my $intermediate = shift;
   my $mode = shift;
   my $option = shift;
 
-  if ('ARRAY' ne ref ($options)) {
-    print {*STDERR} 'Invalid options reference type passed (' . ref ($options) . "), erroring out.\n";
+  if ('ARRAY' ne ref ($intermediate)) {
+    print {*STDERR} 'Invalid options reference type passed (' . ref ($intermediate) . "), erroring out.\n";
     $error_detected = 1;
   }
 
   if (!($error_detected)) {
-    if (1 == scalar (@{$options})) {
-      foreach my $entry (@{$options}) {
+    if (1 == scalar (@{$intermediate})) {
+      foreach my $entry (@{$intermediate}) {
         if (!defined ($entry)) {
           print {*STDERR} "Invalid options array passed, erroring out.\n";
           $error_detected = 1;
@@ -576,7 +576,7 @@ sub transform_intermediate {
 
   if (!($error_detected)) {
     # Set return value to a *deep copy* of our original array.
-    $ret = dclone ($options);
+    $ret = dclone ($intermediate);
 
     my $elements_left = @{$ret};
 
