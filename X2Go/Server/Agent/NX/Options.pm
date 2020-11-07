@@ -207,7 +207,7 @@ sub intermediate_to_string {
   }
 
   if (!($error_detected)) {
-    if (1 == scalar (@{$options})) {
+    if (0 < scalar (@{$options})) {
       foreach my $entry (@{$options}) {
         if (!defined ($entry)) {
           print {*STDERR} "Invalid options array passed, returning undef.\n";
@@ -534,7 +534,7 @@ sub transform_intermediate {
   }
 
   if (!($error_detected)) {
-    if (1 == scalar (@{$intermediate})) {
+    if (0 < scalar (@{$intermediate})) {
       foreach my $entry (@{$intermediate}) {
         if (!defined ($entry)) {
           print {*STDERR} "Invalid options array passed, erroring out.\n";
