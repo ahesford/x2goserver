@@ -234,6 +234,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       compact_intermediate () function and its implications.
     - X2Go/Server/Agent/NX/Options.pm: fix some Perl Critic warnings and
       silence others.
+    - x2goserver/lib/x2goupdateoptionsstring: fix some Perl Critic warnings
+      and silence others.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

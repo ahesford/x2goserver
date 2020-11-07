@@ -73,7 +73,9 @@ sub sanitize_program_options {
   if (!($error_detected)) {
     $args = dclone ($args);
 
+    ## no critic (ControlStructures::ProhibitCStyleForLoops)
     for (my $cur_arg = shift (@{$args}); defined ($cur_arg); $cur_arg = shift (@{$args})) {
+    ## critic (ControlStructures::ProhibitCStyleForLoops)
       if (q{-} eq substr ($cur_arg, 0, 1)) {
         # Looks like an option so far. Let's continue scanning.
 
@@ -111,7 +113,7 @@ sub sanitize_program_options {
             last;
           }
           else {
-            print {*STDERR} "Unknown option encountered: " . $cur_arg . "; erroring out.\n";
+            print {*STDERR} q{Unknown option encountered: } . $cur_arg . "; erroring out.\n";
             $error_detected = 1;
             last;
           }
@@ -135,7 +137,9 @@ sub sanitize_program_options {
 # Main function, no code outside of it shall be executed.
 #
 # Expects @ARGV to be passed in.
+## no critic (NamingConventions::Capitalization)
 sub Main {
+## critic (NamingConventions::Capitalization)
   my @program_arguments = @_;
   my $error_detected = 0;
   my $found_separator = 0;
