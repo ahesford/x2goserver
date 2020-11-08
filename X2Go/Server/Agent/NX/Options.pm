@@ -583,7 +583,7 @@ sub transform_intermediate {
 
     if (MODE_REMOVE == $mode) {
       # Let the filter function handle the actual work.
-      @{$ret} = grep { filter_option_remove ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret});
+      @{$ret} = grep { filter_option_remove ($work_option_key, $work_option_value, $_, --$elements_left) } @{$ret};
 
       # Check to see if the intermediate representation is empty now (save for
       # the display port entry) and add an empty element if it is.
@@ -600,11 +600,11 @@ sub transform_intermediate {
       # another dependency and option strings are pretty small, so don't
       # overoptimize here.
       ## no critic (BuiltinFunctions::ProhibitBooleanGrep)
-      if (scalar (grep { filter_find_key ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret}))) {
+      if (scalar (grep { filter_find_key ($work_option_key, $work_option_value, $_, --$elements_left) } @{$ret})) {
       ## critic (BuiltinFunctions::ProhibitBooleanGrep)
         # Such an option already exists, we'll modify all occurrences.
         $elements_left = @{$ret};
-        $ret = [ map { filter_option_modify ($work_option_key, $work_option_value, $_, --$elements_left) } (@{$ret}) ];
+        $ret = [ map { filter_option_modify ($work_option_key, $work_option_value, $_, --$elements_left) } @{$ret} ];
       }
       else {
         my $new_opt = { $work_option_key => $work_option_value };
