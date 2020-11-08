@@ -1055,7 +1055,8 @@ if both values match.
 
 =head1 AUTHOR
 
-This manual has been written by Mihai Moldovan <ionic@ionic.de> for the X2Go
-project (https://www.x2go.org).
+This manual has been written by
+Mihai Moldovan L<E<lt>ionic@ionic.deE<gt>|mailto:ionic@ionic.de> for the X2Go
+project (L<https://www.x2go.org>).
 
 =cut
