@@ -859,7 +859,7 @@ X2Go::Server::Agent::NX::Options - NX Options modification module
 =head1 DESCRIPTION
 
 Use this module to modify or extract data from B<X2Go/NX Agent> options
-strings. Refer to L</OPTION STRINGS> for an in-depth description of options
+strings. Refer to L</OPTIONS STRINGS> for an in-depth description of options
 strings.
 
 First, transform the input options string into an intermediate representation
@@ -876,7 +876,7 @@ I<intermediate> to C<compact_intermediate>. This is entirely optional and can
 be done at any step, as long as an I<intermediate> is available.
 
 To parse transformations, pass each one to C<interpret_transform>. Refer to
-L</TRANSFOMATIONS> for documentation on transformation formats. This will
+L</TRANSFORMATIONS> for documentation on transformation formats. This will
 either return C<undef> on error, or an array of two scalars - the
 transformation mode (an internal number) and the sanitized transformation
 string (i.e., the original transformation string with any preceding operator

@@ -242,6 +242,7 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       when passing to grep and map operations.
     - X2Go/Server/Agent/NX/Options.pm: rework the lastly modified comment
       again, the changed explanation didn't match the reality.
+    - X2Go/Server/Agent/NX/Options.pm: fix typos in internal section links.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
