@@ -232,7 +232,7 @@ sub Main {
     $sanitized_options = shift (@{$sanitized_options});
     @program_arguments = @{$sanitized_options};
 
-    my $cur_transform = shift (@program_arguments);
+    my $transformed = 0;
 
     # Nasty trick (to some degree): "do"-blocks are not recognized as loops by
     # Perl, but we could wrap the body in another block, which WILL BE recognized
@@ -240,13 +240,8 @@ sub Main {
     # "last" won't work in such a situation, but rather behave like "next".
     # Worse, the condition will also not be checked in such a case.
     # Thus, we'd better use a real loop.
-    while (1) {
-      # Shall only be relevant for the first run of the loop.
-      if (!(defined ($cur_transform))) {
-        print {*STDERR} "No transformation passed, aborting.\n";
-        $error_detected = 9;
-        last;
-      }
+    while (defined (my $cur_transform = shift (@program_arguments))) {
+      $transformed = 1;
 
       if ($debug) {
         print {*STDERR} 'Parsing current raw transformation option: ' . Dumper ($cur_transform);
@@ -256,7 +251,7 @@ sub Main {
 
       if (!(defined ($interpreted_transform_ref))) {
         print {*STDERR} "Invalid transformation passed, aborting.\n";
-        $error_detected = 10;
+        $error_detected = 9;
         last;
       }
 
@@ -270,7 +265,7 @@ sub Main {
 
       if (!(defined ($intermediate))) {
         print {*STDERR} "Error while transforming intermediate representation, aborting.\n";
-        $error_detected = 11;
+        $error_detected = 10;
         last;
       }
 
@@ -283,14 +278,19 @@ sub Main {
 
       if (!(defined ($sanitized_options))) {
         pod2usage (-exitval => 'NOEXIT');
-        $error_detected = 12;
+        $error_detected = 11;
         last;
       }
 
       $found_separator |= (0 + shift (@{$sanitized_options}));
       $sanitized_options = shift (@{$sanitized_options});
       @program_arguments = @{$sanitized_options};
-    } continue { last unless (defined ($cur_transform = shift (@program_arguments))) };
+    }
+
+    if ((!($error_detected)) && (!($transformed))) {
+      print {*STDERR} "No transformation passed, aborting.\n";
+      $error_detected = 12;
+    }
   }
 
   my $out = undef;
