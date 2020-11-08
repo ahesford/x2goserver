@@ -780,6 +780,8 @@ sub compact_intermediate {
 
 __END__
 
+=pod
+
 =head1 NAME
 
 X2Go::Server::Agent::NX::Options - NX Options modification module

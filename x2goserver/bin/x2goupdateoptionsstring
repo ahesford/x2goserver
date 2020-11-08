@@ -313,6 +313,8 @@ sub Main {
 
 __END__
 
+=pod
+
 =head1 NAME
 
 x2goupdateoptionsstring - X2Go Agent Options String Manipulator
