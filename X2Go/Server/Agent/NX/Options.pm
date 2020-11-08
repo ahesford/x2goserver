@@ -905,7 +905,7 @@ If this is not the case, please report a bug.
 =head1 OPTIONS STRINGS
 
 B<X2Go/NX Agent> options strings are fully documented in
-L<nxagent's documentation|nxagent> and additional, linked places therein.
+L<nxagent's documentation|nxagent(1)> and additional, linked places therein.
 
 This module is not really concerned with the actual content of an options
 string, but mostly its format.
