@@ -300,7 +300,7 @@ sub intermediate_to_string {
 }
 
 # Helper function that checks for errors in options passed as filter
-# parameters (which, in turn, are the parameter this function expects).
+# parameters (which, in turn, are the parameters this function expects).
 #
 # Returns true if all checks passed, false otherwise.
 sub sanitize_input_filter {
@@ -482,7 +482,8 @@ sub filter_option_modify {
       my $new_opt = { };
 
       # Don't add empty options as an empty string key with undef value; even
-      # though that's technically legit we want to represent this situation by
+      # though that's technically legit, we want to reserve this notation for
+      # the last display number element and rather represent this situation by
       # an empty hash.
       if (!(($needle_key) || (defined ($needle_value)))) {
         print {*STDERR} "Empty option addition/modification requested, this is deprecated. Adding empty hash.\n";
