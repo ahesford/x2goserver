@@ -873,7 +873,7 @@ Parsing errors are indicated by it returning C<undef>.
 The returned value is actually a I<reference> to an I<array> of I<hash>
 I<references>, but you should make no assumptions to the layout or even its
 actual format.
-Treat it as a black box.
+Treat it like a black box.
 Crucially, whenever an I<intermediate> is expected, such a I<reference> should
 be passed.
 
