@@ -262,6 +262,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
        otherwise. Since it has no adverse effects on other generators, let's
        just do it like that.
     - X2Go/Server/Agent/NX/Options.pm: replace "treat as" with "treat like".
+    - X2Go/Server/Agent/NX/Options.pm: clear up "logically equivalent but
+      logically very different" situation.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

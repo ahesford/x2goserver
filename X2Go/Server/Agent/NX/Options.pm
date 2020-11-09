@@ -981,8 +981,8 @@ An options string such as C<this%3Dis%3Da=key:38> is just as valid as
 C<this=is=a=key:38> or C<this=is%3Da%3Dkey:38>.
 
 However, the semantics differ.
-While the latter two key-value pairs are logically equivalent, they are
-logically very much different from the first one.
+While the latter two key-value pairs are logically equivalent to each other,
+they are very much different from the first one.
 
 For the first case, the I<key> will be C<this%3Dis%3Da> (or, logically, also
 C<this=is=a>, which can not be directly represented), while the I<value> will
