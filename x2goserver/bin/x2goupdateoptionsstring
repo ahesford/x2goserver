@@ -337,28 +337,32 @@ B<x2goupdateoptionsstring> is a utility for manipulating options strings as
 passed to B<X2Go/NX Agent>.
 
 Call it with optional flags, the options string as the first parameter and the
-options you want to manipulate as additional parameters. At least one
-additional parameter (i.e., a transformation) must be provided.
+options you want to manipulate as additional parameters.
+At least one additional parameter (i.e., a transformation) must be provided.
 
 It can either add, remove or replace components.
 
 To add or replace a component, pass I<key>[B<=>I<value>] or
-B<+>I<key>[B<=>I<value>] as a parameter. The latter syntax is useful if I<key>
-starts with a dash and would therefore be interpreted as a removal operation.
-If the options string does not include a B<key> key, it will be appended to the
-end of the options string. If it already exists, either with no value or a
-different value, the component will be replaced with the provided value.
+B<+>I<key>[B<=>I<value>] as a parameter.
+The latter syntax is useful if I<key> starts with a dash and would therefore
+be interpreted as a removal operation.
+If the options string does not include a B<key> key, it will be appended to
+the end of the options string.
+If it already exists, either with no value or a different value, the component
+will be replaced with the provided value.
 
-To fully remove a component, pass B<->I<key>. To only remove it if it is set to
-a specific value, pass B<->I<key>B<=>I<value>.
+To fully remove a component, pass B<->I<key>.
+To only remove it if it is set to a specific value, pass
+B<->I<key>B<=>I<value>.
 
 Use the B<--compact> option to minimize the original options string, removing
 duplicated and empty entries.
 
 You can terminate program options parsing via a standard double-dash (B<-->)
-pseudo-option. It is recommended to always do so if you pass removal
-transformation operations, even if no actual options are used to avoid
-misinterpreting such transformation options as options/flags to the program.
+pseudo-option.
+It is recommended to always do so if you pass removal transformation
+operations, even if no actual options are used to avoid misinterpreting such
+transformation options as options/flags to the program.
 
 =head1 OPTIONS
 
@@ -378,8 +382,8 @@ Enables noisy debug output.
 
 =item B<--compact>|B<-c>
 
-Remove duplicate and empty entries after the initial parsing. The order of
-arguments is preserved in a first-seen fashion.
+Remove duplicate and empty entries after the initial parsing.
+The order of arguments is preserved in a first-seen fashion.
 
 =back
 

@@ -862,25 +862,29 @@ X2Go::Server::Agent::NX::Options - NX Options modification module
 =head1 DESCRIPTION
 
 Use this module to modify or extract data from B<X2Go/NX Agent> options
-strings. Refer to L</OPTIONS STRINGS> for an in-depth description of options
 strings.
+Refer to L</OPTIONS STRINGS> for an in-depth description of options strings.
 
 First, transform the input options string into an intermediate representation
-via C<parse_options>. The options string I<must> end with a display
-specification (i.e., it must end in C<:displaynumber>).
+via C<parse_options>.
+The options string I<must> end with a display specification (i.e., it must end
+in C<:displaynumber>).
 Parsing errors are indicated by it returning C<undef>.
 The returned value is actually a I<reference> to an I<array> of I<hash>
 I<references>, but you should make no assumptions to the layout or even its
-actual format. Treat it as a black box. Crucially, whenever an I<intermediate>
-is expected, such a I<reference> should be passed.
+actual format.
+Treat it as a black box.
+Crucially, whenever an I<intermediate> is expected, such a I<reference> should
+be passed.
 
 To remove redundant or empty entries within an options string, pass the
-I<intermediate> to C<compact_intermediate>. This is entirely optional and can
-be done at any step, as long as an I<intermediate> is available.
+I<intermediate> to C<compact_intermediate>.
+This is entirely optional and can be done at any step, as long as an
+I<intermediate> is available.
 
-To parse transformations, pass each one to C<interpret_transform>. Refer to
-L</TRANSFORMATIONS> for documentation on transformation formats. This will
-either return C<undef> on error, or an array of two scalars - the
+To parse transformations, pass each one to C<interpret_transform>.
+Refer to L</TRANSFORMATIONS> for documentation on transformation formats.
+This will either return C<undef> on error, or an array of two scalars - the
 transformation mode (an internal number) and the sanitized transformation
 string (i.e., the original transformation string with any preceding operator
 removed).
@@ -892,8 +896,9 @@ intermediate value.
 Repeat this until the I<intermediate> is modified to your liking.
 
 Finally, pass the I<intermediate> to C<intermediate_to_string> in order to
-parse it back into a normal string. This operation is essentially the opposite
-of C<parse_options>. As usual, C<undef> is returned on error.
+parse it back into a normal string.
+This operation is essentially the opposite of C<parse_options>.
+As usual, C<undef> is returned on error.
 
 Generally, parsing an options string to an intermediate via C<parse_options>
 and then immediately parsing it back into a string via
@@ -919,8 +924,8 @@ This has some interesting implications:
 
 =item *
 
-Key-value pairs are entirely optional. For example, an options string like
-C<:42> is well-formed.
+Key-value pairs are entirely optional.
+For example, an options string like C<:42> is well-formed.
 
 =item *
 
@@ -938,30 +943,33 @@ for the display number separator and use the first one it can find.
 
 =item *
 
-Key-value pairs are separated via a B<comma> (C<,>). Hence, this character is
-not valid in neither keys nor values. As a workaround, it can be URL-encoded,
-as, e.g., C<%2C>, and then used as part of either keys or values.
+Key-value pairs are separated via a B<comma> (C<,>).
+Hence, this character is not valid in neither keys nor values.
+As a workaround, it can be URL-encoded, as, e.g., C<%2C>, and then used as
+part of either keys or values.
 
 =item *
 
-Key-value pairs can be empty. This is supported and empty key-value pairs will
-be preserved, but will trigger warnings at parse time.
+Key-value pairs can be empty.
+This is supported and empty key-value pairs will be preserved, but will
+trigger warnings at parse time.
 
 An options string such as C<,,,:65> is hence valid.
 
-To remove such empty elements, use C<compact_intermediate>. An implicit empty
-element is added whenever the resulting options string would only contain the
-display number. This one I<can not> be removed, but also won't show up
-anywhere. Adding any non-empty new key will automatically replace such an
-empty element, without any need for actual compactation.
+To remove such empty elements, use C<compact_intermediate>.
+An implicit empty element is added whenever the resulting options string would
+only contain the display number.
+This one I<can not> be removed, but also won't show up anywhere.
+Adding any non-empty new key will automatically replace such an empty element,
+without any need for actual compactation.
 
 =item *
 
 In a key-value pair, keys and values are separated from each other via an
 B<equal sign> (C<=>).
 
-Hence, this character is not a valid part of a key. It can, however, be a
-valid part of a value.
+Hence, this character is not a valid part of a key.
+It can, however, be a valid part of a value.
 
 To use this character as part of a key, it can be URL-encoded as, e.g.,
 C<%3D>.
@@ -972,9 +980,9 @@ when used as part of a value in order to not confuse other parsers.
 An options string such as C<this%3Dis%3Da=key:38> is just as valid as
 C<this=is=a=key:38> or C<this=is%3Da%3Dkey:38>.
 
-However, the semantics differ. While the latter two key-value pairs are
-logically equivalent, they are logically very much different from the first
-one.
+However, the semantics differ.
+While the latter two key-value pairs are logically equivalent, they are
+logically very much different from the first one.
 
 For the first case, the I<key> will be C<this%3Dis%3Da> (or, logically, also
 C<this=is=a>, which can not be directly represented), while the I<value> will
@@ -985,9 +993,9 @@ The latter two will parse into a I<key> C<this> with a I<value> of C<is=a=key>
 
 =item *
 
-Quoting with any character is unsupported. Quotes and other grouping
-characters (like B<curly braces> [C<{}>]) are seen verbatim without any
-special meaning.
+Quoting with any character is unsupported.
+Quotes and other grouping characters (like B<curly braces> [C<{}>]) are seen
+verbatim without any special meaning.
 
 =item *
 
@@ -995,25 +1003,28 @@ There are no provisions (other than the mentioned invalid characters) on the
 content of keys and values.
 
 Importantly, this also means that the same key can show up multiple times in
-the options string. Semantically, this is redundant, since only the last
-occurrence of a key (assuming the options string is parsed from left to right)
-will take any effect. Syntactically, it's completely legal, though.
+the options string.
+Semantically, this is redundant, since only the last occurrence of a key
+(assuming the options string is parsed from left to right) will take any
+effect.
+Syntactically, it's completely legal, though.
 
 It is recommended to avoid duplicate keys in the input options string.
 
 Note that, due to the nature of the supported transformations, keys can not be
 duplicated with this module.
 
-To remove duplicated keys, use C<compact_intermediate>. This will preserve the
-order in a first-seen fashion.
+To remove duplicated keys, use C<compact_intermediate>.
+This will preserve the order in a first-seen fashion.
 
 =item *
 
 A key-value pair with an empty key but a non-empty value is allowed.
 
 Likewise, a key-value pair with a non-empty key, but an empty value is
-allowed. In this case, the value will be interpreted as an empty string in
-order to differentiate it from a non-existent value.
+allowed.
+In this case, the value will be interpreted as an empty string in order to
+differentiate it from a non-existent value.
 
 =back
 
@@ -1027,8 +1038,8 @@ that:
 =item *
 
 They can be prefixed with a B<plus> character (C<+>) to indicate either
-additions or modifications. A missing prefix character is interpreted like a
-B<plus> character.
+additions or modifications.
+A missing prefix character is interpreted like a B<plus> character.
 
 If the given I<key> already exists in the intermediate, the key-value pair
 will be updated with the provided I<value> (if any), or a new key-value pair
@@ -1048,8 +1059,9 @@ If the given I<key> is not part of the intermediate, no deletion will occur.
 
 Otherwise, the optional I<value> determines deletion: if no value has been
 provided, I<key> will be removed from the intermediate regardless of its
-value. If the optional I<value> has been provided, I<key> will only be removed
-if both values match.
+value.
+If the optional I<value> has been provided, I<key> will only be removed if
+both values match.
 
 =back
 

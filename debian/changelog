@@ -254,6 +254,13 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: considerably simplify while loop
       logic that iterates over transformations. I have no idea why I thought
       it had to be so complicated in the first place...
+    - {X2Go/Server/Agent/NX/Options.pm,
+       x2goserver/lib/x2goupdateoptionsstring}: reformat/reflow so that each
+       sentence starts on a proper line. This is particularly interesting for
+       the troff output, since GNU troff's heuristic for generating double
+       spaces (by default) after a punctuation character wouldn't trigger
+       otherwise. Since it has no adverse effects on other generators, let's
+       just do it like that.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
