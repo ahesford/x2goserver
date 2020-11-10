@@ -333,12 +333,26 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator
 
 =head1 DESCRIPTION
 
+=for comment
+Due to parser oddities, breaking a line during an L<> formatter code right
+after the separating pipe character will generate broken links.
+Make sure to only break it during the description or, generally, on space
+characters.
+A workaround for this as been proposed in
+https://github.com/Perl/perl5/issues/18305.
+
 B<x2goupdateoptionsstring> is a utility for manipulating options strings as
 passed to B<X2Go/NX Agent>.
+For more information about supported options strings, refer to the L<OPTIONS
+STRINGS section in the X2Go::Server::Agent::NX::Options
+documentation|X2Go::Server::Agent::NX::Options/OPTIONS STRINGS>.
 
 Call it with optional flags, the options string as the first parameter and the
-options you want to manipulate as additional parameters.
+transformations to be carried out as additional parameters.
 At least one additional parameter (i.e., a transformation) must be provided.
+Transformations are described here briefly, but also in the L<TRANSFORMATIONS
+section in the X2Go::Server::Agent::NX::Options
+documentation|X2Go::Server::Agent::NX::Options/TRANSFORMATIONS>.
 
 It can either add, remove or replace components.
 
