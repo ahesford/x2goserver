@@ -407,6 +407,8 @@ For an options string such as
 
  nx/nx,clipboard=both,foo:50
 
+=over 2
+
 calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50'
 '-clipboard'> shall return
 
@@ -426,6 +428,23 @@ and calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50' '+-bar'
 'foo=gulp' '-clipboard=client'> shall return
 
  nx/nx,clipboard=both,foo=gulp,-bar:50
+
+=back
+
+For an options string such as
+
+ nx/nx,clipboard=both,foo=bar,bar=baz,foo=oof:50
+
+=over 2
+
+you can get a compacted version by cheating a bit and providing a
+transformation which will certainly be a no-operation using
+C<x2goupdateoptionsstring '-c'
+'nx/nx,clipboard=both,foo=bar,bar=baz,,foo=oof,:50' '-'>, which shall return
+
+ nx/nx,clipboard=both,foo=oof,bar=baz:50
+
+=back
 
 =head1 AUTHOR
 
