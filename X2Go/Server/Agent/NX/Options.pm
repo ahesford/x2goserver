@@ -961,7 +961,7 @@ An implicit empty element is added whenever the resulting options string would
 only contain the display number.
 This one I<can not> be removed, but also won't show up anywhere.
 Adding any non-empty new key will automatically replace such an empty element,
-without any need for actual compactation.
+without any need for actual compaction.
 
 =item *
 

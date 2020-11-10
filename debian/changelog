@@ -275,6 +275,7 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       example calls.
     - X2Go/Server/Agent/NX/Options.pm: document that NUL bytes can only be
       URL-encoded, but that this not recommended.
+    - X2Go/Server/Agent/NX/Options.pm: typo compactation => compaction.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
