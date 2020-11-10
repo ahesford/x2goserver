@@ -38,6 +38,8 @@ sub MODE_INVALID    { return 0; }
 sub MODE_ADD_UPDATE { return 1; }
 sub MODE_REMOVE     { return 2; }
 
+BEGIN {
+}
 
 # Accepts an options string and returns a reference to an array of hashes
 # (actually hash references) corresponding to the parsed key-value pairs.

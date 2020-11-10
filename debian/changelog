@@ -277,6 +277,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       URL-encoded, but that this not recommended.
     - X2Go/Server/Agent/NX/Options.pm: typo compactation => compaction.
     - X2Go/Server/Agent/NX/Options.pm: whitespace-only on fake enum-subs.
+    - X2Go/Server/Agent/NX/Options.pm: add empty BEGIN block in case it's ever
+      needed (and if not, it shouldn't have any side effects anyway).
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
