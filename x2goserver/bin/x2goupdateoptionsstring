@@ -409,23 +409,23 @@ For an options string such as
 
 =over 2
 
-calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50'
+calling C<x2goupdateoptionsstring '--' 'nx/nx,clipboard=both,foo:50'
 '-clipboard'> shall return
 
  nx/nx,foo:50
 
-while calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50'
+while calling C<x2goupdateoptionsstring '--' 'nx/nx,clipboard=both,foo:50'
 '-clipboard=server'> shall return
 
  nx/nx,clipboard=both,foo:50
 
-Calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50' 'bar'> shall
-return
+Calling C<x2goupdateoptionsstring '--' 'nx/nx,clipboard=both,foo:50' 'bar'>
+shall return
 
  nx/nx,clipboard=both,foo,bar:50
 
-and calling C<x2goupdateoptionsstring 'nx/nx,clipboard=both,foo:50' '+-bar'
-'foo=gulp' '-clipboard=client'> shall return
+and calling C<x2goupdateoptionsstring '--' 'nx/nx,clipboard=both,foo:50'
+'+-bar' 'foo=gulp' '-clipboard=client'> shall return
 
  nx/nx,clipboard=both,foo=gulp,-bar:50
 
@@ -439,7 +439,7 @@ For an options string such as
 
 you can get a compacted version by cheating a bit and providing a
 transformation which will certainly be a no-operation using
-C<x2goupdateoptionsstring '-c'
+C<x2goupdateoptionsstring '-c' '--'
 'nx/nx,clipboard=both,foo=bar,bar=baz,,foo=oof,:50' '-'>, which shall return
 
  nx/nx,clipboard=both,foo=oof,bar=baz:50
