@@ -34,9 +34,9 @@ our @EXPORT_OK = qw (MODE_INVALID MODE_ADD_UPDATE MODE_REMOVE
 # These are actually supposed to be enums, but since Perl doesn't have a
 # proper way of creating enums (at least not natively), we'll emulate that
 # using small functions.
-sub MODE_INVALID { return 0; }
+sub MODE_INVALID    { return 0; }
 sub MODE_ADD_UPDATE { return 1; }
-sub MODE_REMOVE { return 2; }
+sub MODE_REMOVE     { return 2; }
 
 
 # Accepts an options string and returns a reference to an array of hashes
