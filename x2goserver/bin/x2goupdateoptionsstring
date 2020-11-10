@@ -387,7 +387,7 @@ The order of arguments is preserved in a first-seen fashion.
 
 =back
 
-=head1 EXAMPLE
+=head1 EXAMPLES
 
 For an options string such as
 
