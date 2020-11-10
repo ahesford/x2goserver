@@ -999,6 +999,21 @@ verbatim without any special meaning.
 
 =item *
 
+Since options strings are typically parsed by C applications, C<NUL> (control)
+characters are prematurely terminating the string and hence cannot be directly
+embedded.
+Indirectly, they can be embedded by URL-encoding them as C<%00>.
+
+There is, however, no guarantee that an application unpacking such a string
+will be able to scan any data after the first embedded C<NUL> character.
+
+It is highly recommended to avoid using embedded C<NUL> characters.
+
+This module will not explicitly scan for them, and, hence, also not issue warnings
+related to those characters.
+
+=item *
+
 There are no provisions (other than the mentioned invalid characters) on the
 content of keys and values.
 
