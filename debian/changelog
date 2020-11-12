@@ -279,6 +279,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - X2Go/Server/Agent/NX/Options.pm: whitespace-only on fake enum-subs.
     - X2Go/Server/Agent/NX/Options.pm: add empty BEGIN block in case it's ever
       needed (and if not, it shouldn't have any side effects anyway).
+    - x2goserver/lib/x2goupdateoptionsstring: add space between link and
+      punctuation character for easier copying.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

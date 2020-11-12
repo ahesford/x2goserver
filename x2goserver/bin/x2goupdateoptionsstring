@@ -339,7 +339,7 @@ after the separating pipe character will generate broken links.
 Make sure to only break it during the description or, generally, on space
 characters.
 A workaround for this as been proposed in
-https://github.com/Perl/perl5/issues/18305.
+https://github.com/Perl/perl5/issues/18305 .
 
 B<x2goupdateoptionsstring> is a utility for manipulating options strings as
 passed to B<X2Go/NX Agent>.
