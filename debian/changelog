@@ -281,6 +281,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       needed (and if not, it shouldn't have any side effects anyway).
     - x2goserver/lib/x2goupdateoptionsstring: add space between link and
       punctuation character for easier copying.
+    - x2goserver/lib/x2goupdateoptionsstring: better document end-of-options
+      terminator and highlight its importance.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

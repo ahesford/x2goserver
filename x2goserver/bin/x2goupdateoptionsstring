@@ -372,11 +372,8 @@ B<->I<key>B<=>I<value>.
 Use the B<--compact> option to minimize the original options string, removing
 duplicated and empty entries.
 
-You can terminate program options parsing via a standard double-dash (B<-->)
-pseudo-option.
-It is recommended to always do so if you pass removal transformation
-operations, even if no actual options are used to avoid misinterpreting such
-transformation options as options/flags to the program.
+Refer to the L<OPTIONS PARSING section|/OPTIONS PARSING> for a description of
+when and how to terminate options passed to this program.
 
 =head1 OPTIONS
 
@@ -400,6 +397,25 @@ Remove duplicate and empty entries after the initial parsing.
 The order of arguments is preserved in a first-seen fashion.
 
 =back
+
+=head2 OPTIONS PARSING
+
+You can terminate program options parsing via a standard double-dash (B<-->)
+pseudo-option.
+It is B<highly recommended> to always do so.
+
+If you pass removal transformation operations, passing the options terminator
+is B<mandatory>, even if no actual options are used.
+Otherwise, transformation operations will be interpreted as options to the
+program, which will almost certainly lead to an error.
+
+For example, passing C<-clipboard> as a transformation operation without a
+previous options terminator will be interpreted as the option C<-c>, with the
+rest of the string modified into C<-lipboard>.
+Since this program does not accept an option called C<-l>, it will terminate
+with an error.
+Even then, this is certainly not what the original transformation operation
+was supposed to represent.
 
 =head1 EXAMPLES
 
