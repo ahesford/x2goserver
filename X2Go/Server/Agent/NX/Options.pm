@@ -1034,6 +1034,12 @@ duplicated with this module.
 To remove duplicated keys, use C<compact_intermediate>.
 This will preserve the order in a first-seen fashion.
 
+Additionally, most non-printable control characters can be used verbatim.
+This includes, but is not limited to, characters like C<LF> (C<\n>), C<TAB>
+(C<\t>) and C<VT> (C<\v>).
+
+Naturally, it is recommended to avoid such characters.
+
 =item *
 
 A key-value pair with an empty key but a non-empty value is allowed.

@@ -284,6 +284,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: better document end-of-options
       terminator and highlight its importance.
     - X2Go/Server/Agent/NX/Options.pm: reflow some text.
+    - X2Go/Server/Agent/NX/Options.pm: document other non-printable
+      characters.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
