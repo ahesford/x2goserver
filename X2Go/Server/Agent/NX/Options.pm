@@ -1011,8 +1011,8 @@ will be able to scan any data after the first embedded C<NUL> character.
 
 It is highly recommended to avoid using embedded C<NUL> characters.
 
-This module will not explicitly scan for them, and, hence, also not issue warnings
-related to those characters.
+This module will not explicitly scan for them, and, hence, also not issue
+warnings related to those characters.
 
 =item *
 
