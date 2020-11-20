@@ -173,6 +173,15 @@ sub Main {
   my $options = undef;
 
   if (!($error_detected)) {
+    # The shift () operations here actually shift the outer array, not the
+    # inner elements.
+    # This can be very confusing.
+    # The return value is an array consisting of a boolean value and an array
+    # reference.
+    #
+    # Thus, shifting once returns the boolean value, while shifting again
+    # returns the options array reference. Crucially, no shift () operation
+    # here modifies the modified options array.
     $found_separator |= (0 + shift (@{$sanitized_options}));
     $sanitized_options = shift (@{$sanitized_options});
     @program_arguments = @{$sanitized_options};
