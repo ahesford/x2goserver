@@ -299,6 +299,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/lib/x2goupdateoptionsstring: fix parsing of multiple
       subsequent separating "--" pseudo-options. We just have to make sure to
       treat subsequent pseudo-options literally and to not just consume them.
+    - x2goserver/lib/x2goupdateoptionsstring: add debug print statements for
+      in-depth examination of program options parsing.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

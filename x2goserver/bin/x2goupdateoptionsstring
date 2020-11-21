@@ -176,6 +176,10 @@ sub Main {
   my $options = undef;
 
   if (!($error_detected)) {
+    if ($debug) {
+      print {*STDERR} 'Sanitized program options string as: ' . Dumper ($sanitized_options);
+    }
+
     # The shift () operations here actually shift the outer array, not the
     # inner elements.
     # This can be very confusing.
@@ -223,6 +227,7 @@ sub Main {
 
   if (!($error_detected)) {
     if ($debug) {
+      print {*STDERR} 'Sanitized program options string as: ' . Dumper ($sanitized_options);
       print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
     }
 
@@ -292,6 +297,9 @@ sub Main {
         pod2usage (-exitval => 'NOEXIT');
         $error_detected = 11;
         last;
+      }
+      elsif ($debug) {
+        print {*STDERR} 'Sanitized program options string as: ' . Dumper ($sanitized_options);
       }
 
       $found_separator |= (0 + shift (@{$sanitized_options}));
