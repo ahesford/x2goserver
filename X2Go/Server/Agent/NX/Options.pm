@@ -608,7 +608,14 @@ sub transform_intermediate {
         $ret = [ map { filter_option_modify ($work_option_key, $work_option_value, $_, --$elements_left) } @{$ret} ];
       }
       else {
-        my $new_opt = { $work_option_key => $work_option_value };
+        my $new_opt = { };
+
+        if (((defined ($work_option_key)) && (q{} ne $work_option_key)) || (defined ($work_option_value))) {
+          $new_opt->{$work_option_key} = $work_option_value;
+        }
+        else {
+          print {*STDERR} "Asked to add/modify empty key with no value, adding empty element though deprecated.\n";
+        }
 
         # No such option exists, we'll add it to the end of the current
         # options.

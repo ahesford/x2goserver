@@ -294,6 +294,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       digits. We actually meant to check against an empty string. Also,
       change the whole expression to not enclose everything in a negation but
       rather negate sub-terms as required.
+    - X2Go/Server/Agent/NX/Options.pm: make sure to add/modify elements with
+      an empty string or undef key and an undef value as an empty hash.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
