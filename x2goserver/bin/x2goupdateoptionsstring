@@ -88,8 +88,11 @@ sub sanitize_program_options {
         elsif ((2 == length ($cur_arg)) && (q{-} eq substr ($cur_arg, 1, 1))) {
           if ($skip_separator) {
             # Found separating "--" pseudo-option, but skipping requested. Only
-            # set the boolean value for our return value.
+            # set the boolean value for our return value and make sure that we
+            # don't skip another separating pseudo-option if it comes up again
+            # right next to this one.
             $found_separator = 1;
+            $skip_separator = 0;
           }
           else {
             # Not skipping separating "--" pseudo-option - i.e., we'll treat this
