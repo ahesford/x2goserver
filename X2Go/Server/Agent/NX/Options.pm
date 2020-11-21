@@ -486,7 +486,7 @@ sub filter_option_modify {
       # Don't add empty options as an empty string key with undef value; even
       # though that's technically legit and would semantically fit the notion
       # as well, we rather want to represent this situation by an empty hash.
-      if (!(($needle_key) || (defined ($needle_value)))) {
+      if ((q{} eq $needle_key) && (!(defined ($needle_value)))) {
         print {*STDERR} "Empty option addition/modification requested, this is deprecated. Adding empty hash.\n";
       }
       else {
