@@ -30,6 +30,7 @@ use Pod::Usage;
 use Storable qw (dclone);
 use Data::Dumper qw (Dumper);
 use X2Go::Server::Agent::NX::Options;
+use List::Util qw (max);
 
 exit (Main (@ARGV));
 
@@ -37,6 +38,17 @@ BEGIN {
 }
 
 # No code past this point should be getting executed!
+
+# These are actually supposed to be enums, but since Perl doesn't have a
+# proper way of creating enums (at least not natively), we'll emulate that
+# using list constants.
+# The syntax is ( q{stringified mode name}, enum_value ).
+#
+# Make sure that enum_value is always a power of two!
+use constant MODE_INVALID_DATA => ( q{invalid}, 0 );
+use constant MODE_TRANSFORM_DATA => ( q{transform}, 1 );
+use constant MODE_EXTRACT_DATA => ( q{extract}, 2 );
+use constant MODES => ( \&MODE_TRANSFORM_DATA, \&MODE_EXTRACT_DATA );
 
 # Helper function handling unknown options or ignoring the well-known
 # separator. It scans for options until hitting the first non-option entry.
@@ -137,6 +149,117 @@ sub sanitize_program_options {
   return $ret;
 }
 
+# Helper function handling the parsing and setting of program modes.
+#
+# Takes a string, which represents a (potentially abbreviated) mode name, a
+# boolean denoting transformation mode and a boolean denoting extract mode as
+# its parameters.
+#
+# Returns a mode enum element.
+#
+# On error, returns the mode number corresponding to MODE_INVALID.
+sub handle_mode {
+  my $ret = (MODE_INVALID_DATA)[1];
+  my $error_detected = 0;
+  my $mode_aggregate = 0;
+  my $mode_parse = \&MODE_INVALID_DATA;
+
+  my $mode = shift;
+  my $transform = shift;
+  my $extract = shift;
+
+  if (!(defined ($mode))) {
+    print {*STDERR} "Invalid mode argument passed to mode selecttion helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if ((!($error_detected)) && (!(defined ($transform)))) {
+    print {*STDERR} "Invalid transformation argument passed to mode selecttion helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if ((!($error_detected)) && (!(defined ($extract)))) {
+    print {*STDERR} "Invalid extract argument passed to mode selecttion helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    # Next check for mutual exclusiveness regarding modes.
+    if ($transform) {
+      $mode_aggregate |= (&{(MODES)[0]}())[1];
+    }
+
+    if ($extract) {
+      $mode_aggregate |= (&{(MODES)[1]}())[1];
+    }
+
+    if (($mode_aggregate) && ($mode_aggregate & ($mode_aggregate - 1))) {
+      print {*STDERR} "Mutually exclusive modes specified, erroring out.\n";
+      $error_detected = 1;
+    }
+  }
+
+  if (!($error_detected)) {
+    if ($mode ne q{}) {
+      # Mode has been passed, support substrings of the actual modes.
+      my $length = length ($mode);
+      my $found = 0;
+
+      my %modes = ();
+      foreach my $elem (MODES) {
+        $modes{(&$elem())[0]} = 1;
+      }
+
+      if ($length < max (map { length ((&$_())[0]); } (MODES))) {
+        foreach my $elem (MODES) {
+          if (substr ((&$elem())[0], 0, $length) eq $mode) {
+            if (!($found)) {
+              $mode_parse = $elem;
+            }
+            ++$found;
+          }
+        }
+      }
+
+      # Now check if value matches a known one.
+      if (!($found)) {
+        foreach my $elem (MODES) {
+          if (exists ($modes{(&$elem())[0]})) {
+            $mode_parse = $elem;
+            $found = 1;
+            last;
+          }
+        }
+      }
+
+      if (!($found)) {
+        print {*STDERR} 'Invalid mode specified (' . $mode . "), erroring out.\n";
+        $error_detected = 1;
+      }
+      elsif (1 < $found) {
+        print {*STDERR} 'Supplied mode (' . $mode . ") is ambiguous, erroring out.\n";
+        $error_detected = 1;
+      }
+    }
+  }
+
+  # Okay, now check for mutual exclusiveness and map to return value.
+  if (!($error_detected)) {
+    $ret = ($mode_aggregate | (&$mode_parse())[1]);
+
+    if (($ret) && ($ret & ($ret - 1))) {
+      print {*STDERR} "Mutually exclusive modes specified, erroring out.\n";
+      $error_detected = 1;
+    }
+  }
+
+  if ($error_detected) {
+    $ret = (MODE_INVALID_DATA)[1];
+  }
+
+  return $ret;
+}
+
 # Main function, no code outside of it shall be executed.
 #
 # Expects @ARGV to be passed in.
@@ -153,10 +276,16 @@ sub Main {
   my $man = 0;
   my $debug = 0;
   my $compact = 0;
+  my $mode_transform = 0;
+  my $mode_extract = 0;
+  my $mode_arg = q{};
   GetOptionsFromArray (\@program_arguments, 'help|?|h' => \$help,
                                             'man' => \$man,
                                             'debug|d' => \$debug,
-                                            'compact|c' => \$compact) or pod2usage (2);
+                                            'compact|c' => \$compact,
+                                            'transform|t' => \$mode_transform,
+                                            'extract|e' => \$mode_extract,
+                                            'mode|m=s' => \$mode_arg) or pod2usage (2);
 
   if ($help) {
     pod2usage (1);
@@ -166,11 +295,25 @@ sub Main {
     pod2usage (-verbose => 2, -exitval => 3);
   }
 
-  my $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
+  my $mode = handle_mode ($mode_arg, $mode_transform, $mode_extract);
 
-  if (!(defined ($sanitized_options))) {
-    pod2usage (-exitval => 'NOEXIT');
+  if ($debug) {
+    print {*STDERR} 'Parsed mode as: ' . $mode . "\n";
+  }
+
+  if ((MODE_INVALID_DATA)[1] == $mode) {
     $error_detected = 4;
+  }
+
+  my $sanitized_options = undef;
+
+  if (!($error_detected)) {
+    $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
+
+    if (!(defined ($sanitized_options))) {
+      pod2usage (-exitval => 'NOEXIT');
+      $error_detected = 5;
+    }
   }
 
   my $options = undef;
@@ -197,7 +340,7 @@ sub Main {
 
     if (!(defined ($options))) {
       print {*STDERR} "No options string given, aborting.\n";
-      $error_detected = 5;
+      $error_detected = 6;
     }
   }
 
@@ -212,7 +355,7 @@ sub Main {
 
     if (!(defined ($intermediate))) {
       print {*STDERR} "Unable to parse options string, aborting.\n";
-      $error_detected = 6;
+      $error_detected = 7;
     }
   }
 
@@ -221,7 +364,7 @@ sub Main {
 
     if (!(defined ($sanitized_options))) {
       pod2usage (-exitval => 'NOEXIT');
-      $error_detected = 7;
+      $error_detected = 8;
     }
   }
 
@@ -236,7 +379,7 @@ sub Main {
 
       if (!(defined ($intermediate))) {
         print {*STDERR} "Unable to compact intermediate options representation, aborting.\n";
-        $error_detected = 8;
+        $error_detected = 9;
       }
       elsif ($debug) {
         print {*STDERR} 'Dumping intermediate array after compacting: ' . Dumper ($intermediate);
@@ -268,7 +411,7 @@ sub Main {
 
       if (!(defined ($interpreted_transform_ref))) {
         print {*STDERR} "Invalid transformation passed, aborting.\n";
-        $error_detected = 9;
+        $error_detected = 10;
         last;
       }
 
@@ -282,7 +425,7 @@ sub Main {
 
       if (!(defined ($intermediate))) {
         print {*STDERR} "Error while transforming intermediate representation, aborting.\n";
-        $error_detected = 10;
+        $error_detected = 11;
         last;
       }
 
@@ -295,7 +438,7 @@ sub Main {
 
       if (!(defined ($sanitized_options))) {
         pod2usage (-exitval => 'NOEXIT');
-        $error_detected = 11;
+        $error_detected = 12;
         last;
       }
       elsif ($debug) {
@@ -309,7 +452,7 @@ sub Main {
 
     if ((!($error_detected)) && (!($transformed))) {
       print {*STDERR} "No transformation passed, aborting.\n";
-      $error_detected = 12;
+      $error_detected = 13;
     }
   }
 
@@ -320,7 +463,7 @@ sub Main {
 
     if (!(defined ($out))) {
       print {*STDERR} "Unable to transform intermediate back into string, aborting.\n";
-      $error_detected = 13;
+      $error_detected = 14;
     }
   }
 
