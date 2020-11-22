@@ -34,9 +34,12 @@ our @EXPORT_OK = qw (MODE_INVALID MODE_ADD_UPDATE MODE_REMOVE
 # These are actually supposed to be enums, but since Perl doesn't have a
 # proper way of creating enums (at least not natively), we'll emulate that
 # using small functions.
-sub MODE_INVALID    { return 0; }
-sub MODE_ADD_UPDATE { return 1; }
-sub MODE_REMOVE     { return 2; }
+# IF adding more modes, please make sure that each number is a proper
+# power-of-two. While we currently don't rely on this here, we might do so
+# later.
+use constant MODE_INVALID    => 0;
+use constant MODE_ADD_UPDATE => 1;
+use constant MODE_REMOVE     => 2;
 
 BEGIN {
 }
