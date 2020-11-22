@@ -18,7 +18,13 @@
 package X2Go::Server::Agent::NX::Options;
 
 # Disable some Perl::Critic violations.
+#
+# I like parentheses.
 ## no critic (ProhibitParensWithBuiltins)
+#
+# It's recommended not to use the constant pragma, but we don't want to use
+# non-core modules like Readonly.
+## no critic (ValuesAndExpressions::ProhibitConstantPragma)
 
 use strict;
 use warnings;
