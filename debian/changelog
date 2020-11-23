@@ -184,27 +184,27 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       created, but we already have such a check in another place. Instead,
       treat a missing PID, which can only happen during session startup, as a
       success.
-    - x2goserver/lib/x2goupdateoptionsstring: simplify a for loop a bit.
-    - x2goserver/lib/x2goupdateoptionsstring: fix typo in comment.
-    - x2goserver/lib/x2goupdateoptionsstring: fix typo in print statement
+    - x2goserver/bin/x2goupdateoptionsstring: simplify a for loop a bit.
+    - x2goserver/bin/x2goupdateoptionsstring: fix typo in comment.
+    - x2goserver/bin/x2goupdateoptionsstring: fix typo in print statement
       syntax. Non-functional.
-    - x2goserver/lib/x2goupdateoptionsstring: update copyright notice.
+    - x2goserver/bin/x2goupdateoptionsstring: update copyright notice.
     - X2Go/Server/Agent/: add new (stub) file NX/Options.pm as a library
       version of the options string manipulation code.
-    - x2goserver/lib/x2goupdateoptionsstring: fix man page specification,
+    - x2goserver/bin/x2goupdateoptionsstring: fix man page specification,
       options string was missing.
-    - x2goserver/lib/x2goupdateoptionsstring: move most code to
+    - x2goserver/bin/x2goupdateoptionsstring: move most code to
       X2Go/Server/Agent/NX/Options.pm.
-    - x2goserver/lib/x2goupdateoptionsstring: revert for loop simplification.
+    - x2goserver/bin/x2goupdateoptionsstring: revert for loop simplification.
       We actually depend on the subtle modification of the args reference
       variable.
     - X2Go/Server/Agent/NX/Options.pm: add a lot of documentation.
-    - x2goserver/lib/x2goupdateoptionsstring: update synopsis to include the
+    - x2goserver/bin/x2goupdateoptionsstring: update synopsis to include the
       optional character of a plus sign, but a non-optional character for a
       minus sign.
-    - x2goserver/lib/x2goupdateoptionsstring: make clear that "additional
+    - x2goserver/bin/x2goupdateoptionsstring: make clear that "additional
       parameters" are transformations.
-    - x2goserver/lib/x2goupdateoptionsstring: replace occurrences of "option
+    - x2goserver/bin/x2goupdateoptionsstring: replace occurrences of "option
       string" with "options string".
     - X2Go/Server/Agent/NX/Options.pm: replace occurrences of "option string"
       with "options string".
@@ -220,21 +220,21 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       empty keys or empty (!= non-existent) values.
     - X2Go/Server/Agent/NX/Options.pm: make sure that intermediates never
       include undef entries.
-    - x2goserver/lib/x2goupdateoptionsstring: switch to "X2Go/NX Agent" term
+    - x2goserver/bin/x2goupdateoptionsstring: switch to "X2Go/NX Agent" term
       and make it bold to denote something special.
     - X2Go/Server/Agent/NX/Options.pm: add new function compact_intermediate,
       used to remove duplicated and empty elements.
-    - x2goserver/lib/x2goupdateoptionsstring: add new --compact/-c switch to
+    - x2goserver/bin/x2goupdateoptionsstring: add new --compact/-c switch to
       enable the use of compactation.
-    - x2goserver/lib/x2goupdateoptionsstring: document new --compact/-c
+    - x2goserver/bin/x2goupdateoptionsstring: document new --compact/-c
       switch.
-    - x2goserver/lib/x2goupdateoptionsstring: split up GetOptionsFromArray ()
+    - x2goserver/bin/x2goupdateoptionsstring: split up GetOptionsFromArray ()
       line. Non-functional.
     - X2Go/Server/Agent/NX/Options.pm: document the new
       compact_intermediate () function and its implications.
     - X2Go/Server/Agent/NX/Options.pm: fix some Perl Critic warnings and
       silence others.
-    - x2goserver/lib/x2goupdateoptionsstring: fix some Perl Critic warnings
+    - x2goserver/bin/x2goupdateoptionsstring: fix some Perl Critic warnings
       and silence others.
     - X2Go/Server/Agent/NX/Options.pm: grammar/typo fix in comment and improve
       a different comment.
@@ -246,16 +246,16 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - X2Go/Server/Agent/NX/Options.pm: add newline before __END__,
       non-functional.
     - {X2Go/Server/Agent/NX/Options.pm,
-       x2goserver/lib/x2goupdateoptionsstring}: add =pod markers.
+       x2goserver/bin/x2goupdateoptionsstring}: add =pod markers.
     - {X2Go/Server/Agent/NX/Options.pm,
-       x2goserver/lib/x2goupdateoptionsstring}: update AUTHOR sections with
+       x2goserver/bin/x2goupdateoptionsstring}: update AUTHOR sections with
       proper links.
     - X2Go/Server/Agent/NX/Options.pm: fix nxagent man page link.
-    - x2goserver/lib/x2goupdateoptionsstring: considerably simplify while loop
+    - x2goserver/bin/x2goupdateoptionsstring: considerably simplify while loop
       logic that iterates over transformations. I have no idea why I thought
       it had to be so complicated in the first place...
     - {X2Go/Server/Agent/NX/Options.pm,
-       x2goserver/lib/x2goupdateoptionsstring}: reformat/reflow so that each
+       x2goserver/bin/x2goupdateoptionsstring}: reformat/reflow so that each
       sentence starts on a proper line. This is particularly interesting for
       the troff output, since GNU troff's heuristic for generating double
       spaces (by default) after a punctuation character wouldn't trigger
@@ -264,14 +264,14 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - X2Go/Server/Agent/NX/Options.pm: replace "treat as" with "treat like".
     - X2Go/Server/Agent/NX/Options.pm: clear up "logically equivalent but
       logically very different" situation.
-    - x2goserver/lib/x2goupdateoptionsstring: rename EXAMPLE section to
+    - x2goserver/bin/x2goupdateoptionsstring: rename EXAMPLE section to
       EXAMPLES.
-    - x2goserver/lib/x2goupdateoptionsstring: add links to
+    - x2goserver/bin/x2goupdateoptionsstring: add links to
       X2Go::Server::Agent::NX::Options documentation on option strings and
       transformations.
-    - x2goserver/lib/x2goupdateoptionsstring: document how to cheat and just
+    - x2goserver/bin/x2goupdateoptionsstring: document how to cheat and just
       compact options strings.
-    - x2goserver/lib/x2goupdateoptionsstring: add options terminators to
+    - x2goserver/bin/x2goupdateoptionsstring: add options terminators to
       example calls.
     - X2Go/Server/Agent/NX/Options.pm: document that NUL bytes can only be
       URL-encoded, but that this not recommended.
@@ -279,14 +279,14 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - X2Go/Server/Agent/NX/Options.pm: whitespace-only on fake enum-subs.
     - X2Go/Server/Agent/NX/Options.pm: add empty BEGIN block in case it's ever
       needed (and if not, it shouldn't have any side effects anyway).
-    - x2goserver/lib/x2goupdateoptionsstring: add space between link and
+    - x2goserver/bin/x2goupdateoptionsstring: add space between link and
       punctuation character for easier copying.
-    - x2goserver/lib/x2goupdateoptionsstring: better document end-of-options
+    - x2goserver/bin/x2goupdateoptionsstring: better document end-of-options
       terminator and highlight its importance.
     - X2Go/Server/Agent/NX/Options.pm: reflow some text.
     - X2Go/Server/Agent/NX/Options.pm: document other non-printable
       characters.
-    - x2goserver/lib/x2goupdateoptionsstring: add comment regarding the
+    - x2goserver/bin/x2goupdateoptionsstring: add comment regarding the
       shift () operations after sanitizing program options.
     - X2Go/Server/Agent/NX/Options.pm: if ("string") in Perl does something
       weird in a dualvar sense - it converts a string to a number, which
@@ -296,20 +296,20 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       rather negate sub-terms as required.
     - X2Go/Server/Agent/NX/Options.pm: make sure to add/modify elements with
       an empty string or undef key and an undef value as an empty hash.
-    - x2goserver/lib/x2goupdateoptionsstring: fix parsing of multiple
+    - x2goserver/bin/x2goupdateoptionsstring: fix parsing of multiple
       subsequent separating "--" pseudo-options. We just have to make sure to
       treat subsequent pseudo-options literally and to not just consume them.
-    - x2goserver/lib/x2goupdateoptionsstring: add debug print statements for
+    - x2goserver/bin/x2goupdateoptionsstring: add debug print statements for
       in-depth examination of program options parsing.
-    - x2goserver/lib/x2goupdateoptionsstring: add mode selection
+    - x2goserver/bin/x2goupdateoptionsstring: add mode selection
       functionality.
     - X2Go/Server/Agent/NX/Options.pm: port modes "enum" subs to the constant
       pragma to make the code more consistent with the program wrapper.
     - {X2Go/Server/Agent/NX/Options.pm,
-       x2goserver/lib/x2goupdateoptionsstring}: update Perl critic overrides
+       x2goserver/bin/x2goupdateoptionsstring}: update Perl critic overrides
       to allow the constant pragma and document it and other overrides
       (unless they are self-explanatory).
-    - x2goserver/lib/x2goupdateoptionsstring: rework mode selection, split out
+    - x2goserver/bin/x2goupdateoptionsstring: rework mode selection, split out
       abbreviation parsing into a separate function to take out nesting
       complexity. This trades off nesting complexity (to some degree) with
       code complexity.
