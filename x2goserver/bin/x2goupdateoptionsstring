@@ -155,6 +155,49 @@ sub sanitize_program_options {
   return $ret;
 }
 
+# Helper function handling mode abbreviations.
+#
+# Takes a string, which represents a (potentially abbreviated) mode name as
+# its only parameter.
+#
+# Returns an array reference containing a count, denoting how often the
+# abbreviated mode matched the known modes and a reference to an internal mode
+# element.
+#
+# On error, returns undef.
+sub handle_mode_abbrev {
+  my $ret = undef;
+  my $error_detected = 0;
+  my $found = 0;
+  my $mode_parse = \&MODE_INVALID_DATA;
+
+  my $mode = shift;
+
+  if (!(defined ($mode))) {
+    print {*STDERR} "Invalid mode argument passed to mode abbreviation selection helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    my $length = length ($mode);
+
+    if ($length < max (map { length ((&{$_}())[0]); } (MODES))) {
+      foreach my $elem (MODES) {
+        if (substr ((&{$elem}())[0], 0, $length) eq $mode) {
+          if (!($found)) {
+            $mode_parse = $elem;
+          }
+          ++$found;
+        }
+      }
+    }
+
+    $ret = [ $found, $mode_parse ];
+  }
+
+  return $ret;
+}
+
 # Helper function handling the parsing and setting of program modes.
 #
 # Takes a string, which represents a (potentially abbreviated) mode name, a
@@ -208,7 +251,6 @@ sub handle_mode {
   if (!($error_detected)) {
     if ($mode ne q{}) {
       # Mode has been passed, support substrings of the actual modes.
-      my $length = length ($mode);
       my $found = 0;
 
       my %modes = ();
@@ -216,19 +258,35 @@ sub handle_mode {
         $modes{(&$elem())[0]} = 1;
       }
 
-      if ($length < max (map { length ((&$_())[0]); } (MODES))) {
-        foreach my $elem (MODES) {
-          if (substr ((&$elem())[0], 0, $length) eq $mode) {
-            if (!($found)) {
-              $mode_parse = $elem;
-            }
-            ++$found;
-          }
+      my $abbrev_ret = handle_mode_abbrev ($mode);
+
+      if (!(defined ($abbrev_ret))) {
+        print {*STDERR} 'Unable to parse given mode (' . $mode . ") as an abbreviation, erroring out.\n";
+        $error_detected = 1;
+      }
+      elsif (2 != scalar (@{$abbrev_ret})) {
+        print {*STDERR} 'Return value of abbreviation parsing for mode (' . $mode . ") has a wrong format, erroring out.\n";
+        $error_detected = 1;
+      }
+      else {
+        # Check data.
+        my $first_reftype = ref ($abbrev_ret->[0]);
+        my $second_reftype = ref ($abbrev_ret->[1]);
+        if ((q{} ne $first_reftype) || (q{CODE} ne $second_reftype)) {
+          print {*STDERR} 'Return value of abbreviation parsing for mode (' . $mode . ") has a wrong format.\n";
+          print {*STDERR} 'Expected scalar (empty string), got "' . $first_reftype . '" and CODE, got "' . $second_reftype . q{"} . "\n";
+          print {*STDERR} "Erroring out.\n";
+          $error_detected = 1;
+        }
+        else {
+          # Unpack return data.
+          $found = shift (@{$abbrev_ret});
+          $mode_parse = shift (@{$abbrev_ret});
         }
       }
 
       # Now check if value matches a known one.
-      if (!($found)) {
+      if ((!($error_detected)) && (!($found))) {
         foreach my $elem (MODES) {
           if (exists ($modes{(&$elem())[0]})) {
             $mode_parse = $elem;
@@ -238,13 +296,15 @@ sub handle_mode {
         }
       }
 
-      if (!($found)) {
-        print {*STDERR} 'Invalid mode specified (' . $mode . "), erroring out.\n";
-        $error_detected = 1;
-      }
-      elsif (1 < $found) {
-        print {*STDERR} 'Supplied mode (' . $mode . ") is ambiguous, erroring out.\n";
-        $error_detected = 1;
+      if (!($error_detected)) {
+        if (!($found)) {
+          print {*STDERR} 'Invalid mode specified (' . $mode . "), erroring out.\n";
+          $error_detected = 1;
+        }
+        elsif (1 < $found) {
+          print {*STDERR} 'Supplied mode (' . $mode . ") is ambiguous, erroring out.\n";
+          $error_detected = 1;
+        }
       }
     }
   }

@@ -309,6 +309,10 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
        x2goserver/lib/x2goupdateoptionsstring}: update Perl critic overrides
       to allow the constant pragma and document it and other overrides
       (unless they are self-explanatory).
+    - x2goserver/lib/x2goupdateoptionsstring: rework mode selection, split out
+      abbreviation parsing into a separate function to take out nesting
+      complexity. This trades off nesting complexity (to some degree) with
+      code complexity.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
