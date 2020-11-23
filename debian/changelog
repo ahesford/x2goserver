@@ -323,6 +323,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       code any longer and might actually confuse readers.
     - X2Go/Server/Agent/NX/Options.pm: undef can't be referenced, so
       adjust/fix the comments.
+    - x2goserver/bin/x2goupdateoptionsstring: more typo fixes in output
+      messages only.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

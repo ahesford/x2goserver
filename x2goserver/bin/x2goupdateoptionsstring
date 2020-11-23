@@ -223,12 +223,12 @@ sub handle_mode {
   }
 
   if ((!($error_detected)) && (!(defined ($transform)))) {
-    print {*STDERR} "Invalid transformation argument passed to mode selecttion helper, erroring out.\n";
+    print {*STDERR} "Invalid transformation argument passed to mode selection helper, erroring out.\n";
     $error_detected = 1;
   }
 
   if ((!($error_detected)) && (!(defined ($extract)))) {
-    print {*STDERR} "Invalid extract argument passed to mode selecttion helper, erroring out.\n";
+    print {*STDERR} "Invalid extract argument passed to mode selection helper, erroring out.\n";
     $error_detected = 1;
   }
 
