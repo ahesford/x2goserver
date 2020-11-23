@@ -460,12 +460,6 @@ sub Main {
 
     my $transformed = 0;
 
-    # Nasty trick (to some degree): "do"-blocks are not recognized as loops by
-    # Perl, but we could wrap the body in another block, which WILL BE recognized
-    # as a loop (one, that only executes once), oddly enough. However, using
-    # "last" won't work in such a situation, but rather behave like "next".
-    # Worse, the condition will also not be checked in such a case.
-    # Thus, we'd better use a real loop.
     while (defined (my $cur_transform = shift (@program_arguments))) {
       $transformed = 1;
 
