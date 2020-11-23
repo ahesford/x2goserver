@@ -64,7 +64,7 @@ BEGIN {
 # SIMPLY JOIN THE LIST OR YOU WILL ADD A TRAILING COMMA! The port component
 # hash retains the colon separator.
 #
-# On error, returns an undef reference.
+# On error, returns undef.
 sub parse_options {
   my $ret = undef;
   my @intermediate = ();
@@ -536,7 +536,7 @@ sub filter_option_modify {
 #
 # Returns a reference to a modified *copy* of the intermediate options array.
 #
-# On error, returns a reference to undef.
+# On error, returns undef.
 sub transform_intermediate {
   my $ret = undef;
   my $error_detected = 0;
@@ -707,7 +707,7 @@ sub interpret_transform {
 #
 # Returns a reference to the modified, compacted intermediate options array.
 #
-# On error, returns a reference to undef.
+# On error, returns undef.
 sub compact_intermediate {
   my $ret = undef;
   my $error_detected = 0;
