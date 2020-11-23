@@ -153,7 +153,13 @@ sub parse_options {
         # Thus going the manual route here.
         my $last_pos = rindex ($last_component, q{:});
 
+        # There is no English variant for this variable and it's deprecated
+        # anyway, replaced by the index 0 in most cases.
+        # We'll keep it for backwards compatibility for now and disable the
+        # warning.
+        ## no critic (Variables::ProhibitPunctuationVars)
         if ($[ > $last_pos) {
+        ## critic (Variables::ProhibitPunctuationVars)
           print {*STDERR} "No display port seperator found in the options string. Erroring out.\n";
           $error_detected = 1;
         }
@@ -1108,6 +1114,6 @@ both values match.
 
 This manual has been written by
 Mihai Moldovan L<E<lt>ionic@ionic.deE<gt>|mailto:ionic@ionic.de> for the X2Go
-project (L<https://www.x2go.org>).
+project (L<https://www.x2go.org|https://www.x2go.org>).
 
 =cut

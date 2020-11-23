@@ -255,7 +255,7 @@ sub handle_mode {
 
       my %modes = ();
       foreach my $elem (MODES) {
-        $modes{(&$elem())[0]} = 1;
+        $modes{(&{$elem}())[0]} = 1;
       }
 
       my $abbrev_ret = handle_mode_abbrev ($mode);
@@ -288,7 +288,7 @@ sub handle_mode {
       # Now check if value matches a known one.
       if ((!($error_detected)) && (!($found))) {
         foreach my $elem (MODES) {
-          if (exists ($modes{(&$elem())[0]})) {
+          if (exists ($modes{(&{$elem}())[0]})) {
             $mode_parse = $elem;
             $found = 1;
             last;
@@ -311,7 +311,7 @@ sub handle_mode {
 
   # Okay, now check for mutual exclusiveness and map to return value.
   if (!($error_detected)) {
-    $ret = ($mode_aggregate | (&$mode_parse())[1]);
+    $ret = ($mode_aggregate | (&{$mode_parse}())[1]);
 
     if (($ret) && ($ret & ($ret - 1))) {
       print {*STDERR} "Mutually exclusive modes specified, erroring out.\n";
@@ -563,8 +563,8 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator
 =head1 DESCRIPTION
 
 =for comment
-Due to parser oddities, breaking a line during an L<> formatter code right
-after the separating pipe character will generate broken links.
+Due to parser oddities, breaking a line during an L<dummy|text> formatter code
+right after the separating pipe character will generate broken links.
 Make sure to only break it during the description or, generally, on space
 characters.
 A workaround for this as been proposed in
@@ -695,6 +695,6 @@ C<x2goupdateoptionsstring '-c' '--'
 
 This manual has been written by
 Mihai Moldovan L<E<lt>ionic@ionic.deE<gt>|mailto:ionic@ionic.de> for the X2Go
-project (L<https://www.x2go.org>).
+project (L<https://www.x2go.org|https://www.x2go.org>).
 
 =cut
