@@ -218,7 +218,7 @@ sub handle_mode {
   my $extract = shift;
 
   if (!(defined ($mode))) {
-    print {*STDERR} "Invalid mode argument passed to mode selecttion helper, erroring out.\n";
+    print {*STDERR} "Invalid mode argument passed to mode selection helper, erroring out.\n";
     $error_detected = 1;
   }
 
