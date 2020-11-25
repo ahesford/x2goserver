@@ -35,6 +35,9 @@ use 5.012;
 # Enable UTF-8 encoded data in the script itself.
 use utf8;
 
+# Make text coding issues fatal.
+use warnings  qw (FATAL utf8);
+
 use base 'Exporter';
 use English qw (-no_match_vars);
 use Storable qw (dclone);
