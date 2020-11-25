@@ -29,6 +29,12 @@
 use strict;
 use warnings;
 
+# Enable full Unicode handling, if possible.
+use 5.012;
+
+# Enable UTF-8 encoded data in the script itself.
+use utf8;
+
 #use X2Go::Utils qw (is_int);
 use English qw (-no_match_vars);
 use Getopt::Long qw (GetOptionsFromArray);

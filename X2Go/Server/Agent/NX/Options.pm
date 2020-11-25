@@ -29,6 +29,12 @@ package X2Go::Server::Agent::NX::Options;
 use strict;
 use warnings;
 
+# Enable full Unicode handling, if possible.
+use 5.012;
+
+# Enable UTF-8 encoded data in the script itself.
+use utf8;
+
 use base 'Exporter';
 use English qw (-no_match_vars);
 use Storable qw (dclone);
