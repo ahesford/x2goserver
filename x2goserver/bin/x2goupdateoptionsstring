@@ -45,6 +45,7 @@ use Pod::Usage;
 use Storable qw (dclone);
 use Data::Dumper qw (Dumper);
 use X2Go::Server::Agent::NX::Options;
+use MIME::Base64 qw (encode_base64);
 use List::Util qw (max);
 use Encode qw (encode decode);
 
@@ -523,7 +524,7 @@ sub Main {
       print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
     }
 
-    if ($compact) {
+    if (((MODE_EXTRACT_DATA)[1] == $mode) || ($compact)) {
       $intermediate = X2Go::Server::Agent::NX::Options::compact_intermediate ($intermediate);
 
       if (!(defined ($intermediate))) {
@@ -557,13 +558,37 @@ sub Main {
           last;
         }
       }
+      elsif ((MODE_EXTRACT_DATA)[1] == $mode) {
+        my $extract = extract_data ($intermediate, $cur_arg, $debug);
+
+        if (!(defined ($extract)) {
+          print {*STDERR} 'Unable to extract data for "' . $cur_arg . '"' . ", aborting.\n";
+          $error_detected = 11;
+        }
+        else {
+          # Convert into bytes.
+          $bytes = encode ("UTF-8", $extract, Encode::FB_CROAK);
+
+          # Encode the data.
+          my $base64 = base64_encode ($extract, q{});
+
+          if (!(defined ($out))) {
+            # Create it.
+            $out = $base64;
+          }
+          else {
+            # Otherwise, append and make sure to separate fields.
+            $out .= q{|} . $base64;
+          }
+        }
+      }
 
       # Skip pseudo-option, if necessary.
       $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
 
       if (!(defined ($sanitized_options))) {
         pod2usage (-exitval => 'NOEXIT');
-        $error_detected = 11;
+        $error_detected = 12;
         last;
       }
       elsif ($debug) {
@@ -577,7 +602,7 @@ sub Main {
 
     if ((!($error_detected)) && (!($operation))) {
       print {*STDERR} "No operation carried out, aborting.\n";
-      $error_detected = 12;
+      $error_detected = 13;
     }
   }
 
@@ -587,7 +612,7 @@ sub Main {
 
       if (!(defined ($out))) {
         print {*STDERR} "Unable to transform intermediate back into string, aborting.\n";
-        $error_detected = 13;
+        $error_detected = 14;
       }
     }
   }
