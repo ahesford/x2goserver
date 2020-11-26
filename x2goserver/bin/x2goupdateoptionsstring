@@ -46,8 +46,10 @@ use Storable qw (dclone);
 use Data::Dumper qw (Dumper);
 use X2Go::Server::Agent::NX::Options;
 use List::Util qw (max);
+use Encode qw (encode decode);
 
-exit (Main (@ARGV));
+# Convert data in ARGV.
+exit (Main (map { decode ("UTF-8", $_, Encode::FB_CROAK); } @ARGV));
 
 BEGIN {
 }
