@@ -267,17 +267,17 @@ sub intermediate_to_string {
   my $ret = undef;
   my $error_detected = 0;
 
-  my $options = shift;
+  my $intermediate = shift;
 
-  $error_detected = (!(validate_intermediate ($options)));
+  $error_detected = (!(validate_intermediate ($intermediate)));
 
   if (!($error_detected)) {
     # Last entry should contain the display port part only.
     # We can detect it through counting.
-    my $elements_left = @{$options};
+    my $elements_left = @{$intermediate};
 
     # Handle entries iteratively, merging them into one string.
-    foreach my $entry (@{$options}) {
+    foreach my $entry (@{$intermediate}) {
       --$elements_left;
 
       if (!defined ($entry)) {
