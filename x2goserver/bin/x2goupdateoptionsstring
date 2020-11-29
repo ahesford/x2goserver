@@ -570,7 +570,7 @@ sub Main {
           my $bytes = encode ("UTF-8", $extract, Encode::FB_CROAK);
 
           # Encode the data.
-          my $base64 = base64_encode ($extract, q{});
+          my $base64 = MIME::Base64::encode_base64 ($extract, q{});
 
           if (!(defined ($out))) {
             # Create it.
