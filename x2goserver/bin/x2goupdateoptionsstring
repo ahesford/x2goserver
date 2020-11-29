@@ -50,7 +50,7 @@ use List::Util qw (max);
 use Encode qw (encode decode);
 
 # Convert data in ARGV.
-exit (Main (map { decode ("UTF-8", $_, (Encode::FB_CROAK | Encode::LEAVE_SRC)); } @ARGV));
+exit (Main (map { Encode::decode ("UTF-8", $_, (Encode::FB_CROAK | Encode::LEAVE_SRC)); } @ARGV));
 
 BEGIN {
 }
@@ -101,7 +101,7 @@ sub sanitize_program_options {
   }
 
   if (!($error_detected)) {
-    $args = dclone ($args);
+    $args = Storable::dclone ($args);
 
     ## no critic (ControlStructures::ProhibitCStyleForLoops)
     for (my $cur_arg = shift (@{$args}); defined ($cur_arg); $cur_arg = shift (@{$args})) {
@@ -193,7 +193,7 @@ sub handle_mode_abbrev {
   if (!($error_detected)) {
     my $length = length ($mode);
 
-    if ($length < max (map { length ((&{$_}())[0]); } (MODES))) {
+    if ($length < List::Util::max (map { length ((&{$_}())[0]); } (MODES))) {
       foreach my $elem (MODES) {
         if (substr ((&{$elem}())[0], 0, $length) eq $mode) {
           if (!($found)) {
@@ -373,7 +373,7 @@ sub apply_transformation {
 
   if (!($error_detected)) {
     if ($debug) {
-      print {*STDERR} 'Parsing current raw transformation option: ' . Dumper ($transform);
+      print {*STDERR} 'Parsing current raw transformation option: ' . Data::Dumper::Dumper ($transform);
     }
 
     $interpreted_transform_ref = X2Go::Server::Agent::NX::Options::interpret_transform ($transform);
@@ -388,7 +388,7 @@ sub apply_transformation {
     my ($transform_mode, $sanitized_transform) = @{$interpreted_transform_ref};
 
     if ($debug) {
-      print {*STDERR} 'Parsed raw transformation option into mode \'' . $transform_mode . '\' and sanitized transform option \'' . Dumper ($sanitized_transform) . "'\n";
+      print {*STDERR} 'Parsed raw transformation option into mode \'' . $transform_mode . '\' and sanitized transform option \'' . Data::Dumper::Dumper ($sanitized_transform) . "'\n";
     }
 
     $intermediate = X2Go::Server::Agent::NX::Options::transform_intermediate ($intermediate, $transform_mode, $sanitized_transform);
@@ -401,7 +401,7 @@ sub apply_transformation {
 
   if (!($error_detected)) {
     if ($debug) {
-      print {*STDERR} 'Dumping transformed intermediate array: ' . Dumper ($intermediate);
+      print {*STDERR} 'Dumping transformed intermediate array: ' . Data::Dumper::Dumper ($intermediate);
     }
 
     $ret = $intermediate;
@@ -457,7 +457,7 @@ sub extract_data {
 
     my $result = X2Go::Server::Agent::NX::Options::extract_element ($intermediate, $kv);
 
-    print {*STDERR} 'Dumping returned value, length ' . scalar (@{$result}) . ': ' . Dumper ($result);
+    print {*STDERR} 'Dumping returned value, length ' . scalar (@{$result}) . ': ' . Data::Dumper::Dumper ($result);
 
     if (!(defined ($result))) {
       print {*STDERR} "Unable to extract element, erroring out.\n";
@@ -468,7 +468,7 @@ sub extract_data {
       $error_detected = 1;
 
       if ($debug) {
-        print {*STDERR} 'Dumping returned value, length ' . scalar (@{$result}) . ': ' . Dumper ($result);
+        print {*STDERR} 'Dumping returned value, length ' . scalar (@{$result}) . ': ' . Data::Dumper::Dumper ($result);
       }
     }
     elsif (0 == scalar (@{$result})) {
@@ -514,20 +514,20 @@ sub Main {
   my $mode_transform = 0;
   my $mode_extract = 0;
   my $mode_arg = q{};
-  GetOptionsFromArray (\@program_arguments, 'help|?|h' => \$help,
-                                            'man' => \$man,
-                                            'debug|d' => \$debug,
-                                            'compact|c' => \$compact,
-                                            'transform|t' => \$mode_transform,
-                                            'extract|e' => \$mode_extract,
-                                            'mode|m=s' => \$mode_arg) or pod2usage (2);
+  Getopt::Long::GetOptionsFromArray (\@program_arguments, 'help|?|h' => \$help,
+                                                          'man' => \$man,
+                                                          'debug|d' => \$debug,
+                                                          'compact|c' => \$compact,
+                                                          'transform|t' => \$mode_transform,
+                                                          'extract|e' => \$mode_extract,
+                                                          'mode|m=s' => \$mode_arg) or Pod::Usage::pod2usage (2);
 
   if ($help) {
-    pod2usage (1);
+    Pod::Usage::pod2usage (1);
   }
 
   if ($man) {
-    pod2usage (-verbose => 2, -exitval => 3);
+    Pod::Usage::pod2usage (-verbose => 2, -exitval => 3);
   }
 
   my $mode = handle_mode ($mode_arg, $mode_transform, $mode_extract);
@@ -546,7 +546,7 @@ sub Main {
     $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
 
     if (!(defined ($sanitized_options))) {
-      pod2usage (-exitval => 'NOEXIT');
+      Pod::Usage::pod2usage (-exitval => 'NOEXIT');
       $error_detected = 5;
     }
   }
@@ -555,7 +555,7 @@ sub Main {
 
   if (!($error_detected)) {
     if ($debug) {
-      print {*STDERR} 'Sanitized program options string as: ' . Dumper ($sanitized_options);
+      print {*STDERR} 'Sanitized program options string as: ' . Data::Dumper::Dumper ($sanitized_options);
     }
 
     # The shift () operations here actually shift the outer array, not the
@@ -583,7 +583,7 @@ sub Main {
 
   if (!($error_detected)) {
     if ($debug) {
-      print {*STDERR} 'Fetched options string as: ' . Dumper (\$options);
+      print {*STDERR} 'Fetched options string as: ' . Data::Dumper::Dumper (\$options);
     }
 
     $intermediate = X2Go::Server::Agent::NX::Options::parse_options ($options);
@@ -598,15 +598,15 @@ sub Main {
     $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
 
     if (!(defined ($sanitized_options))) {
-      pod2usage (-exitval => 'NOEXIT');
+      Pod::Usage::pod2usage (-exitval => 'NOEXIT');
       $error_detected = 8;
     }
   }
 
   if (!($error_detected)) {
     if ($debug) {
-      print {*STDERR} 'Sanitized program options string as: ' . Dumper ($sanitized_options);
-      print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Dumper ($intermediate);
+      print {*STDERR} 'Sanitized program options string as: ' . Data::Dumper::Dumper ($sanitized_options);
+      print {*STDERR} 'Dumping intermediate array after initial parsing: ' . Data::Dumper::Dumper ($intermediate);
     }
 
     if (((MODE_EXTRACT_DATA)[1] == $mode) || ($compact)) {
@@ -617,7 +617,7 @@ sub Main {
         $error_detected = 9;
       }
       elsif ($debug) {
-        print {*STDERR} 'Dumping intermediate array after compacting: ' . Dumper ($intermediate);
+        print {*STDERR} 'Dumping intermediate array after compacting: ' . Data::Dumper::Dumper ($intermediate);
       }
     }
   }
@@ -672,12 +672,12 @@ sub Main {
       $sanitized_options = sanitize_program_options (\@program_arguments, (!($found_separator)));
 
       if (!(defined ($sanitized_options))) {
-        pod2usage (-exitval => 'NOEXIT');
+        Pod::Usage::pod2usage (-exitval => 'NOEXIT');
         $error_detected = 12;
         last;
       }
       elsif ($debug) {
-        print {*STDERR} 'Sanitized program options string as: ' . Dumper ($sanitized_options);
+        print {*STDERR} 'Sanitized program options string as: ' . Data::Dumper::Dumper ($sanitized_options);
       }
 
       $found_separator |= (0 + shift (@{$sanitized_options}));

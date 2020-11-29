@@ -616,7 +616,7 @@ sub transform_intermediate {
 
   if (!($error_detected)) {
     # Set return value to a *deep copy* of our original array.
-    $ret = dclone ($intermediate);
+    $ret = Storable::dclone ($intermediate);
 
     my $elements_left = @{$ret};
 
@@ -725,7 +725,7 @@ sub extract_element {
     my @results = grep { filter_find_key ($work_option_key, $work_option_value, $_, --$elements_left) } @{$intermediate};
 
     # Okay, got the results, now let's clone that.
-    $ret = dclone (\@results);
+    $ret = Storable::dclone (\@results);
   }
 
   return $ret;
