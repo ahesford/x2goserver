@@ -43,7 +43,7 @@ use English qw (-no_match_vars);
 use Storable qw (dclone);
 
 our @EXPORT_OK = qw (MODE_INVALID MODE_ADD_UPDATE MODE_REMOVE
-                     parse_options interpret_transform transform_intermediate intermediate_to_string compact_intermediate);
+                     parse_options interpret_transform transform_intermediate extract_element intermediate_to_string compact_intermediate);
 
 
 # These are actually supposed to be enums, but since Perl doesn't have a
@@ -669,6 +669,63 @@ sub transform_intermediate {
         }
       }
     }
+  }
+
+  return $ret;
+}
+
+# Extracts entries from the intermediate options array.
+#
+# Expects an intermediate options reference as its first parameter, and the
+# option-to-be-extracted as its parameter.
+#
+# This option can either be a full key-value pair, which is useful for testing
+# for existence, or just a key, which is useful for extracting unknown,
+# matching value(s).
+#
+# Returns a reference to a modified *copy* of the extracted elements. This is
+# an array of hash references, with each hash containing one element.
+#
+# On error, returns undef.
+sub extract_element {
+  my $ret = undef;
+  my $error_detected = 0;
+
+  my $intermediate = shift;
+  my $option = shift;
+
+  $error_detected = (!(validate_intermediate ($intermediate)));
+
+  if (!($error_detected)) {
+    if (!(defined ($option))) {
+      print {*STDERR} "No or invalid option to extract passed, erroring out.\n";
+      $error_detected = 1;
+    }
+  }
+
+  my $work_option_key = undef;
+  my $work_option_value = undef;
+
+  if (!($error_detected)) {
+    my $work_opt_kv = sanitize_workoption_filter ($option);
+
+    if (!(defined ($work_opt_kv))) {
+      print {*STDERR} "Unable to split up working option into key and value pair, returning undef.\n";
+      $error_detected = 1;
+    }
+    else {
+      $work_option_key = shift (@{$work_opt_kv});
+      $work_option_value = shift (@{$work_opt_kv});
+    }
+  }
+
+  if (!($error_detected)) {
+    my $elements_left = @{$intermediate};
+
+    my @results = grep { filter_find_key ($work_option_key, $work_option_value, $_, --$elements_left) } @{$intermediate};
+
+    # Okay, got the results, now let's clone that.
+    $ret = dclone (\@results);
   }
 
   return $ret;
