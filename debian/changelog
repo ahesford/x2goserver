@@ -352,6 +352,7 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/bin/x2goupdateoptionsstring: correctly use MIME::Base64.
     - x2goserver/bin/x2goupdateoptionsstring: actually implement extraction
       mode.
+    - x2goserver/bin/x2goupdateoptionsstring: don't encode/decode in-place.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

@@ -50,7 +50,7 @@ use List::Util qw (max);
 use Encode qw (encode decode);
 
 # Convert data in ARGV.
-exit (Main (map { decode ("UTF-8", $_, Encode::FB_CROAK); } @ARGV));
+exit (Main (map { decode ("UTF-8", $_, (Encode::FB_CROAK | Encode::LEAVE_SRC)); } @ARGV));
 
 BEGIN {
 }
@@ -652,7 +652,7 @@ sub Main {
         }
         else {
           # Convert into bytes.
-          my $bytes = encode ("UTF-8", $extract, Encode::FB_CROAK);
+          my $bytes = Encode::encode ("UTF-8", $extract, (Encode::FB_CROAK | Encode::LEAVE_SRC));
 
           # Encode the data.
           my $base64 = MIME::Base64::encode_base64 ($extract, q{});
