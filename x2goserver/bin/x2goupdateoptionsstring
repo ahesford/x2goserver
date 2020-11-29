@@ -561,13 +561,13 @@ sub Main {
       elsif ((MODE_EXTRACT_DATA)[1] == $mode) {
         my $extract = extract_data ($intermediate, $cur_arg, $debug);
 
-        if (!(defined ($extract)) {
+        if (!(defined ($extract))) {
           print {*STDERR} 'Unable to extract data for "' . $cur_arg . '"' . ", aborting.\n";
           $error_detected = 11;
         }
         else {
           # Convert into bytes.
-          $bytes = encode ("UTF-8", $extract, Encode::FB_CROAK);
+          my $bytes = encode ("UTF-8", $extract, Encode::FB_CROAK);
 
           # Encode the data.
           my $base64 = base64_encode ($extract, q{});
