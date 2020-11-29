@@ -215,6 +215,48 @@ sub parse_options {
 }
 
 # Takes an intermediate options string representation array reference(!) and
+# checks its validity.
+# Returns true, iff the array reference contains at least one element (since
+# the terminating display port specifier is mandatory) and all elements are
+# defined.
+# Otherwise, returns false.
+sub validate_intermediate {
+  my $ret = 1;
+
+  my $intermediate = shift;
+
+  if (!(defined ($intermediate))) {
+    print {*STDERR} "Invalid options reference passed to check function (undefined), returning false.\n";
+    $ret = 0;
+  }
+
+  if ($ret) {
+    if ('ARRAY' ne ref ($intermediate)) {
+      print {*STDERR} 'Invalid options reference type passed to check function (' . ref ($intermediate) . "), returning false.\n";
+      $ret = 0;
+    }
+  }
+
+  if ($ret) {
+    if (0 == scalar (@{$intermediate})) {
+      print {*STDERR} "Empty options array reference passed to check function, returning false.\n";
+      $ret = 0;
+    }
+  }
+
+  if ($ret) {
+    foreach my $entry (@{$intermediate}) {
+      if (!defined ($entry)) {
+        print {*STDERR} "Invalid options array reference passed to check function, at least one element is undefined, returning false.\n";
+        $ret = 0;
+      }
+    }
+  }
+
+  return $ret;
+}
+
+# Takes an intermediate options string representation array reference(!) and
 # returns a string.
 # This is essentially the opposite of parse_options.
 # Parsing an options string and passing the result through this function again
@@ -227,21 +269,7 @@ sub intermediate_to_string {
 
   my $options = shift;
 
-  if ('ARRAY' ne ref ($options)) {
-    print {*STDERR} 'Invalid options reference type passed (' . ref ($options) . "), returning undef.\n";
-    $error_detected = 1;
-  }
-
-  if (!($error_detected)) {
-    if (0 < scalar (@{$options})) {
-      foreach my $entry (@{$options}) {
-        if (!defined ($entry)) {
-          print {*STDERR} "Invalid options array passed, returning undef.\n";
-          $error_detected = 1;
-        }
-      }
-    }
-  }
+  $error_detected = (!(validate_intermediate ($options)));
 
   if (!($error_detected)) {
     # Last entry should contain the display port part only.
@@ -554,21 +582,7 @@ sub transform_intermediate {
   my $mode = shift;
   my $option = shift;
 
-  if ('ARRAY' ne ref ($intermediate)) {
-    print {*STDERR} 'Invalid options reference type passed (' . ref ($intermediate) . "), erroring out.\n";
-    $error_detected = 1;
-  }
-
-  if (!($error_detected)) {
-    if (0 < scalar (@{$intermediate})) {
-      foreach my $entry (@{$intermediate}) {
-        if (!defined ($entry)) {
-          print {*STDERR} "Invalid options array passed, erroring out.\n";
-          $error_detected = 1;
-        }
-      }
-    }
-  }
+  $error_detected = (!(validate_intermediate ($intermediate)));
 
   if (!($error_detected)) {
     if (!(defined ($mode)) || (MODE_INVALID == $mode)) {
@@ -724,21 +738,7 @@ sub compact_intermediate {
 
   my $intermediate = shift;
 
-  if ('ARRAY' ne ref ($intermediate)) {
-    print {*STDERR} 'Invalid options reference type passed (' . ref ($intermediate) . "), erroring out.\n";
-    $error_detected = 1;
-  }
-
-  if (!($error_detected)) {
-    if (0 < scalar (@{$intermediate})) {
-      foreach my $entry (@{$intermediate}) {
-        if (!defined ($entry)) {
-          print {*STDERR} "Invalid options array passed, erroring out.\n";
-          $error_detected = 1;
-        }
-      }
-    }
-  }
+  $error_detected = (!(validate_intermediate ($intermediate)));
 
   if (!($error_detected)) {
     # First, save display number part.

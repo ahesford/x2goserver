@@ -338,6 +338,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       mode. Needs proper implementation.
     - x2goserver/bin/x2goupdateoptionsstring: fix syntax and strict mode
       errors.
+    - X2Go/Server/Agent/NX/Options.pm: simplify error handling by splitting
+      intermediate checking out into a separate subroutine.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
