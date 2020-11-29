@@ -342,6 +342,10 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       intermediate checking out into a separate subroutine.
     - X2Go/Server/Agent/NX/Options.pm: rename $options variable to
       $intermediate in intermediate_to_string () for internal consistency.
+    - X2Go/Server/Agent/NX/Options.pm: document that subroutines and constants
+      that are not marked for export are internal and should not be used.
+      Usually, that should implicitly be clear, but it doesn't hurt to be
+      verbose with a disclaimer.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

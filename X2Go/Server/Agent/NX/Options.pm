@@ -940,6 +940,11 @@ identical to the original options string (assuming no errors occurred).
 
 If this is not the case, please report a bug.
 
+Any subroutines and constants not marked as exportable are
+B<explicitly not documented> and should be regarded as internal and
+B<not be used>.
+There is B<no> guarantee regarding their behavior or existence.
+
 =head1 OPTIONS STRINGS
 
 B<X2Go/NX Agent> options strings are fully documented in
