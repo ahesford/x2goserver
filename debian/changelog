@@ -350,6 +350,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       extract key-value pairs. This one will be exportable, too. Documentation
       to be done.
     - x2goserver/bin/x2goupdateoptionsstring: correctly use MIME::Base64.
+    - x2goserver/bin/x2goupdateoptionsstring: actually implement extraction
+      mode.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

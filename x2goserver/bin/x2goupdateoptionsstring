@@ -410,6 +410,91 @@ sub apply_transformation {
   return $ret;
 }
 
+# Helper function extracting a key-value pair from an intermediate options
+# string.
+#
+# Takes an intermediate options string, a key-value pair as a plain string to
+# search for and a boolean value indicating whether debugging is turned on or
+# off as its parameters.
+#
+# The provided key-value pair can actually either be a sole key, which is
+# useful for checking if such a key exists and extracting its value, or a
+# proper key-value pair with both components set, which can be used for
+# checking for exactly this combination.
+#
+# Returns the extracted key-value pair as included in the intermediate options
+# string as a plain string, or alternatively an empty string if the key-value
+# pair was not found.
+#
+# On error, returns undef.
+sub extract_data {
+  my $ret = undef;
+  my $error_detected = 0;
+
+  my $intermediate = shift;
+  my $kv = shift;
+  my $debug = shift;
+
+  if (!(defined ($intermediate))) {
+    print {*STDERR} "Invalid intermediate argument passed to extraction helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if ((!($error_detected)) && (!(defined ($kv)))) {
+    print {*STDERR} "Invalid key-value pair argument passed to extraction helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if ((!($error_detected)) && (!(defined ($debug)))) {
+    print {*STDERR} "Invalid debug argument passed to extraction helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    if ($debug) {
+      print {*STDERR} 'Processing option to extract \'' . $kv . "'\n";
+    }
+
+    my $result = X2Go::Server::Agent::NX::Options::extract_element ($intermediate, $kv);
+
+    print {*STDERR} 'Dumping returned value, length ' . scalar (@{$result}) . ': ' . Dumper ($result);
+
+    if (!(defined ($result))) {
+      print {*STDERR} "Unable to extract element, erroring out.\n";
+      $error_detected = 1;
+    }
+    elsif (1 < scalar (@{$result})) {
+      print {*STDERR} "More than one element returned during extraction, this is supposed to be impossible due to compaction.\n";
+      $error_detected = 1;
+
+      if ($debug) {
+        print {*STDERR} 'Dumping returned value, length ' . scalar (@{$result}) . ': ' . Dumper ($result);
+      }
+    }
+    elsif (0 == scalar (@{$result})) {
+      # No such combination found, this is fine.
+      # Return empty string.
+      $ret = q{};
+    }
+    else {
+      # Everything went fine, go ahead and create the resulting string.
+      foreach my $entry (@{$result}) {
+        foreach my $key (keys (%{$entry})) {
+          $ret = $key;
+
+          my $value = $entry->{$key};
+
+          if (defined ($value)) {
+            $ret .= '=' . $value;
+          }
+        }
+      }
+    }
+  }
+
+  return $ret;
+}
+
 # Main function, no code outside of it shall be executed.
 #
 # Expects @ARGV to be passed in.
