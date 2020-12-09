@@ -358,6 +358,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       package names all across the code for consistency.
     - x2goserver/bin/x2goupdateoptionsstring: fix typos in documentation and
       reword misinterpreted-as-options section.
+    - x2goserver/bin/x2goupdateoptionsstring: document mode selection and
+      extraction mode.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

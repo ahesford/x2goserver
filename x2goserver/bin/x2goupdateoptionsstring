@@ -715,7 +715,7 @@ __END__
 
 =head1 NAME
 
-x2goupdateoptionsstring - X2Go Agent Options String Manipulator
+x2goupdateoptionsstring - X2Go Agent Options String Manipulator and Extractor
 
 =head1 SYNOPSIS
 
@@ -725,7 +725,9 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator
 
 =item B<x2goupdateoptionsstring> B<--man>
 
-=item B<x2goupdateoptionsstring> [B<--compact>|B<-c>] [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
+=item B<x2goupdateoptionsstring> [<B<--mode>|B<-m>>[B<=>| ]B<t>[B<ransform>]|B<-t>] [B<--compact>|B<-c>] [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
+
+=item B<x2goupdateoptionsstring> <B<--mode>|B<-m>>[B<=>| ]B<e>[B<xtract>]|B<-e> [B<--debug>|B<-d>] [B<-->] I<options_string> I<key>[B<=>I<value>] ...
 
 =back
 
@@ -739,14 +741,23 @@ characters.
 A workaround for this has been proposed in
 https://github.com/Perl/perl5/issues/18305 .
 
-B<x2goupdateoptionsstring> is a utility for manipulating options strings as
-passed to B<X2Go/NX Agent>.
+B<x2goupdateoptionsstring> is a utility for manipulating and extracting data
+from options strings as passed to B<X2Go/NX Agent>.
 For more information about supported options strings, refer to the L<OPTIONS
 STRINGS section in the X2Go::Server::Agent::NX::Options
 documentation|X2Go::Server::Agent::NX::Options/OPTIONS STRINGS>.
 
-Call it with optional flags, the options string as the first parameter and the
-transformations to be carried out as additional parameters.
+Currently, two modes are supported:
+
+=over
+
+=item Transform (default)
+
+Transformation mode is enabled by default if no mode has been explicitly
+selected.
+
+Call this program with optional flags, the options string as the first
+parameter and the transformations to be carried out as additional parameters.
 At least one additional parameter (i.e., a transformation) must be provided.
 Transformations are described here briefly, but also in the L<TRANSFORMATIONS
 section in the X2Go::Server::Agent::NX::Options
@@ -770,6 +781,36 @@ B<->I<key>B<=>I<value>.
 Use the B<--compact> option to minimize the original options string, removing
 duplicated and empty entries.
 
+Assuming no error happened, the resulting options string is written to
+C<stdout>.
+
+=item Extract
+
+Extraction mode must be explicitly requested using the B<-e> or
+<B<--mode>|B<-m>>[B<=>| ]B<e>[B<xtract>] flags.
+
+Call this program with optional flags, the options string as the first
+parameter and key-value pairs to be extracted as additional parameters.
+At least one additional parameter (i.e., a key-value pair to extract) must be
+provided.
+
+A degenerated key-value pair without an explicit value can be used to test for
+the existence of a key and extract its value at the same time.
+
+A full, proper key-value pair can be used to test for the existence of a
+key-value pair exactly as provided.
+
+Assuming no error happened, the extracted key-value pairs will be written to
+C<stdout>.
+Each pair will be base64-encoded and, if multiple key-value pairs to extract
+have been provided, delimited via C<pipe> characters (C<|>).
+
+Key-value pairs which haven't been found in the original options string, as
+well as potentially an empty key-value pair, will be represented as empty
+fields.
+
+=back
+
 Refer to the L<OPTIONS PARSING section|/OPTIONS PARSING> for a description of
 when and how to terminate options passed to this program.
 
@@ -789,10 +830,43 @@ Prints the manual page and exits.
 
 Enables noisy debug output.
 
+=item B<-t>
+
+Shorthand for B<--mode=transform>.
+
+=item B<-e>
+
+Shorthand for B<--mode=extract>.
+
+=item <B<--mode>|B<-m>>[B<=>| ]I<mode string>
+
+Selects a specific program mode.
+
+Currently, the following mode strings are supported:
+
+=over
+
+=item *
+
+transform
+
+=item *
+
+extract
+
+=back
+
+Mode strings can be abbreviated, as long as the abbreviation is uniquely
+selecting one mode exactly.
+
 =item B<--compact>|B<-c>
 
 Remove duplicate and empty entries after the initial parsing.
 The order of arguments is preserved in a first-seen fashion.
+
+This option is only available in B<transformation mode>.
+It will be silently ignored in B<extraction mode>, as compaction is a
+pre-requisite and done automatically during extraction.
 
 =back
 
@@ -802,10 +876,12 @@ You can terminate program options parsing via a standard double-dash (B<-->)
 pseudo-option.
 It is B<highly recommended> to always do so.
 
-If you pass removal transformation operations, passing the options terminator
-is B<mandatory>, even if no actual options are used.
-Otherwise, transformation operations will be interpreted as options to the
-program, which will almost certainly lead to an error.
+If you pass removal transformation operations or an extraction key-value pair
+starts with a dash (B<->), passing the options terminator is B<mandatory>, even
+if no actual options are used.
+Otherwise, transformation operations or extraction key-value pairs will be
+interpreted as options to the program, which will almost certainly lead to an
+error.
 
 For example, passing C<-clipboard> as a transformation operation without a
 previous options terminator will be interpreted as the option C<-c>, with the
@@ -817,6 +893,8 @@ being supplied, a degradation into options is certainly not what the original
 transformation operation was supposed to represent.
 
 =head1 EXAMPLES
+
+=head2 TRANSFORMATIONS
 
 For an options string such as
 
@@ -858,6 +936,26 @@ C<x2goupdateoptionsstring '-c' '--'
 'nx/nx,clipboard=both,foo=bar,bar=baz,,foo=oof,:50' '-'>, which shall return
 
  nx/nx,clipboard=both,foo=oof,bar=baz:50
+
+=back
+
+=head2 EXTRACTIONS
+
+For an options string such as
+
+ nx/nx,clipboard=both,foo=bar,-=-,,bar=baz,foo=oof:50
+
+=over 2
+
+Calling C<x2goupdateoptionsstring '-e' '--'
+'nx/nx,clipboard=both,foo=bar,-=-,bar=baz,foo=oof,:50' 'foo'> shall return
+
+ Zm9vPW9vZg==
+
+while calling C<x2goupdateoptionsstring '-e' '--'
+'nx/nx,clipboard=both,foo=bar,-=-,bar=baz,foo=oof,:50' 'bar' '' '-'> shall return
+
+ YmFyPWJheg==||LT0t
 
 =back
 
