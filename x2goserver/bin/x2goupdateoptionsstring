@@ -736,7 +736,7 @@ Due to parser oddities, breaking a line during an L<dummy|text> formatter code
 right after the separating pipe character will generate broken links.
 Make sure to only break it during the description or, generally, on space
 characters.
-A workaround for this as been proposed in
+A workaround for this has been proposed in
 https://github.com/Perl/perl5/issues/18305 .
 
 B<x2goupdateoptionsstring> is a utility for manipulating options strings as
@@ -812,8 +812,9 @@ previous options terminator will be interpreted as the option C<-c>, with the
 rest of the string modified into C<-lipboard>.
 Since this program does not accept an option called C<-l>, it will terminate
 with an error.
-Even then, this is certainly not what the original transformation operation
-was supposed to represent.
+Even if the program does not terminate with an error due to an unknown option
+being supplied, a degradation into options is certainly not what the original
+transformation operation was supposed to represent.
 
 =head1 EXAMPLES
 
