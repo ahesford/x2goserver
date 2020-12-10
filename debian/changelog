@@ -362,6 +362,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       extraction mode.
     - x2goserver/bin/x2goupdateoptionsstring: fix error handling for kv-pair
       extraction.
+    - x2goserver/bin/x2goupdateoptionsstring: add base64 encode and decode
+      helpers, add new --base64 parameter that enabled global use of base64.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

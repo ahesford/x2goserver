@@ -495,6 +495,64 @@ sub extract_data {
   return $ret;
 }
 
+# Helper function encoding a string to its base64 form.
+#
+# Takes a string as its first and only parameter.
+#
+# Returns a base64-encoded representation of the original string.
+#
+# On error, returns undef.
+sub encode_base64_internal {
+  my $ret = undef;
+  my $error_detected = 0;
+
+  my $input = shift;
+
+  if (!(defined ($input))) {
+    print {*STDERR} "Invalid input argument passed to base64 encode helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    # Convert into bytes.
+    my $bytes = Encode::encode ("UTF-8", $input, (Encode::FB_CROAK | Encode::LEAVE_SRC));
+
+    # Encode the data.
+    $ret = MIME::Base64::encode_base64 ($bytes, q{});
+  }
+
+  return $ret;
+}
+
+# Helper function decoding a base64-encoded string to its original form.
+#
+# Takes a string as its first and only parameter.
+#
+# Returns the original representation of the base64-encoded string.
+#
+# On error, returns undef.
+sub decode_base64_internal {
+  my $ret = undef;
+  my $error_detected = 0;
+
+  my $input = shift;
+
+  if (!(defined ($input))) {
+    print {*STDERR} "Invalid input argument passed to base64 encode helper, erroring out.\n";
+    $error_detected = 1;
+  }
+
+  if (!($error_detected)) {
+    # Decode the data.
+    my $decoded = MIME::Base64::decode_base64 ($input);
+
+    # Convert into string.
+    $ret = Encode::decode ("UTF-8", $decoded, (Encode::FB_CROAK | Encode::LEAVE_SRC));
+  }
+
+  return $ret;
+}
+
 # Main function, no code outside of it shall be executed.
 #
 # Expects @ARGV to be passed in.
@@ -514,13 +572,15 @@ sub Main {
   my $mode_transform = 0;
   my $mode_extract = 0;
   my $mode_arg = q{};
+  my $base64 = 0;
   Getopt::Long::GetOptionsFromArray (\@program_arguments, 'help|?|h' => \$help,
                                                           'man' => \$man,
                                                           'debug|d' => \$debug,
                                                           'compact|c' => \$compact,
                                                           'transform|t' => \$mode_transform,
                                                           'extract|e' => \$mode_extract,
-                                                          'mode|m=s' => \$mode_arg) or Pod::Usage::pod2usage (2);
+                                                          'mode|m=s' => \$mode_arg,
+                                                          'base64|b' => \$base64) or Pod::Usage::pod2usage (2);
 
   if ($help) {
     Pod::Usage::pod2usage (1);
@@ -586,11 +646,27 @@ sub Main {
       print {*STDERR} 'Fetched options string as: ' . Data::Dumper::Dumper (\$options);
     }
 
+    if ($base64) {
+      my $decoded_options = decode_base64_internal ($options);
+
+      if (!(defined ($options))) {
+        print {*STDERR} 'Unable to decode base64 representation of options string \'' . $options . "', aborting.\n";
+        $error_detected = 7;
+      }
+      else {
+        if ($debug) {
+          print {*STDERR} 'Decoded options string from base64 to \'' . $decoded_options . "'.\n";
+        }
+
+        $options = $decoded_options;
+      }
+    }
+
     $intermediate = X2Go::Server::Agent::NX::Options::parse_options ($options);
 
     if (!(defined ($intermediate))) {
       print {*STDERR} "Unable to parse options string, aborting.\n";
-      $error_detected = 7;
+      $error_detected = 8;
     }
   }
 
@@ -599,7 +675,7 @@ sub Main {
 
     if (!(defined ($sanitized_options))) {
       Pod::Usage::pod2usage (-exitval => 'NOEXIT');
-      $error_detected = 8;
+      $error_detected = 9;
     }
   }
 
@@ -614,7 +690,7 @@ sub Main {
 
       if (!(defined ($intermediate))) {
         print {*STDERR} "Unable to compact intermediate options representation, aborting.\n";
-        $error_detected = 9;
+        $error_detected = 10;
       }
       elsif ($debug) {
         print {*STDERR} 'Dumping intermediate array after compacting: ' . Data::Dumper::Dumper ($intermediate);
@@ -634,37 +710,60 @@ sub Main {
     while (defined (my $cur_arg = shift (@program_arguments))) {
       $operation = 1;
 
+      if ($base64) {
+        my $decoded_arg = decode_base64_internal ($cur_arg);
+
+        if (!(defined ($decoded_arg))) {
+          print {*STDERR} 'Unable to decode base64 representation of argument \'' . $cur_arg . "', aborting.\n";
+          $error_detected = 11;
+          last;
+        }
+        else {
+          if ($debug) {
+            print {*STDERR} 'Decoded current argument from base64 to \'' . $decoded_arg . "'.\n";
+          }
+
+          $cur_arg = $decoded_arg;
+        }
+      }
+
       if ((MODE_TRANSFORM_DATA)[1] == $mode) {
         $intermediate = apply_transformation ($intermediate, $cur_arg, $debug);
 
         if (!(defined ($intermediate))) {
           print {*STDERR} 'Unable to apply transformation "' . $cur_arg . '"' . ", aborting.\n";
-          $error_detected = 10;
+          $error_detected = 12;
           last;
         }
       }
       elsif ((MODE_EXTRACT_DATA)[1] == $mode) {
-        my $extract = extract_data ($intermediate, $cur_arg, $debug);
+        my $extract = extract_data ($intermediate, $cur_arg, $debug, $base64);
 
         if (!(defined ($extract))) {
           print {*STDERR} 'Unable to extract data for "' . $cur_arg . '"' . ", aborting.\n";
-          $error_detected = 11;
+          $error_detected = 13;
           last;
         }
         else {
-          # Convert into bytes.
-          my $bytes = Encode::encode ("UTF-8", $extract, (Encode::FB_CROAK | Encode::LEAVE_SRC));
+          my $extract_encoded = encode_base64_internal ($extract);
 
-          # Encode the data.
-          my $base64 = MIME::Base64::encode_base64 ($extract, q{});
+          if (!(defined ($extract_encoded))) {
+            print {*STDERR} 'Unable to base64-encode extracted key-value pair \'' . $extract . "', aborting.\n";
+            $error_detected = 14;
+            last;
+          }
+
+          if ($debug) {
+            print {*STDERR} 'Base64-encoded extracted key-value pair to \'' . $extract_encoded . "'.\n";
+          }
 
           if (!(defined ($out))) {
             # Create it.
-            $out = $base64;
+            $out = $extract_encoded;
           }
           else {
             # Otherwise, append and make sure to separate fields.
-            $out .= q{|} . $base64;
+            $out .= q{|} . $extract_encoded;
           }
         }
       }
@@ -674,7 +773,7 @@ sub Main {
 
       if (!(defined ($sanitized_options))) {
         Pod::Usage::pod2usage (-exitval => 'NOEXIT');
-        $error_detected = 12;
+        $error_detected = 15;
         last;
       }
       elsif ($debug) {
@@ -688,7 +787,7 @@ sub Main {
 
     if ((!($error_detected)) && (!($operation))) {
       print {*STDERR} "No operation carried out, aborting.\n";
-      $error_detected = 13;
+      $error_detected = 16;
     }
   }
 
@@ -698,7 +797,23 @@ sub Main {
 
       if (!(defined ($out))) {
         print {*STDERR} "Unable to transform intermediate back into string, aborting.\n";
-        $error_detected = 14;
+        $error_detected = 17;
+      }
+      elsif ($base64) {
+        my $out_encoded = encode_base64_internal ($out);
+
+        if (!(defined ($out_encoded))) {
+          print {*STDERR} 'Unable to base64-encode output string \'' . $out . "', aborting.\n";
+          $error_detected = 18;
+          last;
+        }
+        else {
+          if ($debug) {
+            print {*STDERR} 'Base64-encoded output string to \'' . $out_encoded . "'.\n";
+          }
+
+          $out = $out_encoded;
+        }
       }
     }
   }
