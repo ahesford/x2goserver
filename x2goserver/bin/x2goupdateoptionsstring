@@ -841,9 +841,9 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator and Extractor
 
 =item B<x2goupdateoptionsstring> B<--man>
 
-=item B<x2goupdateoptionsstring> [<B<--mode>|B<-m>>[B<=>| ]B<t>[B<ransform>]|B<-t>] [B<--compact>|B<-c>] [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
+=item B<x2goupdateoptionsstring> [<B<--mode>|B<-m>>[B<=>| ]B<t>[B<ransform>]|B<-t>] [B<--compact>|B<-c>] [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
 
-=item B<x2goupdateoptionsstring> <B<--mode>|B<-m>>[B<=>| ]B<e>[B<xtract>]|B<-e> [B<--debug>|B<-d>] [B<-->] I<options_string> I<key>[B<=>I<value>] ...
+=item B<x2goupdateoptionsstring> <B<--mode>|B<-m>>[B<=>| ]B<e>[B<xtract>]|B<-e> [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> I<key>[B<=>I<value>] ...
 
 =back
 
@@ -862,6 +862,13 @@ from options strings as passed to B<X2Go/NX Agent>.
 For more information about supported options strings, refer to the L<OPTIONS
 STRINGS section in the X2Go::Server::Agent::NX::Options
 documentation|X2Go::Server::Agent::NX::Options/OPTIONS STRINGS>.
+
+For full support of options string, which are allowed (but not recommended) to
+include binary data, the special B<--base64>|B<-b> switch is supported.
+If given, all arguments other than flags must be base64-encoded (making it
+possible to pass binary data via shells, for instance).
+The program's output, minus potentially debugging messages, will also be
+base64-encoded.
 
 Currently, two modes are supported:
 
@@ -983,6 +990,21 @@ The order of arguments is preserved in a first-seen fashion.
 This option is only available in B<transformation mode>.
 It will be silently ignored in B<extraction mode>, as compaction is a
 pre-requisite and done automatically during extraction.
+
+=item B<--base64>|B<-b>
+
+Enable a special full base64 mode.
+
+Any binary data can be given and output by this program in this mode, even
+when operating on a shell.
+
+Input parameters must always be provided encoded in base64 form.
+
+Likewise, the program will always output data encoded in a base64 form.
+Since key-value pairs returned in extraction mode are already base64-encoded
+and delimited with a character that is not legal in the base64 encoding, this
+flag does not modify the extraction's mode output (i.e., you will B<not> have
+to decode the output data twice).
 
 =back
 
