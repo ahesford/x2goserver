@@ -492,16 +492,20 @@ sub filter_find_key {
            || (0 == $elems_left));
 
   if (!($skip)) {
-    # We don't care about the values this time around.
-
     my $option_key = q{};
+    my $option_value = q{};
 
     foreach my $tmp_option_key (keys (%{$cur_option})) {
       $option_key = $tmp_option_key;
+      $option_value = $cur_option->{$tmp_option_key};
     }
 
     if ($option_key eq $needle_key) {
-      $ret = 1;
+      # If we were asked to check for a specific value, i.e., if it defined,
+      # do that, too.
+      if ((!(defined ($needle_value))) || ($option_value eq $needle_value)) {
+        $ret = 1;
+      }
     }
   }
 
@@ -639,7 +643,7 @@ sub transform_intermediate {
       # another dependency and option strings are pretty small, so don't
       # overoptimize here.
       ## no critic (BuiltinFunctions::ProhibitBooleanGrep)
-      if (scalar (grep { filter_find_key ($work_option_key, $work_option_value, $_, --$elements_left) } @{$ret})) {
+      if (scalar (grep { filter_find_key ($work_option_key, undef, $_, --$elements_left) } @{$ret})) {
       ## critic (BuiltinFunctions::ProhibitBooleanGrep)
         # Such an option already exists, we'll modify all occurrences.
         $elements_left = @{$ret};
