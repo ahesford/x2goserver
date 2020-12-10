@@ -1069,9 +1069,10 @@ Calling C<x2goupdateoptionsstring '-e' '--'
  Zm9vPW9vZg==
 
 while calling C<x2goupdateoptionsstring '-e' '--'
-'nx/nx,clipboard=both,foo=bar,-=-,bar=baz,foo=oof,:50' 'bar' '' '-'> shall return
+'nx/nx,clipboard=both,foo=bar,-=-,bar=baz,foo=oof,:50' 'bar' ''
+'clipboard=none' '-'> shall return
 
- YmFyPWJheg==||LT0t
+ YmFyPWJheg==|||LT0t
 
 =back
 

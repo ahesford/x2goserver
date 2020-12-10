@@ -366,6 +366,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       helpers, add new --base64 parameter that enabled global use of base64.
     - X2Go/Server/Agent/NX/Options.pm: actually check for a specific value in
       the kv-pair filter function if so specified. Big oops.
+    - x2goserver/bin/x2goupdateoptionsstring: extend extraction example for
+      how to check for full key-value pair combinations.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:
