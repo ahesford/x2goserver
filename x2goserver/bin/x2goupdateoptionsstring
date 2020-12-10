@@ -841,9 +841,9 @@ x2goupdateoptionsstring - X2Go Agent Options String Manipulator and Extractor
 
 =item B<x2goupdateoptionsstring> B<--man>
 
-=item B<x2goupdateoptionsstring> [<B<--mode>|B<-m>>[B<=>| ]B<t>[B<ransform>]|B<-t>] [B<--compact>|B<-c>] [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
+=item B<x2goupdateoptionsstring> [<B<--mode>|B<-m>><B<=>| >B<t>[B<ransform>]|B<-t>] [B<--compact>|B<-c>] [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
 
-=item B<x2goupdateoptionsstring> <B<--mode>|B<-m>>[B<=>| ]B<e>[B<xtract>]|B<-e> [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> I<key>[B<=>I<value>] ...
+=item B<x2goupdateoptionsstring> <B<--mode>|B<-m>><B<=>| >B<e>[B<xtract>]|B<-e> [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> I<key>[B<=>I<value>] ...
 
 =back
 
@@ -910,7 +910,7 @@ C<stdout>.
 =item Extract
 
 Extraction mode must be explicitly requested using the B<-e> or
-<B<--mode>|B<-m>>[B<=>| ]B<e>[B<xtract>] flags.
+<B<--mode>|B<-m>><B<=>| >B<e>[B<xtract>] flags.
 
 Call this program with optional flags, the options string as the first
 parameter and key-value pairs to be extracted as additional parameters.
@@ -961,7 +961,7 @@ Shorthand for B<--mode=transform>.
 
 Shorthand for B<--mode=extract>.
 
-=item <B<--mode>|B<-m>>[B<=>| ]I<mode string>
+=item <B<--mode>|B<-m>><B<=>| >I<mode string>
 
 Selects a specific program mode.
 
