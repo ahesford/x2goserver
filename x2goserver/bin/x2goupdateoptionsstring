@@ -649,6 +649,7 @@ sub Main {
         if (!(defined ($extract))) {
           print {*STDERR} 'Unable to extract data for "' . $cur_arg . '"' . ", aborting.\n";
           $error_detected = 11;
+          last;
         }
         else {
           # Convert into bytes.
