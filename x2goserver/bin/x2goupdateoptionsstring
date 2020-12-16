@@ -50,7 +50,7 @@ use List::Util qw (max);
 use Encode qw (encode decode);
 
 # Convert data in ARGV.
-exit (Main (map { Encode::decode ("UTF-8", $_, (Encode::FB_CROAK | Encode::LEAVE_SRC)); } @ARGV));
+exit (Main (map { Encode::decode ('UTF-8', $_, (Encode::FB_CROAK | Encode::LEAVE_SRC)); } @ARGV));
 
 BEGIN {
 }
@@ -485,7 +485,7 @@ sub extract_data {
           my $value = $entry->{$key};
 
           if (defined ($value)) {
-            $ret .= '=' . $value;
+            $ret .= q{=} . $value;
           }
         }
       }
@@ -731,7 +731,7 @@ sub Main {
         $intermediate = apply_transformation ($intermediate, $cur_arg, $debug);
 
         if (!(defined ($intermediate))) {
-          print {*STDERR} 'Unable to apply transformation "' . $cur_arg . '"' . ", aborting.\n";
+          print {*STDERR} 'Unable to apply transformation "' . $cur_arg . q{"} . ", aborting.\n";
           $error_detected = 12;
           last;
         }
@@ -740,7 +740,7 @@ sub Main {
         my $extract = extract_data ($intermediate, $cur_arg, $debug, $base64);
 
         if (!(defined ($extract))) {
-          print {*STDERR} 'Unable to extract data for "' . $cur_arg . '"' . ", aborting.\n";
+          print {*STDERR} 'Unable to extract data for "' . $cur_arg . q{"} . ", aborting.\n";
           $error_detected = 13;
           last;
         }
