@@ -945,6 +945,45 @@ X2Go::Server::Agent::NX::Options - NX Options modification module
  $intermediate = X2Go::Server::Agent::NX::Options::transform_intermediate ($intermediate, $transform_mode, $sanitized_transform);
  die "Error while transforming intermediate representation, aborting.\n" unless (defined ($intermediate));
 
+ # Extract the "more" key.
+ my $extract = X2Go::Server::Agent::NX::Options::extract_element ($intermediate, q{more});
+
+ # Error handling ...
+ die "Unable to extract 'more' key from intermediate, aborting.\n" unless defined ($extract);
+
+ # Fetching multiple elements could be fine, for instance when the intermediate is not compact.
+ # Hence, this need not be a general error, but we'll treat it as one here.
+ die "Extract operation returned more than one element, this should not happen with a compacted intermediate, aborting.\n" if (1 < scalar (@{$extract}));
+
+ # Likewise, it would be okay for the resul to be empty, but not for us right here.
+ die "Extract operation returned no result, aborting.\n" if (1 > scalar (@{$extract}));
+
+ my $extracted_kv = q{};
+
+ # Now, get the actual data in a presentable form.
+ foreach my $entry (@{$extract}) {
+   foreach my $key (%{$entry}) {
+     $extracted_kv .= $key;
+     my $value = $entry->{$key};
+     if (defined ($value)) {
+       $extracted_kv .= q{=} . $value;
+     }
+     last;
+   }
+   last;
+ }
+
+ # At this point, $extracted_kv should be "more=data".
+
+ # Yet again, but this time extracting a key which does not exist.
+ $extract =  X2Go::Server::Agent::NX::Options::extract_element ($intermediate, q{nosuchey});
+
+ # Error handling ...
+ die "Unable to extract 'nosuchkey' key from intermediate, aborting.\n" unless defined ($extract);
+
+ # Should be empty.
+ die "Extract operation returned a result, aborting.\n" if (0 < scalar (@{$extract}));
+
  # Transform back into a string.
  my $out = X2Go::Server::Agent::NX::Options::intermediate_to_string ($intermediate);
 
@@ -975,6 +1014,23 @@ To remove redundant or empty entries within an options string, pass the
 I<intermediate> to C<compact_intermediate>.
 This is entirely optional and can be done at any step, as long as an
 I<intermediate> is available.
+If you intend to extract data, it is recommended, but not necessary, to
+compact the I<intermediate> first.
+
+In order to extract key-value pairs, supply the I<intermediate> and a
+I<key-value pair> to extract to C<extract_element>.
+Its result will be either undefined on error, or a reference to an array
+consisting of references to hashes.
+Each hash contains exactly one key-value pair.
+
+The same approach using C<extract_element> can be used to check for the
+existence of either keys or full key-value pairs.
+If the returned array is empty, no such element exists.
+
+For compacted I<intermediates>, each extraction operation returns an array
+with at most one hash reference entry.
+Non-compacted I<intermediates> can contain a key multiple times, so no
+guarantee regarding the result's magnitude can be given.
 
 To parse transformations, pass each one to C<interpret_transform>.
 Refer to L</TRANSFORMATIONS> for documentation on transformation formats.
