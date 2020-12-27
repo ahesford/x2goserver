@@ -26,7 +26,7 @@ BIN_SCRIPTS=$(shell cd bin && echo *)
 SBIN_SCRIPTS=$(shell cd sbin && echo *)
 LIB_FILES=$(shell cd lib && echo *)
 FEATURE_SCRIPTS=$(shell cd share/x2gofeature.d && echo *.features)
-POD_SCRIPTS=sbin/x2gocleansessions.8 bin/x2goupdateoptionsstring.1
+POD_SCRIPTS=sbin/x2gocleansessions.8 bin/x2gooptionsstring.1
 
 man_pages = `cd man && find * -type f`
 
