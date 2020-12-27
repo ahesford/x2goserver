@@ -385,6 +385,7 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
   * debian/x2goserver.manpages:
     + Install x2gocleansessions man page.
     + Install x2goupdateoptionsstring man page.
+    + Rename x2goupdateoptionsstring to x2gooptionsstring.
   * x2goserver.spec:
     + Install new x2goisint wrapper.
     + Install section 1 man pages.
