@@ -843,19 +843,19 @@ __END__
 
 =head1 NAME
 
-x2goupdateoptionsstring - X2Go Agent Options String Manipulator and Extractor
+x2gooptionsstring - X2Go Agent Options String Manipulator and Extractor
 
 =head1 SYNOPSIS
 
 =over
 
-=item B<x2goupdateoptionsstring> B<--help>|B<-h>|B<-?>
+=item B<x2gooptionsstring> B<--help>|B<-h>|B<-?>
 
-=item B<x2goupdateoptionsstring> B<--man>
+=item B<x2gooptionsstring> B<--man>
 
-=item B<x2goupdateoptionsstring> [<B<--mode>|B<-m>><B<=>| >B<t>[B<ransform>]|B<-t>] [B<--compact>|B<-c>] [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
+=item B<x2gooptionsstring> [<B<--mode>|B<-m>><B<=>| >B<t>[B<ransform>]|B<-t>] [B<--compact>|B<-c>] [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> [B<+>]|B<->I<key>[B<=>I<value>] ...
 
-=item B<x2goupdateoptionsstring> <B<--mode>|B<-m>><B<=>| >B<e>[B<xtract>]|B<-e> [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> I<key>[B<=>I<value>] ...
+=item B<x2gooptionsstring> <B<--mode>|B<-m>><B<=>| >B<e>[B<xtract>]|B<-e> [B<--base64>|B<-b>] [B<--debug>|B<-d>] [B<-->] I<options_string> I<key>[B<=>I<value>] ...
 
 =back
 
@@ -869,8 +869,8 @@ characters.
 A workaround for this has been proposed in
 https://github.com/Perl/perl5/issues/18305 .
 
-B<x2goupdateoptionsstring> is a utility for manipulating and extracting data
-from options strings as passed to B<X2Go/NX Agent>.
+B<x2gooptionsstring> is a utility for manipulating and extracting data from
+options strings as passed to B<X2Go/NX Agent>.
 For more information about supported options strings, refer to the L<OPTIONS
 STRINGS section in the X2Go::Server::Agent::NX::Options
 documentation|X2Go::Server::Agent::NX::Options/OPTIONS STRINGS>.
@@ -1052,22 +1052,22 @@ For an options string such as
 
 =over 2
 
-calling C<x2goupdateoptionsstring '--' 'nx/nx,clipboard=both,foo:50'
+calling C<x2gooptionsstring '--' 'nx/nx,clipboard=both,foo:50'
 '-clipboard'> shall return
 
  nx/nx,foo:50
 
-while calling C<x2goupdateoptionsstring '--' 'nx/nx,clipboard=both,foo:50'
+while calling C<x2gooptionsstring '--' 'nx/nx,clipboard=both,foo:50'
 '-clipboard=server'> shall return
 
  nx/nx,clipboard=both,foo:50
 
-Calling C<x2goupdateoptionsstring '--' 'nx/nx,clipboard=both,foo:50' 'bar'>
+Calling C<x2gooptionsstring '--' 'nx/nx,clipboard=both,foo:50' 'bar'>
 shall return
 
  nx/nx,clipboard=both,foo,bar:50
 
-and calling C<x2goupdateoptionsstring '--' 'nx/nx,clipboard=both,foo:50'
+and calling C<x2gooptionsstring '--' 'nx/nx,clipboard=both,foo:50'
 '+-bar' 'foo=gulp' '-clipboard=client'> shall return
 
  nx/nx,clipboard=both,foo=gulp,-bar:50
@@ -1082,7 +1082,7 @@ For an options string such as
 
 you can get a compacted version by cheating a bit and providing a
 transformation which will certainly be a no-operation using
-C<x2goupdateoptionsstring '-c' '--'
+C<x2gooptionsstring '-c' '--'
 'nx/nx,clipboard=both,foo=bar,bar=baz,,foo=oof,:50' '-'>, which shall return
 
  nx/nx,clipboard=both,foo=oof,bar=baz:50
@@ -1097,12 +1097,12 @@ For an options string such as
 
 =over 2
 
-Calling C<x2goupdateoptionsstring '-e' '--'
+Calling C<x2gooptionsstring '-e' '--'
 'nx/nx,clipboard=both,foo=bar,-=-,bar=baz,foo=oof,:50' 'foo'> shall return
 
  Zm9vPW9vZg==
 
-while calling C<x2goupdateoptionsstring '-e' '--'
+while calling C<x2gooptionsstring '-e' '--'
 'nx/nx,clipboard=both,foo=bar,-=-,bar=baz,foo=oof,:50' 'bar' ''
 'clipboard=none' '-'> shall return
 
