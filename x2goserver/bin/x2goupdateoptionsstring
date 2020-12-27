@@ -48,9 +48,21 @@ use X2Go::Server::Agent::NX::Options;
 use MIME::Base64 qw (encode_base64);
 use List::Util qw (max);
 use Encode qw (encode decode);
+use Encode::Locale;
+
+# Set up automatic encoding.
+if (-t STDIN) {
+  binmode STDIN,  ":encoding(console_in)";
+}
+if (-t STDOUT) {
+  binmode STDOUT, ":encoding(console_out)";
+}
+if (-t STDERR) {
+  binmode STDERR, ":encoding(console_out)";
+}
 
 # Convert data in ARGV.
-exit (Main (map { Encode::decode ('UTF-8', $_, (Encode::FB_CROAK | Encode::LEAVE_SRC)); } @ARGV));
+exit (Main (map { Encode::decode (locale => $_, (Encode::FB_CROAK | Encode::LEAVE_SRC)); } @ARGV));
 
 BEGIN {
 }
@@ -515,7 +527,7 @@ sub encode_base64_internal {
 
   if (!($error_detected)) {
     # Convert into bytes.
-    my $bytes = Encode::encode ("UTF-8", $input, (Encode::FB_CROAK | Encode::LEAVE_SRC));
+    my $bytes = Encode::encode (locale => $input, (Encode::FB_CROAK | Encode::LEAVE_SRC));
 
     # Encode the data.
     $ret = MIME::Base64::encode_base64 ($bytes, q{});
@@ -547,7 +559,7 @@ sub decode_base64_internal {
     my $decoded = MIME::Base64::decode_base64 ($input);
 
     # Convert into string.
-    $ret = Encode::decode ("UTF-8", $decoded, (Encode::FB_CROAK | Encode::LEAVE_SRC));
+    $ret = Encode::decode (locale => $decoded, (Encode::FB_CROAK | Encode::LEAVE_SRC));
   }
 
   return $ret;
