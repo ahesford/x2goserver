@@ -389,6 +389,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       sed.
     + X2Go KDrive package has been renamed to xorg-x11-server-x2gokdrive to be
       in line with general RPM package names.
+    + Add dependency upon perl(Encode::Locale) for older distros. Others ship
+      the module as part of core.
   * debian/x2goserver.install:
     + Install bin/x2goupdateoptionsstring.
   * debian/rules:

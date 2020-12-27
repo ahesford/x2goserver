@@ -130,6 +130,9 @@ Requires:       perl(File::BaseDir)
 
 Requires:       perl(Config::Simple)
 Requires:       perl(Switch)
+%if ( ! 0%{?fedora} ) && ( ( 0%{?rhel} && 0%{?rhel} < 8 ) || ( 0%{?suse_version} && 0%{?suse_version} < 1500 ) )
+Requires:       perl(Encode::Locale)
+%endif
 
 Requires:       xkeyboard-config
 
