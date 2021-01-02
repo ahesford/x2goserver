@@ -472,9 +472,9 @@ else
 	NX_TEMP='/tmp' "${AGENTBIN}" ${X2GO_NXAGENT_OPTIONS} ${NOLISTOPT} ${X2GODPIOPTION_} ${XDMCPOPT} -${SESSION_TYPE} ${NOEXITPARAM} -auth "${XAUTHORITY}" ${agent_geometry} -name "${SESSION_WINDOW_TITLE}" "${NX_AGENT}" 2>"${SESSION_LOG}" &
 fi
 
-ln -s -- "${SESSION_DIR}" "${X2GO_ROOT}/C-${SESSION_NAME}"
-
 X2GO_AGENT_PID="${!}"
+
+ln -s -- "${SESSION_DIR}" "${X2GO_ROOT}/C-${SESSION_NAME}"
 
 if [[ -n "${SHADREQ_USER}" ]]; then
 	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'info' "creating new shadow session: ${SESSION_NAME} ${X2GO_COOKIE} ${X2GO_AGENT_PID} ${X2GO_CLIENT} ${GR_PORT} ${SOUND_PORT} ${FS_PORT} ${SHADREQ_USER}"
