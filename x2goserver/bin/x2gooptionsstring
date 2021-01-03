@@ -331,6 +331,10 @@ sub handle_mode {
         }
       }
     }
+    elsif ((!($transform)) && (!($extract))) {
+      # No mode explicitly passed in, default to transformation mode.
+      $mode_aggregate |= (&{(MODES)[0]}())[1];
+    }
   }
 
   # Okay, now check for mutual exclusiveness and map to return value.
