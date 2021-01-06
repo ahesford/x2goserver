@@ -19,30 +19,30 @@
 # Free Software Foundation, Inc.,
 # 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
 
-X2GO_LIB_PATH="$(x2gopath 'libexec')"
+typeset x2go_lib_path="$(x2gopath 'libexec')"
 
 if [[ "${#}" -lt '7' ]]; then
 	typeset msg='not enough command line arguments'
 	echo "${msg}" >&2
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'err' "${msg}"
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 	exit '1'
 fi
 
-SESSION_NAME="${1}"
-X2GO_GEOMETRY="${2}"
-X2GO_LINK="${3}"
-X2GO_PACK="${4}"
-#X2GO_KBD_LAYOUT="${5}"
-X2GO_KBD_TYPE="${6}"
-X2GO_SET_KBD="${7}"
-X2GO_CLIPBOARD="${8}"
-typeset X2GO_XINERAMA="${9}"
+typeset session_name="${1}"
+typeset geometry_val="${2}"
+typeset link_val="${3}"
+typeset pack_val="${4}"
+#typeset kbd_layout_val="${5}"
+typeset kbd_type_val="${6}"
+typeset set_kbd="${7}"
+typeset clipboard_val="${8}"
+typeset xinerama_val="${9}"
 
-X2GO_AGENT_PID="$("${X2GO_LIB_PATH}/x2gogetagent" "${SESSION_NAME}")"
+typeset x2go_agent_pid="$("${x2go_lib_path}/x2gogetagent" "${session_name}")"
 
-X2GO_ROOT="${HOME}/.x2go"
-X2GO_RESIZE='1'
-X2GO_FULLSCREEN='0'
+typeset x2go_root="${HOME}/.x2go"
+typeset resize_val='1'
+typeset fullscreen_val='0'
 
 # ${HOSTNAME} should be automatically set by bash via gethostname(2), IFF this
 # variable is not already set in the environment.
@@ -59,7 +59,7 @@ typeset current_host_name=''
 
 if ! current_host_name="$(hostname)"; then
 	typeset msg="Unable to retrieve machine's hostname. This is required. Aborting session startup."
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'err' "${msg}"
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 
 	# Make x2goclient fail.
 	echo "${msg}" >&2
@@ -67,137 +67,140 @@ if ! current_host_name="$(hostname)"; then
 fi
 
 # refresh up ssh-agent-forwarding socket file symlink
-X2GOSSH_AUTH_SOCK="${X2GO_ROOT}/C-${SESSION_NAME}/ssh-agent.PID"
-if [[ -L "${X2GOSSH_AUTH_SOCK}" ]]; then
-	rm -f -- "${X2GOSSH_AUTH_SOCK}"
+typeset x2go_ssh_auth_sock="${x2go_root}/C-${session_name}/ssh-agent.PID"
+if [[ -L "${x2go_ssh_auth_sock}" ]]; then
+	rm -f -- "${x2go_ssh_auth_sock}"
 fi
 if [[ -S "${SSH_AUTH_SOCK}" ]]; then
-	ln -sf -- "${SSH_AUTH_SOCK}" "${X2GOSSH_AUTH_SOCK}"
+	ln -sf -- "${SSH_AUTH_SOCK}" "${x2go_ssh_auth_sock}"
 fi
 
-STATE="$("${X2GO_LIB_PATH}/x2gogetagentstate" "${SESSION_NAME}")"
+typeset state="$("${x2go_lib_path}/x2gogetagentstate" "${session_name}")"
 
 # exit if session terminated
-if [[ "${STATE}" = 'TERMINATED' ]] || [[ "${STATE}" = 'TERMINATING' ]]; then
-	typeset msg="session ${SESSION_NAME} terminated"
+if [[ "${state}" = 'TERMINATED' ]] || [[ "${state}" = 'TERMINATING' ]]; then
+	typeset msg="session ${session_name} terminated"
 	echo "${msg}" >&2
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'err' "${msg}"
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 	exit '3'
 fi
 
 typeset -i i='0'
 # wait 15 sec. for starting session
-while [[ "${STATE}" = 'RESUMING' ]] || [[ "${STATE}" = 'STARTING' ]]; do
+while [[ "${state}" = 'RESUMING' ]] || [[ "${state}" = 'STARTING' ]]; do
 	sleep '1'
 	((++i))
 	#if session still not started, try to suspend it
 	if [[ "${i}" -gt '15' ]]; then
-		x2gosuspend-session "${SESSION_NAME}"
+		x2gosuspend-session "${session_name}"
 		sleep '2'
 		i='0'
 	fi
-	STATE="$("${X2GO_LIB_PATH}/x2gogetagentstate" "${SESSION_NAME}")"
+	state="$("${x2go_lib_path}/x2gogetagentstate" "${session_name}")"
 done
 
 #suspend running session
-if [[ "${STATE}" = 'RUNNING' ]]; then
-	x2gosuspend-session "${SESSION_NAME}"
+if [[ "${state}" = 'RUNNING' ]]; then
+	x2gosuspend-session "${session_name}"
 	sleep '2'
-	STATE="$("${X2GO_LIB_PATH}/x2gogetagentstate" "${SESSION_NAME}")"
+	state="$("${x2go_lib_path}/x2gogetagentstate" "${session_name}")"
 fi
 
 i='0'
 # wait 45 sec., while session suspending
-while [[ "${STATE}" = 'SUSPENDING' ]]; do
+while [[ "${state}" = 'SUSPENDING' ]]; do
 	sleep '1'
 	((++i))
 	if [[ "${i}" -gt '45' ]]; then
 		msg='it is taking too long to suspend the session-to-be-resumed; it is possible that the session is in a damaged state'
 		echo "${msg}" >&2
-		"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'err' "${msg}"
+		"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 		exit '4'
 	fi
-	STATE="$("${X2GO_LIB_PATH}/x2gogetagentstate" "${SESSION_NAME}")"
+	state="$("${x2go_lib_path}/x2gogetagentstate" "${session_name}")"
 done
 
-"${X2GO_LIB_PATH}/x2gormforward" "${SESSION_NAME}"
+"${x2go_lib_path}/x2gormforward" "${session_name}"
 
-"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'info' "$(basename "${0}") called with options: ${*}"
+"${x2go_lib_path}/x2gosyslog" "${0}" 'info' "$(basename "${0}") called with options: ${*}"
 
-X2GO_TELEKINESIS_ENABLED="$(perl -e 'use X2Go::Config qw( get_config ); use X2Go::Utils qw( is_true ); my $Config= get_config(); print is_true($Config->param("telekinesis.enable"));')"
+typeset telekinesis_enabled="$(perl -e 'use X2Go::Config qw( get_config ); use X2Go::Utils qw( is_true ); my $Config= get_config(); print is_true($Config->param("telekinesis.enable"));')"
 
 # rootless sessions of geometry fullscreen are invalid
-if [[ "${X2GO_GEOMETRY}" = 'fullscreen' ]] && [[ "${SESSION_TYPE}" = 'R' ]]; then
-	X2GO_GEOMETRY=''
+if [[ "${geometry_val}" = 'fullscreen' ]] && [[ "${SESSION_TYPE}" = 'R' ]]; then
+	geometry_val=''
 fi
 
 # no geometry for desktop sessions shall result in fullscreen desktop sessions
-if [[ -z "${X2GO_GEOMETRY}" ]] && [[ "${SESSION_TYPE}" = 'D' ]]; then
-	X2GO_GEOMETRY="fullscreen"
+if [[ -z "${geometry_val}" ]] && [[ "${SESSION_TYPE}" = 'D' ]]; then
+	geometry_val='fullscreen'
 fi
-if [[ "${X2GO_GEOMETRY}" = 'fullscreen' ]]; then
-	X2GO_FULLSCREEN='1'
+if [[ "${geometry_val}" = 'fullscreen' ]]; then
+	fullscreen_val='1'
 fi
 
 
-SESSIONINFO="$(x2golistsessions | grep "${SESSION_NAME}" | sed 's/|/,/g')"
+typeset session_info="$(x2golistsessions | grep "${session_name}" | sed 's/|/,/g')"
 
-GR_PORT="$(awk -F ',' '{print $9}' <<< "${SESSIONINFO}")"
-SOUND_PORT="$(awk -F ',' '{print $10}' <<< "${SESSIONINFO}")"
-FS_PORT="$(awk -F ',' '{print $14}' <<< "${SESSIONINFO}")"
-#SERVER="$(awk -F ',' '{print $4}' <<< "${SESSIONINFO}")"
+# FIXME: what is "GR" supposed to mean? General? Nobody knows and it was never
+#        documented ...
+typeset gr_port="$(awk -F ',' '{print $9}' <<< "${session_info}")"
+typeset sound_port="$(awk -F ',' '{print $10}' <<< "${session_info}")"
+typeset fs_port="$(awk -F ',' '{print $14}' <<< "${session_info}")"
+#typeset server="$(awk -F ',' '{print $4}' <<< "${session_info}")"
 
-"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "old ports: ${GR_PORT}, ${SOUND_PORT}, ${FS_PORT}"
+"${x2go_lib_path}/x2gosyslog" "${0}" 'debug' "old ports: ${gr_port}, ${sound_port}, ${fs_port}"
 
 typeset X2GO_INTERNAL_SOURCE='1'
 # Make shellcheck happy.
 : "${X2GO_INTERNAL_SOURCE}"
-. "${X2GO_LIB_PATH}/x2gocheckport"
+. "${x2go_lib_path}/x2gocheckport"
 unset X2GO_INTERNAL_SOURCE
 
 # define the full path to the ss utility
 typeset ss="$(PATH="${PATH}:/usr/sbin:/sbin" type -P 'ss')"
 
 #check if saved in DB ports free
-if ! check_system_port "${ss}" "${GR_PORT}"; then
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "port ${GR_PORT} is already in use"
-	"${X2GO_LIB_PATH}/x2gormport" "${current_host_name}" "${SESSION_NAME}" "${GR_PORT}"
-	GR_PORT=''
+if ! check_system_port "${ss}" "${gr_port}"; then
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'debug' "'gr'(?) port ${gr_port} is already in use"
+	"${x2go_lib_path}/x2gormport" "${current_host_name}" "${session_name}" "${gr_port}"
+	gr_port=''
 fi
-if ! check_system_port "${ss}" "${SOUND_PORT}"; then
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "port ${SOUND_PORT} is already in use"
-	"${X2GO_LIB_PATH}/x2gormport" "${current_host_name}" "${SESSION_NAME}" "${SOUND_PORT}"
-	SOUND_PORT=''
+if ! check_system_port "${ss}" "${sound_port}"; then
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'debug' "sound port ${sound_port} is already in use"
+	"${x2go_lib_path}/x2gormport" "${current_host_name}" "${session_name}" "${sound_port}"
+	sound_port=''
 fi
-if ! check_system_port "${ss}" "${FS_PORT}"; then
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "port ${FS_PORT} is already in use"
-	"${X2GO_LIB_PATH}/x2gormport" "${current_host_name}" "${SESSION_NAME}" "${FS_PORT}"
-	FS_PORT=''
+if ! check_system_port "${ss}" "${fs_port}"; then
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'debug' "file system forwarding port ${fs_port} is already in use"
+	"${x2go_lib_path}/x2gormport" "${current_host_name}" "${session_name}" "${fs_port}"
+	fs_port=''
 fi
 
-if [[ "${X2GO_TELEKINESIS_ENABLED}" = '1' ]]; then
-	TEKICTRL_PORT="$(awk -F ',' '{print $15}' <<< "${SESSIONINFO}")"
-	TEKIDATA_PORT="$(awk -F ',' '{print $16}' <<< "${SESSIONINFO}")"
-	if ! check_system_port "${ss}" "${TEKICTRL_PORT}"; then
-		"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "port ${TEKICTRL_PORT} is already in use"
-		"${X2GO_LIB_PATH}/x2gormport" "${current_host_name}" "${SESSION_NAME}" "${TEKICTRL_PORT}"
-		TEKICTRL_PORT=''
+if [[ "${telekinesis_enabled}" = '1' ]]; then
+	typeset tekictrl_port="$(awk -F ',' '{print $15}' <<< "${session_info}")"
+	typeset tekidata_port="$(awk -F ',' '{print $16}' <<< "${session_info}")"
+	if ! check_system_port "${ss}" "${tekictrl_port}"; then
+		"${x2go_lib_path}/x2gosyslog" "${0}" 'debug' "port ${tekictrl_port} is already in use"
+		"${x2go_lib_path}/x2gormport" "${current_host_name}" "${session_name}" "${tekictrl_port}"
+		tekictrl_port=''
 	fi
-	if ! check_system_port "${ss}" "${TEKIDATA_PORT}"; then
-		"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'debug' "port ${TEKIDATA_PORT} is already in use"
-		"${X2GO_LIB_PATH}/x2gormport" "${current_host_name}" "${SESSION_NAME}" "${TEKIDATA_PORT}"
-		TEKIDATA_PORT=''
+	if ! check_system_port "${ss}" "${tekidata_port}"; then
+		"${x2go_lib_path}/x2gosyslog" "${0}" 'debug' "port ${tekidata_port} is already in use"
+		"${x2go_lib_path}/x2gormport" "${current_host_name}" "${session_name}" "${tekidata_port}"
+		tekidata_port=''
 	fi
 else
-	"${X2GO_LIB_PATH}/x2gormport" "${current_host_name}" "${SESSION_NAME}" "${TEKICTRL_PORT}"
-	"${X2GO_LIB_PATH}/x2gormport" "${current_host_name}" "${SESSION_NAME}" "${TEKIDATA_PORT}"
-	TEKICTRL_PORT='0'
-	TEKIDATA_PORT='0'
+	"${x2go_lib_path}/x2gormport" "${current_host_name}" "${session_name}" "${tekictrl_port}"
+	"${x2go_lib_path}/x2gormport" "${current_host_name}" "${session_name}" "${tekidata_port}"
+	tekictrl_port='0'
+	tekidata_port='0'
 fi
 
-if ! SSH_PORT="$("${X2GO_LIB_PATH}/x2gogetrandomport")"; then
+typeset -i ssh_port='0'
+if ! ssh_port="$("${x2go_lib_path}/x2gogetrandomport")"; then
 	typeset msg="Unable to get (pseudo-)randomized starting port value."
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'err' "${msg}"
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 
 	# Make x2goclient fail.
 	echo "${msg}" >&2
@@ -208,62 +211,62 @@ typeset -i retry='0'
 typeset -i max_retry='10'
 typeset -i free_port='0'
 typeset output=''
-while [[ -z "${GR_PORT}" ]] || [[ -z "${SOUND_PORT}" ]] || [[ -z "${FS_PORT}" ]] || [[ -z "${TEKICTRL_PORT}" ]] || [[ -z "${TEKIDATA_PORT}" ]]; do
+while [[ -z "${gr_port}" ]] || [[ -z "${sound_port}" ]] || [[ -z "${fs_port}" ]] || [[ -z "${tekictrl_port}" ]] || [[ -z "${tekidata_port}" ]]; do
 	output=''
 	for ((retry = 0; retry < max_retry; ++retry)); do
 		free_port='0'
-		if free_port="$("${X2GO_LIB_PATH}/x2gogetfreeport" "${current_host_name}" "${ss}" 'lowlevel' "${SSH_PORT}")"; then
-			SSH_PORT="${free_port}"
+		if free_port="$("${x2go_lib_path}/x2gogetfreeport" "${current_host_name}" "${ss}" 'lowlevel' "${ssh_port}")"; then
+			ssh_port="${free_port}"
 
-			output="$("${X2GO_LIB_PATH}/x2goinsertport" "${current_host_name}" "${SESSION_NAME}" "${SSH_PORT}")"
+			output="$("${x2go_lib_path}/x2goinsertport" "${current_host_name}" "${session_name}" "${ssh_port}")"
 
 			if [[ "${output}" = 'inserted' ]]; then
 				break
 			else
-				"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'warning' "unable to insert port into database. Retrying (run $((retry + 1)))."
+				"${x2go_lib_path}/x2gosyslog" "${0}" 'warning' "unable to insert port into database. Retrying (run $((retry + 1)))."
 			fi
 		else
-			"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'warning' "no free port available, cannot start new session. Retrying (run $((retry + 1)))."
+			"${x2go_lib_path}/x2gosyslog" "${0}" 'warning' "no free port available, cannot start new session. Retrying (run $((retry + 1)))."
 		fi
 	done
 
 	if [[ "${output}" != 'inserted' ]]; then
-		typeset msg="Unable to find free port or insert new session into database; parameters: hostname (${current_host_name}), session name (${SESSION_NAME}) and port (${SSH_PORT})."
-		"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'err' "${msg}"
+		typeset msg="Unable to find free port or insert new session into database; parameters: hostname (${current_host_name}), session name (${session_name}) and port (${ssh_port})."
+		"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 
 		# Make x2goclient fail.
 		echo "${msg}" >&2
 		exit '6'
 	fi
 
-	if [[ -z "${GR_PORT}" ]]; then
-		GR_PORT="${SSH_PORT}"
-	elif [[ -z "${SOUND_PORT}" ]]; then
-		SOUND_PORT="${SSH_PORT}"
-	elif [[ -z "${FS_PORT}" ]]; then
-		FS_PORT="${SSH_PORT}"
-	elif [[ -z "${TEKICTRL_PORT}" ]]; then
-		TEKICTRL_PORT="${SSH_PORT}"
-	elif [[ -z "${TEKIDATA_PORT}" ]]; then
-		TEKIDATA_PORT="${SSH_PORT}"
+	if [[ -z "${gr_port}" ]]; then
+		gr_port="${ssh_port}"
+	elif [[ -z "${sound_port}" ]]; then
+		sound_port="${ssh_port}"
+	elif [[ -z "${fs_port}" ]]; then
+		fs_port="${ssh_port}"
+	elif [[ -z "${tekictrl_port}" ]]; then
+		tekictrl_port="${ssh_port}"
+	elif [[ -z "${tekidata_port}" ]]; then
+		tekidata_port="${ssh_port}"
 	fi
 done
 
 
-SESSION_DIR="${X2GO_ROOT}/C-${SESSION_NAME}"
-OPTIONS="$(< "${SESSION_DIR}/options")"
+typeset session_dir="${x2go_root}/C-${session_name}"
+typeset agent_options="$(< "${session_dir}/options")"
 
-LSTR="$(awk -F ',' '{print $2}' <<< "${OPTIONS}")"
-PSTR="$(awk -F ',' '{print $3}' <<< "${OPTIONS}")"
-KTSTR="$(awk -F ',' '{print $12}' <<< "${OPTIONS}")"
-GSTR="$(awk -F ',' '{print $13}' <<< "${OPTIONS}")"
+typeset orig_link_opt="$(awk -F ',' '{print $2}' <<< "${agent_options}")"
+typeset orig_pack_opt="$(awk -F ',' '{print $3}' <<< "${agent_options}")"
+typeset orig_kbd_type_opt="$(awk -F ',' '{print $12}' <<< "${agent_options}")"
+typeset orig_geometry_opt="$(awk -F ',' '{print $13}' <<< "${agent_options}")"
 typeset xinerama_orig=''
-test_GSTR="$(sed -e 's/geometry=.*//' <<< "${GSTR}")"
-if [[ -n "${test_GSTR}" ]]; then
-	GSTR='geometry='
-	xinerama_orig="$(awk -F ',' '{print $13}' <<< "${OPTIONS}")"
+typeset test_orig_geometry_opt="$(sed -e 's/geometry=.*//' <<< "${orig_geometry_opt}")"
+if [[ -n "${test_orig_geometry_opt}" ]]; then
+	orig_geometry_opt='geometry='
+	xinerama_orig="$(awk -F ',' '{print $13}' <<< "${agent_options}")"
 else
-	xinerama_orig="$(awk -F ',' '{print $14}' <<< "${OPTIONS}")"
+	xinerama_orig="$(awk -F ',' '{print $14}' <<< "${agent_options}")"
 fi
 
 # Sessions started with older X2Go Server versions do not feature
@@ -279,104 +282,108 @@ fi
 
 # Only one component missing => either geometry or xinerama at position 13,
 # everything else starts from position 14.
-if { [[ -n "${test_GSTR}" ]] && [[ -z "${test_xinerama}" ]]; } || { [[ -z "${test_GSTR}" ]] && [[ -n "${test_xinerama}" ]]; }; then
-	RSTR="$(awk -F ',' '{print $14}' <<< "${OPTIONS}")"
-	FSTR="$(awk -F ',' '{print $15}' <<< "${OPTIONS}")"
-	LISTSTR="$(awk -F ',' '{print $17}' <<< "${OPTIONS}")"
-	CLIPBOARD="$(awk -F ',' '{print $18}' <<< "${OPTIONS}")"
+typeset orig_resize_opt=''
+typeset orig_fullscreen_opt=''
+typeset orig_listen_opt=''
+typeset orig_clipboard_opt=''
+if { [[ -n "${test_orig_geometry_opt}" ]] && [[ -z "${test_xinerama}" ]]; } || { [[ -z "${test_orig_geometry_opt}" ]] && [[ -n "${test_xinerama}" ]]; }; then
+	orig_resize_opt="$(awk -F ',' '{print $14}' <<< "${agent_options}")"
+	orig_fullscreen_opt="$(awk -F ',' '{print $15}' <<< "${agent_options}")"
+	orig_listen_opt="$(awk -F ',' '{print $17}' <<< "${agent_options}")"
+	orig_clipboard_opt="$(awk -F ',' '{print $18}' <<< "${agent_options}")"
 # Neither geometry nor xinerama given, everything else starts at position 13.
-elif [[ -n "${test_GSTR}" ]]; then
-	RSTR="$(awk -F ',' '{print $13}' <<< "${OPTIONS}")"
-	FSTR="$(awk -F ',' '{print $14}' <<< "${OPTIONS}")"
-	LISTSTR="$(awk -F ',' '{print $16}' <<< "${OPTIONS}")"
-	CLIPBOARD="$(awk -F ',' '{print $17}' <<< "${OPTIONS}")"
+elif [[ -n "${test_orig_geometry_opt}" ]]; then
+	orig_resize_opt="$(awk -F ',' '{print $13}' <<< "${agent_options}")"
+	orig_fullscreen_opt="$(awk -F ',' '{print $14}' <<< "${agent_options}")"
+	orig_listen_opt="$(awk -F ',' '{print $16}' <<< "${agent_options}")"
+	orig_clipboard_opt="$(awk -F ',' '{print $17}' <<< "${agent_options}")"
 # Both geometry and xinerama given, everything else starts at position 15.
 else
-	RSTR="$(awk -F ',' '{print $15}' <<< "${OPTIONS}")"
-	FSTR="$(awk -F ',' '{print $16}' <<< "${OPTIONS}")"
-	LISTSTR="$(awk -F ',' '{print $18}' <<< "${OPTIONS}")"
-	CLIPBOARD="$(awk -F ',' '{print $19}' <<< "${OPTIONS}")"
+	orig_resize_opt="$(awk -F ',' '{print $15}' <<< "${agent_options}")"
+	orig_fullscreen_opt="$(awk -F ',' '{print $16}' <<< "${agent_options}")"
+	orig_listen_opt="$(awk -F ',' '{print $18}' <<< "${agent_options}")"
+	orig_clipboard_opt="$(awk -F ',' '{print $19}' <<< "${agent_options}")"
 fi
 
-KTSTR="$(sed -e 's#/#\\/#' <<< "${KTSTR}")"
-X2GO_KBD_TYPE="$(sed -e 's#/#\\/#' <<< "${X2GO_KBD_TYPE}")"
+orig_kbd_type_opt="$(sed -e 's#/#\\/#' <<< "${orig_kbd_type_opt}")"
+kbd_type_val="$(sed -e 's#/#\\/#' <<< "${kbd_type_val}")"
 
-if [[ "${X2GO_SET_KBD}" = '0' ]] || [[ "${X2GO_KBD_TYPE}" = 'auto' ]]; then
+if [[ "${set_kbd}" = '0' ]] || [[ "${kbd_type_val}" = 'auto' ]]; then
 	keyboard_type='null\/null'
 else
-	keyboard_type="${X2GO_KBD_TYPE}"
+	keyboard_type="${kbd_type_val}"
 fi
 
 typeset tmp_regex='^(0|none|client|server|both|1)$'
-if [[ -n "${X2GO_CLIPBOARD}" ]] && [[ "${X2GO_CLIPBOARD}" =~ ${tmp_regex} ]]; then
-	clipboard="clipboard=${X2GO_CLIPBOARD}"
+if [[ -n "${clipboard_val}" ]] && [[ "${clipboard_val}" =~ ${tmp_regex} ]]; then
+	clipboard="clipboard=${clipboard_val}"
 else
 	clipboard='clipboard=both'
 fi
 
-typeset xinerama_option="$("${X2GO_LIB_PATH}/x2goistrue" "${X2GO_XINERAMA}")"
+typeset xinerama_option="$("${x2go_lib_path}/x2goistrue" "${xinerama_val}")"
 
-NEWOPTIONS="$(sed -e "s/${LSTR}/link=${X2GO_LINK}/" \
-                  -e "s/${PSTR}/pack=${X2GO_PACK}/" \
-                  -e "s/${KTSTR}/kbtype=${keyboard_type}/" \
-                  -e "s/${GSTR}/geometry=${X2GO_GEOMETRY}/" \
+typeset agent_options_new="$(sed -e "s/${orig_link_opt}/link=${link_val}/" \
+                  -e "s/${orig_pack_opt}/pack=${pack_val}/" \
+                  -e "s/${orig_kbd_type_opt}/kbtype=${keyboard_type}/" \
+                  -e "s/${orig_geometry_opt}/geometry=${geometry_val}/" \
                   -e "s/${xinerama_orig}/xinerama=${xinerama_option}/" \
-                  -e "s/${RSTR}/resize=${X2GO_RESIZE}/" \
-                  -e "s/${LISTSTR}/listen=${GR_PORT}/" \
-                  -e "s/${FSTR}/fullscreen=${X2GO_FULLSCREEN}/" \
-                  -e "s/${CLIPBOARD}/${clipboard}/" <<< "${OPTIONS}")"
+                  -e "s/${orig_resize_opt}/resize=${resize_val}/" \
+                  -e "s/${orig_fullscreen_opt}/fullscreen=${fullscreen_val}/" \
+                  -e "s/${orig_listen_opt}/listen=${gr_port}/" \
+                  -e "s/${orig_clipboard_opt}/${clipboard}/" <<< "${agent_options}")"
 
-if [[ -z "${X2GO_GEOMETRY}" ]] || [[ "${X2GO_GEOMETRY}" = 'fullscreen' ]]; then
-	NEWOPTIONS="$(sed -e "s/geometry=${X2GO_GEOMETRY},//" <<< "${NEWOPTIONS}")"
+if [[ -z "${geometry_val}" ]] || [[ "${geometry_val}" = 'fullscreen' ]]; then
+	agent_options_new="$(sed -e "s/geometry=${geometry_val},//" <<< "${agent_options_new}")"
 fi
 
-X2GO_CLIENT="$(awk '{print $1}' <<< "${SSH_CLIENT}")"
-if [[ -z "${X2GO_CLIENT}" ]]; then
-	X2GO_CLIENT="${current_host_name}"
+typeset x2go_client="$(awk '{print $1}' <<< "${SSH_CLIENT}")"
+if [[ -z "${x2go_client}" ]]; then
+	x2go_client="${current_host_name}"
 fi
 
-echo "${NEWOPTIONS}" >"${SESSION_DIR}/options"
+echo "${agent_options_new}" >"${session_dir}/options"
 
 # run x2goserver-extensions for pre-resume
-x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${SESSION_NAME}" 'pre-resume' || true
+x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${session_name}" 'pre-resume' || true
 
 # clear old keyboard file
-rm -Rf "${SESSION_DIR}/keyboard"
+rm -Rf "${session_dir}/keyboard"
 
-if kill -HUP "${X2GO_AGENT_PID}" &>'/dev/null'; then
-	"${X2GO_LIB_PATH}/x2goresume" "${X2GO_CLIENT}" "${SESSION_NAME}" "${GR_PORT}" "${SOUND_PORT}" "${FS_PORT}" >'/dev/null'
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'notice' "client ${X2GO_CLIENT} has successfully resumed session with ID ${SESSION_NAME}"
+if kill -HUP "${x2go_agent_pid}" &>'/dev/null'; then
+	"${x2go_lib_path}/x2goresume" "${x2go_client}" "${session_name}" "${gr_port}" "${sound_port}" "${fs_port}" >'/dev/null'
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'notice' "client ${x2go_client} has successfully resumed session with ID ${session_name}"
 
 	# set client-side keyboard model, type, variant, etc.
-	if [[ "${X2GO_SET_KBD}" != '0' ]] && [[ "${X2GO_KBD_TYPE}" = 'auto' ]]; then
-		X2GO_DISPLAY="$(cut -d '-' -f '2' <<< "${SESSION_NAME}")"
-		export DISPLAY=":${X2GO_DISPLAY}.0"
-		x2gosetkeyboard "${SESSION_NAME}" &>'/dev/null' &
+	if [[ "${set_kbd}" != '0' ]] && [[ "${kbd_type_val}" = 'auto' ]]; then
+		typeset x2go_display="$(cut -d '-' -f '2' <<< "${session_name}")"
+		export DISPLAY=":${x2go_display}.0"
+		x2gosetkeyboard "${session_name}" &>'/dev/null' &
 	fi
 
 	# resume x2godesktopsharing, if it has been in use before the session got suspended
-	x2gofeature 'X2GO_DESKTOPSHARING' &>'/dev/null' && x2goresume-desktopsharing "${SESSION_NAME}" || true
+	x2gofeature 'X2GO_DESKTOPSHARING' &>'/dev/null' && x2goresume-desktopsharing "${session_name}" || true
 
 	# run x2goserver-extensions for post-resume
-	x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${SESSION_NAME}" 'post-resume' || true
-	grep 'PPid' "/proc/${PPID}/status" >"${X2GO_ROOT}/C-${SESSION_NAME}/sshd.pid"
+	x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${session_name}" 'post-resume' || true
+	grep 'PPid' "/proc/${PPID}/status" >"${x2go_root}/C-${session_name}/sshd.pid"
 else
-	err_msg="ERROR: failed to resume session with ID ${SESSION_NAME}"
+	err_msg="ERROR: failed to resume session with ID ${session_name}"
 	echo "${err_msg}" 1>&2
-	"${X2GO_LIB_PATH}/x2gosyslog" "${0}" 'err' "${err_msg}"
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${err_msg}"
 
 	# If we reach here it means that the x2goagent process of the session has vanished
 	# If this happens than we mark the session as finished...
-	"${X2GO_LIB_PATH}/x2gochangestatus" 'F' "${SESSION_NAME}" >'/dev/null'
+	"${x2go_lib_path}/x2gochangestatus" 'F' "${session_name}" >'/dev/null'
 
 	# run x2goserver-extensions for fail-resume
-	x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${SESSION_NAME}" 'fail-resume' || true
+	x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${session_name}" 'fail-resume' || true
 fi
 
-echo "gr_port=${GR_PORT}"
-echo "sound_port=${SOUND_PORT}"
-echo "fs_port=${FS_PORT}"
-if [[ "${X2GO_TELEKINESIS_ENABLED}" = '1' ]]; then
-	echo "tekictrl_port=${TEKICTRL_PORT}"
-	echo "tekidata_port=${TEKIDATA_PORT}"
+echo "gr_port=${gr_port}"
+echo "sound_port=${sound_port}"
+echo "fs_port=${fs_port}"
+if [[ "${telekinesis_enabled}" = '1' ]]; then
+	echo "tekictrl_port=${tekictrl_port}"
+	echo "tekidata_port=${tekidata_port}"
 fi
