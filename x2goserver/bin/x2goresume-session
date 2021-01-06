@@ -21,8 +21,9 @@
 
 typeset x2go_lib_path="$(x2gopath 'libexec')"
 
+typeset msg=''
 if [[ "${#}" -lt '7' ]]; then
-	typeset msg='not enough command line arguments'
+	msg='not enough command line arguments'
 	echo "${msg}" >&2
 	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 	exit '1'
@@ -58,7 +59,7 @@ typeset fullscreen_val='0'
 typeset current_host_name=''
 
 if ! current_host_name="$(hostname)"; then
-	typeset msg="Unable to retrieve machine's hostname. This is required. Aborting session startup."
+	msg="Unable to retrieve machine's hostname. This is required. Aborting session startup."
 	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 
 	# Make x2goclient fail.
@@ -79,7 +80,7 @@ typeset state="$("${x2go_lib_path}/x2gogetagentstate" "${session_name}")"
 
 # exit if session terminated
 if [[ "${state}" = 'TERMINATED' ]] || [[ "${state}" = 'TERMINATING' ]]; then
-	typeset msg="session ${session_name} terminated"
+	msg="session ${session_name} terminated"
 	echo "${msg}" >&2
 	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 	exit '3'
@@ -199,7 +200,7 @@ fi
 
 typeset -i ssh_port='0'
 if ! ssh_port="$("${x2go_lib_path}/x2gogetrandomport")"; then
-	typeset msg="Unable to get (pseudo-)randomized starting port value."
+	msg="Unable to get (pseudo-)randomized starting port value."
 	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 
 	# Make x2goclient fail.
@@ -231,7 +232,7 @@ while [[ -z "${gr_port}" ]] || [[ -z "${sound_port}" ]] || [[ -z "${fs_port}" ]]
 	done
 
 	if [[ "${output}" != 'inserted' ]]; then
-		typeset msg="Unable to find free port or insert new session into database; parameters: hostname (${current_host_name}), session name (${session_name}) and port (${ssh_port})."
+		msg="Unable to find free port or insert new session into database; parameters: hostname (${current_host_name}), session name (${session_name}) and port (${ssh_port})."
 		"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 
 		# Make x2goclient fail.
