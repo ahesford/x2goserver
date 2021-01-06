@@ -343,7 +343,7 @@ if [[ -z "${x2go_client}" ]]; then
 	x2go_client="${current_host_name}"
 fi
 
-echo "${agent_options_new}" >"${session_dir}/options"
+printf '%s\n' "${agent_options_new}" >"${session_dir}/options"
 
 # run x2goserver-extensions for pre-resume
 x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${session_name}" 'pre-resume' || true
@@ -381,10 +381,7 @@ else
 	x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${session_name}" 'fail-resume' || true
 fi
 
-echo "gr_port=${gr_port}"
-echo "sound_port=${sound_port}"
-echo "fs_port=${fs_port}"
+printf 'gr_port=%d\nsound_port=%d\nfs_port=%d\n' "${gr_port}" "${sound_port}" "${fs_port}"
 if [[ "${telekinesis_enabled}" = '1' ]]; then
-	echo "tekictrl_port=${tekictrl_port}"
-	echo "tekidata_port=${tekidata_port}"
+	printf 'tekictrl_port=%d\ntekidata_port=%d\n' "${tekictrl_port}" "${tekidata_port}"
 fi
