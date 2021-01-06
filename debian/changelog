@@ -393,6 +393,7 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/bin/x2goresume-session: update copyright notice.
     - x2goserver/bin/x2goresume-session: use printf more often instead of the
       not-so-portable echo builtin.
+    - x2goserver/bin/x2goresume-session: fix err_msg => msg usage.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

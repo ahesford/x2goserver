@@ -369,9 +369,9 @@ if kill -HUP "${x2go_agent_pid}" &>'/dev/null'; then
 	x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${session_name}" 'post-resume' || true
 	grep 'PPid' "/proc/${PPID}/status" >"${x2go_root}/C-${session_name}/sshd.pid"
 else
-	err_msg="ERROR: failed to resume session with ID ${session_name}"
-	echo "${err_msg}" 1>&2
-	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${err_msg}"
+	msg="ERROR: failed to resume session with ID ${session_name}"
+	echo "${msg}" 1>&2
+	"${x2go_lib_path}/x2gosyslog" "${0}" 'err' "${msg}"
 
 	# If we reach here it means that the x2goagent process of the session has vanished
 	# If this happens than we mark the session as finished...
