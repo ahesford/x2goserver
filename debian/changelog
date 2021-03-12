@@ -448,6 +448,9 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
   * New upstream version (4.1.0.4):
     - x2goserver-x2goagent/etc/keystrokes.cfg: sync with nx-libs 3.5.99.20.
       Previous version was broken and incomplete. Fixes: #1388.
+    - x2goserver/bin/x2gostartagent: prevent logfile corruption. Both stderr
+      redirection and errors= in the options file wrote to the same file which
+      lead to corruption with lots of debug output. Fixes: #1537.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Fri, 19 Jul 2019 20:55:11 +0200
 
