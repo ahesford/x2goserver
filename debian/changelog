@@ -458,6 +458,10 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       Previous version was incomplete. Note that this will only work correctly
       once we actually update to 3.5.99.26 within X2Go, but it doesn't hurt to
       have the new definitions until then. Fixes: #1538.
+    - x2gostartsession: let x2godialog handle events via NX_CLIENT.
+      Previously, any action that should have displayed a dialog did instead
+      suspend x2goagent, since NX_CLIENT was set to x2gosuspend-session.
+      Fixes: #1228. Fixes: #1540.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Fri, 19 Jul 2019 20:55:11 +0200
 
