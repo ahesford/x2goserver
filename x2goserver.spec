@@ -374,6 +374,23 @@ This package is a wrapper that activates X2Go branding in nxagent.
 Please refer to the nxagent package's description for more information
 on NX.
 
+%package x2godialog
+Group:          Applications/System
+Summary:        X2Go Server's X2Go Agent Xserver
+Requires:       nxdialog
+
+%description x2godialog
+X2Go is a software suite that uses NX and/or KDrive technology for remote
+desktop computing.
+
+NX technology implements a very efficient compression of the X11
+protocol. This increases performance when using X applications over a
+network, especially a slow one.
+
+This package is a wrapper that activates X2Go branding in nxdialog.
+Please refer to the nxagent package's description for more information
+on NX.
+
 %package x2gokdrive
 Group:          Applications/System
 Summary:        X2Go Server's X2Go KDrive Xserver
@@ -915,6 +932,7 @@ fi
 %exclude %{_bindir}/x2gofm
 %exclude %{_bindir}/x2goprint
 %exclude %{_bindir}/x2goagent
+%exclude %{_bindir}/x2godialog
 %exclude %{_bindir}/x2go*-desktopsharing
 %dir %{_libdir}/x2go
 %{_libdir}/x2go/x2gochangestatus
@@ -949,6 +967,7 @@ fi
 %exclude %{_mandir}/man8/x2goserver-run-extensions.8*
 %exclude %{_mandir}/man8/x2go*-desktopsharing.8*
 %exclude %{_mandir}/man1/x2goagent.1*
+%exclude %{_mandir}/man1/x2godialog.1*
 %dir %{_datadir}/x2go/
 %dir %{_datadir}/x2go/x2gofeature.d/
 %{_datadir}/x2go/x2gofeature.d/x2goserver.features
@@ -1125,6 +1144,14 @@ fi
 %dir %{_sysconfdir}/logcheck/ignore.d.server
 %endif
 %config(noreplace) %{_sysconfdir}/logcheck/ignore.d.server/x2goserver
+
+
+%files x2godialog
+%defattr(-,root,root)
+%doc debian/copyright
+%doc debian/changelog
+%{_bindir}/x2godialog
+%{_mandir}/man1/x2godialog.1*
 
 
 %changelog

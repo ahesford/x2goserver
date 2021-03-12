@@ -28,6 +28,7 @@ build_man2html:
 	$(MAKE) -C x2goserver-xsession $@
 	$(MAKE) -C x2goserver-fmbindings $@
 	$(MAKE) -C x2goserver-desktopsharing $@
+	$(MAKE) -C x2goserver-x2godialog $@
 
 clean:
 	-$(MAKE) -f Makefile.perl clean
@@ -41,6 +42,7 @@ clean:
 	$(MAKE) -C x2goserver-xsession $@
 	$(MAKE) -C x2goserver-fmbindings $@
 	$(MAKE) -C x2goserver-desktopsharing $@
+	$(MAKE) -C x2goserver-x2godialog $@
 
 distclean:
 	-$(MAKE) -f Makefile.perl realclean
@@ -54,6 +56,7 @@ distclean:
 	$(MAKE) -C x2goserver-xsession clean
 	$(MAKE) -C x2goserver-fmbindings clean
 	$(MAKE) -C x2goserver-desktopsharing $@
+	$(MAKE) -C x2goserver-x2godialog $@
 
 build-arch:
 	$(MAKE) -C x2goserver-common $@
@@ -66,6 +69,7 @@ build-arch:
 	$(MAKE) -C x2goserver-xsession $@
 	$(MAKE) -C x2goserver-fmbindings $@
 	$(MAKE) -C x2goserver-desktopsharing $@
+	$(MAKE) -C x2goserver-x2godialog $@
 
 build-indep:
 	$(PERL) Makefile.PL INSTALLDIRS=$(PERL_INSTALLDIRS)
@@ -80,6 +84,7 @@ build-indep:
 	$(MAKE) -C x2goserver-xsession $@
 	$(MAKE) -C x2goserver-fmbindings $@
 	$(MAKE) -C x2goserver-desktopsharing $@
+	$(MAKE) -C x2goserver-x2godialog $@
 
 install:
 	$(MAKE) -f Makefile.perl pure_install
@@ -93,12 +98,14 @@ install:
 	$(MAKE) -C x2goserver-xsession $@
 	$(MAKE) -C x2goserver-fmbindings $@
 	$(MAKE) -C x2goserver-desktopsharing $@
+	$(MAKE) -C x2goserver-x2godialog $@
 
 uninstall:
 	$(MAKE) -C x2goserver-printing $@
 	$(MAKE) -C x2goserver-x2goagent $@
 	$(MAKE) -C x2goserver-x2gokdrive $@
 	$(MAKE) -C x2goserver-xsession $@
+	$(MAKE) -C x2goserver-x2godialog $@
 	$(MAKE) -C x2goserver-desktopsharing $@
 	$(MAKE) -C x2goserver-fmbindings $@
 	$(MAKE) -C x2goserver-extensions $@
