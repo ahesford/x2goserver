@@ -921,7 +921,7 @@ Use the B<--compact> option to minimize the original options string, removing
 duplicated and empty entries.
 
 Assuming no error happened, the resulting options string is written to
-C<stdout>.
+B<stdout>.
 
 =item Extract
 
@@ -940,9 +940,9 @@ A full, proper key-value pair can be used to test for the existence of a
 key-value pair exactly as provided.
 
 Assuming no error happened, the extracted key-value pairs will be written to
-C<stdout>.
+B<stdout>.
 Each pair will be base64-encoded and, if multiple key-value pairs to extract
-have been provided, delimited via C<pipe> characters (C<|>).
+have been provided, delimited via B<pipe> characters (C<|>).
 
 Key-value pairs which haven't been found in the original options string, as
 well as potentially an empty key-value pair, will be represented as empty
