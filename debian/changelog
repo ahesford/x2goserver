@@ -397,6 +397,8 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     - x2goserver/bin/x2gooptionsstring: replace uses of C<> with B<> in cases
       where the generated output of the C<> sequence might enclose it in
       double quotes and creates confusing documentation strings.
+    - X2Go/Server/Agent/NX/Options.pm: same C<>-to-B<> conversion as in the
+      previous commit.
   * debian/control:
     + Build-depend upon lsb-release for distro version detection.
   * debian/x2goserver.manpages:

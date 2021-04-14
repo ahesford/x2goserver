@@ -1071,7 +1071,7 @@ This module is not really concerned with the actual content of an options
 string, but mostly its format.
 
 An options string follows the form
-[[I<key>[C<=>I<value>,]]C<:>I<displaynumber>.
+[[I<key>[B<=>I<value>,]]B<:>I<displaynumber>.
 
 This has some interesting implications:
 
