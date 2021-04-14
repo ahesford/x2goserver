@@ -423,6 +423,9 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
       "double-quote" the resulting string.
   * debian/libx2go-server-perl.install:
     + Remove duplicated entry for X2Go/Utils.pm.
+  * debian/x2goserver.init:
+    + Rewrite init script to make it idempotent and actually check if the
+      cleanup service was started correctly.
 
   [ Oleksandr Shneyder ]
   * New upstream version (4.1.0.4):

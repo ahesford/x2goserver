@@ -10,29 +10,92 @@
 # Description:       The X2Go daemon is responsible for post-session clean-ups
 ### END INIT INFO
 
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-XSOCKDIR=/tmp/.X11-unix
+PATH='/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin'
+XSOCKDIR='/tmp/.X11-unix'
+DAEMON='/usr/sbin/x2gocleansessions'
+PIDFILE='/var/run/x2goserver.pid'
+NAME='X2Go Server clean-up daemon'
 
-. /lib/lsb/init-functions
+. '/lib/lsb/init-functions'
 
 start()
 {
-		if [ ! -d $XSOCKDIR ]
+		# Create socket dir if necessary.
+		if [ ! -d "${XSOCKDIR}" ]
 		then
-			mkdir $XSOCKDIR
-			chmod 1777 $XSOCKDIR
+			mkdir "${XSOCKDIR}"
+			chmod '1777' "${XSOCKDIR}"
 		fi
-		log_action_msg "Cleaning up stale X2Go sessions"
-		x2gocleansessions
+
+		log_daemon_msg "Starting ${NAME}" "${DAEMON##*/}"
+
+		# Check if daemon is already running.
+		local status='0'
+		pidofproc -p "${PIDFILE}" "${DAEMON}" >'/dev/null'|| status="${?}"
+		if [ '0' = "${status}" ]; then
+			# It is, nothing else to do.
+			log_end_msg '0'
+			return '0'
+		fi
+
+		# Otherwise, start it.
+		status='0'
+		"${DAEMON}" || status="${?}"
+
+		# Check if that was successful.
+		if [ '0' != "${status}" ]; then
+			log_end_msg "${status}"
+			return "${status}"
+		fi
+
+		# It was, sleep a bit and ...
+		sleep '1'
+
+		# ... recheck its status, in case it died in-between.
+		status='0'
+		pidofproc -p "${PIDFILE}" "${DAEMON}" >'/dev/null' || status="${?}"
+		log_end_msg "${status}"
+
+		return "${status}"
 }
 
 stop()
 {
-		# kill x2gocleansessions, ignore on failure
-		killall x2gocleansessions || true
+		log_daemon_msg "Stopping ${NAME}" "${DAEMON##*/}"
+
+		# Check if daemon is already dead.
+		local status='0'
+		pidofproc -p "${PIDFILE}" "${DAEMON}" >'/dev/null' || status="${?}"
+		if [ '0' != "${status}" ]; then
+			# It is, nothing else to do.
+			log_end_msg '0'
+			return '0'
+		fi
+
+		# Otherwise, let's kill it.
+		status='0'
+		# Make sure to truncate the command name to 15 characters because of Linux kernel limitations.
+		# Also, hope that other kernels also limit the command name to 15 characters...
+		local proc_name="$(echo "${DAEMON##*/}" | cut -c '1-15')"
+		start-stop-daemon --stop --quiet --oknodo --name "${proc_name}" --pidfile "${PIDFILE}" || status="${?}"
+
+		# Check its status.
+		if [ '0' != "${status}" ]; then
+			# Process wasn't killed, which is weird, since we made sure that it did via pidofproc.
+			# Maybe the process name truncation had side-effects.
+			# In any case, report the failure.
+			log_end_msg "${status}"
+			return "${status}"
+		else
+			# Otherwise, clean up PID file.
+			pidofproc -p "${PIDFILE}" "${DAEMON}" >'/dev/null' || rm -f "${PIDFILE}"
+		fi
+
+		log_end_msg "${status}"
+		return "${status}"
 }
 
-case "$1" in
+case "${1}" in
 	start)
 		start
 	;;
@@ -41,21 +104,17 @@ case "$1" in
 	;;
 	reload|force-reload|restart)
 		stop
-		sleep 1
+		sleep '1'
 		start
 	;;
 	status)
-		if ps -C x2gocleansessions 1>/dev/null 2>/dev/null; then
-			log_action_msg "X2Go Server clean-up daemon is up and running"
-		else
-			log_warning_msg "X2Go Server clean-up daemon is down"
-		fi
+		status_of_proc -p "${PIDFILE}" "${DAEMON}" "${NAME}"
 	;;
 	*)
-		N=/etc/init.d/x2goserver
-		echo "Usage: $N {start|stop|restart|force-reload}" >&2
-		exit 1
+		N='/etc/init.d/x2goserver'
+		echo "Usage: ${N} {start|stop|restart|force-reload}" >&2
+		exit '1'
 	;;
 esac
 
-exit 0
+exit '0'
