@@ -255,64 +255,26 @@ done
 
 
 typeset session_dir="${x2go_root}/C-${session_name}"
-typeset agent_options="$(< "${session_dir}/options")"
-
-typeset orig_link_opt="$(awk -F ',' '{print $2}' <<< "${agent_options}")"
-typeset orig_pack_opt="$(awk -F ',' '{print $3}' <<< "${agent_options}")"
-typeset orig_kbd_type_opt="$(awk -F ',' '{print $12}' <<< "${agent_options}")"
-typeset orig_geometry_opt="$(awk -F ',' '{print $13}' <<< "${agent_options}")"
-typeset xinerama_orig=''
-typeset test_orig_geometry_opt="$(sed -e 's/geometry=.*//' <<< "${orig_geometry_opt}")"
-if [[ -n "${test_orig_geometry_opt}" ]]; then
-	orig_geometry_opt='geometry='
-	xinerama_orig="$(awk -F ',' '{print $13}' <<< "${agent_options}")"
-else
-	xinerama_orig="$(awk -F ',' '{print $14}' <<< "${agent_options}")"
-fi
+typeset agent_options_base64="$(base64 -w '0' < "${session_dir}/options")"
 
 # Sessions started with older X2Go Server versions do not feature
 # a xinerama option, so handle this gracefully.
 # Note that Xinerama support defaulted to on and was handled by the client,
 # so keep it like that.
-typeset test_xinerama="$(sed -e 's/xinerama=.*//' <<< "${xinerama_orig}")"
-if [[ -n "${test_xinerama}" ]]; then
-	# Will not actually be replaced by anything, so the value provided
-	# here does not matter.
-	xinerama_orig='xinerama=1'
-fi
-
-# Only one component missing => either geometry or xinerama at position 13,
-# everything else starts from position 14.
-typeset orig_resize_opt=''
-typeset orig_fullscreen_opt=''
-typeset orig_listen_opt=''
-typeset orig_clipboard_opt=''
-if { [[ -n "${test_orig_geometry_opt}" ]] && [[ -z "${test_xinerama}" ]]; } || { [[ -z "${test_orig_geometry_opt}" ]] && [[ -n "${test_xinerama}" ]]; }; then
-	orig_resize_opt="$(awk -F ',' '{print $14}' <<< "${agent_options}")"
-	orig_fullscreen_opt="$(awk -F ',' '{print $15}' <<< "${agent_options}")"
-	orig_listen_opt="$(awk -F ',' '{print $17}' <<< "${agent_options}")"
-	orig_clipboard_opt="$(awk -F ',' '{print $18}' <<< "${agent_options}")"
-# Neither geometry nor xinerama given, everything else starts at position 13.
-elif [[ -n "${test_orig_geometry_opt}" ]]; then
-	orig_resize_opt="$(awk -F ',' '{print $13}' <<< "${agent_options}")"
-	orig_fullscreen_opt="$(awk -F ',' '{print $14}' <<< "${agent_options}")"
-	orig_listen_opt="$(awk -F ',' '{print $16}' <<< "${agent_options}")"
-	orig_clipboard_opt="$(awk -F ',' '{print $17}' <<< "${agent_options}")"
-# Both geometry and xinerama given, everything else starts at position 15.
+typeset has_xinerama="$(x2gooptionsstring -e -c -b -- "${agent_options_base64}" \
+			"$(printf '%s' 'xinerama' | base64 -w '0')" \
+			'2'>'/dev/null')"
+if [ -z "${has_xinerama}" ]; then
+	has_xinerama='0'
 else
-	orig_resize_opt="$(awk -F ',' '{print $15}' <<< "${agent_options}")"
-	orig_fullscreen_opt="$(awk -F ',' '{print $16}' <<< "${agent_options}")"
-	orig_listen_opt="$(awk -F ',' '{print $18}' <<< "${agent_options}")"
-	orig_clipboard_opt="$(awk -F ',' '{print $19}' <<< "${agent_options}")"
+	has_xinerama='1'
 fi
 
-orig_kbd_type_opt="$(sed -e 's#/#\\/#' <<< "${orig_kbd_type_opt}")"
 kbd_type_val="$(sed -e 's#/#\\/#' <<< "${kbd_type_val}")"
 
+typeset keyboard_type="${kbd_type_val}"
 if [[ "${set_kbd}" = '0' ]] || [[ "${kbd_type_val}" = 'auto' ]]; then
 	keyboard_type='null\/null'
-else
-	keyboard_type="${kbd_type_val}"
 fi
 
 typeset tmp_regex='^(0|none|client|server|both|1)$'
@@ -324,18 +286,34 @@ fi
 
 typeset xinerama_option="$("${x2go_lib_path}/x2goistrue" "${xinerama_val}")"
 
-typeset agent_options_new="$(sed -e "s/${orig_link_opt}/link=${link_val}/" \
-                  -e "s/${orig_pack_opt}/pack=${pack_val}/" \
-                  -e "s/${orig_kbd_type_opt}/kbtype=${keyboard_type}/" \
-                  -e "s/${orig_geometry_opt}/geometry=${geometry_val}/" \
-                  -e "s/${xinerama_orig}/xinerama=${xinerama_option}/" \
-                  -e "s/${orig_resize_opt}/resize=${resize_val}/" \
-                  -e "s/${orig_fullscreen_opt}/fullscreen=${fullscreen_val}/" \
-                  -e "s/${orig_listen_opt}/listen=${gr_port}/" \
-                  -e "s/${orig_clipboard_opt}/${clipboard}/" <<< "${agent_options}")"
+# I'd really, really, really like to use the bash here string feature to pass
+# strings to the base64 program, but we can't.
+# Here strings add new line characters to the strings' end and we don't want
+# that.
+# Work around that "issue" (which, really, makes sense if you interpret here
+# strings as text files) and pass it via printf instead.
+typeset new_agent_options_base64=''
+new_agent_options_base64="$(x2gooptionsstring -t -c -b -- "${agent_options_base64}" \
+			    "$(printf 'link=%s' "${link_val}" | base64 -w '0')" \
+			    "$(printf 'pack=%s' "${pack_val}" | base64 -w '0')" \
+			    "$(printf 'kbtype=%s' "${keyboard_type}" | base64 -w '0')" \
+			    "$(printf 'geometry=%s' "${geometry_val}" | base64 -w '0')" \
+			    "$(printf 'resize=%s' "${resize_val}" | base64 -w '0')" \
+			    "$(printf 'listen=%s' "${gr_port}" | base64 -w '0')" \
+			    "$(printf 'fullscreen=%s' "${fullscreen_val}" | base64 -w '0')" \
+			    "$(printf 'clipboard=%s' "${clipboard}" | base64 -w '0')" \
+			    '2'>'/dev/null')"
+
+if [ '1' -eq "${has_xinerama}" ]; then
+			new_agent_options_base64="$(x2gooptionsstring -t -c -b -- "${new_agent_options_base64}" \
+						    "$(printf 'xinerama=%s' "${xinerama_option}" | base64 -w '0')" \
+						    '2'>'/dev/null')"
+fi
 
 if [[ -z "${geometry_val}" ]] || [[ "${geometry_val}" = 'fullscreen' ]]; then
-	agent_options_new="$(sed -e "s/geometry=${geometry_val},//" <<< "${agent_options_new}")"
+	new_agent_options_base64="$(x2gooptionsstring -t -c -b -- "${new_agent_options_base64}" \
+				    "$(printf '-geometry' | base64 -w '0')" \
+				    '2'>'/dev/null')"
 fi
 
 typeset x2go_client="$(awk '{print $1}' <<< "${SSH_CLIENT}")"
@@ -343,7 +321,7 @@ if [[ -z "${x2go_client}" ]]; then
 	x2go_client="${current_host_name}"
 fi
 
-printf '%s\n' "${agent_options_new}" >"${session_dir}/options"
+printf '%s' "${new_agent_options_base64}" | base64 -d >"${session_dir}/options"
 
 # run x2goserver-extensions for pre-resume
 x2gofeature 'X2GO_RUN_EXTENSIONS' &>'/dev/null' && x2goserver-run-extensions "${session_name}" 'pre-resume' || true
