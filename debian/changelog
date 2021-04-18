@@ -27,6 +27,9 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     + Update German translation.
   * debian/control:
     + Update (LONG_)DESCRIPTION of bin:pkg x2goserver-x2goagent.
+    * Drop base64 from D (x2goserver): A bin:pkg does not exist,
+      the bas64 executable is shipped as part of coreutils (which
+      is an essential package and thus does not need a dependency).
   * x2goserver.spec:
     + Update (LONG_)DESCRIPTION of bin:pkg x2goserver-x2goagent.
     + Fix up files section for x2gokdrive (wrong pkg name).
