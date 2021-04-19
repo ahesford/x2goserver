@@ -104,8 +104,6 @@ Requires:       perl = %{perl_version}
 %endif
 %endif
 
-# We'll pass agent options around base64-encoded for full binary support.
-Requires:       base64
 # For running any command, really.
 Requires:       bash
 # For x2goruncommand - for now

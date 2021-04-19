@@ -422,6 +422,7 @@ x2goserver (4.1.0.4-0x2go1.2) UNRELEASED; urgency=medium
     + Add dependency upon perl(Encode::Locale) for older distros. Others ship
       the module as part of core.
     + Add run-time base64 dependency.
+    + Remove run-time base64 dependency - part of coreutils.
   * debian/x2goserver.install:
     + Install bin/x2goupdateoptionsstring.
     + Rename x2goupdateoptionsstring to x2gooptionsstring.
